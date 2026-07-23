@@ -1,4 +1,4 @@
-import { getUserInfo, toLogin } from './api/user'
+import { userInfo, loginByWid } from './api/user'
 import { wxGetStorageSync, wxHideLoading, wxSetStorageSync, wxShowLoading, wxShowToast } from './utils/wx'
 
 type AppCallback = (data: { token: string; userInfo: UserInfo | null }) => void
@@ -36,7 +36,7 @@ App({
   },
   login(code: string) {
     wxShowLoading({ title: '登录中...' })
-    toLogin(code).then(({ data }) => {
+    loginByWid(code).then(({ data }) => {
       setTimeout(() => {
         wxHideLoading()
         const { token, userInfo } = data
@@ -56,7 +56,7 @@ App({
 
     this.isLogin(false)
       .then(() => {
-        getUserInfo()
+        userInfo()
           .then((res: CtmResponse<UserInfo>) => {
             this.update('userInfo', res.data)
           })

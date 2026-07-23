@@ -1,10 +1,12 @@
-import { getBillStats } from '../../api/bill'
-import { wxLogin, wxShowShareMenu, wxShowToast } from '../../utils/wx'
+import { billStats } from '../../api/bill'
+import { LOGO_BASE64 } from '../../config/logo'
+import { wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, isLogin, watch } = getApp()
 
 Page({
   data: {
+    LOGO_BASE64,
     stats: {
       income: 0,
       expense: 0
@@ -25,7 +27,7 @@ Page({
     isLogin(false)
       .then(() => {
         const now = new Date()
-        getBillStats(String(now.getFullYear()), String(now.getMonth() + 1)).then(({ data }) => {
+        billStats(String(now.getFullYear()), String(now.getMonth() + 1)).then(({ data }) => {
           this.setData({
             stats: {
               income: data.totalIncome,
@@ -57,7 +59,7 @@ Page({
     wxShowToast({ title: '暂未开放' })
   },
   handleToUser() {
-    wxShowToast({ title: '暂未开放' })
+    wxNavigateTo('user')
   },
   handleToExitLogin() {
     exitLogin(() => {

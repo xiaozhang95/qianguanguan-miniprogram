@@ -43,3 +43,18 @@ export function wxShowShareMenu() {
     menus: ['shareAppMessage', 'shareTimeline']
   })
 }
+
+export function wxReadFile(filePath: string, encoding = 'base64') {
+  return new Promise<WechatMiniprogram.ReadFileSuccessCallbackResult>((resolve, reject) => {
+    wx.getFileSystemManager().readFile({
+      filePath,
+      encoding,
+      success: (res) => resolve(res),
+      fail: (err) => reject(err)
+    } as WechatMiniprogram.ReadFileOption)
+  })
+}
+
+export function wxNavigateBack() {
+  return wx.navigateBack()
+}

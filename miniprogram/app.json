@@ -1,5 +1,5 @@
 {
-  "pages": ["pages/setting/index"],
+  "pages": ["pages/setting/index", "pages/user/index"],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"

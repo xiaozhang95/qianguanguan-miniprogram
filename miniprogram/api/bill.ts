@@ -1,6 +1,6 @@
 import request from '../utils/request'
 
-export function getBillStats(year: string, month: string) {
+export function billStats(year: string, month: string) {
   return request<BillStatsData>({
     url: '/bill/stats',
     method: 'POST',
