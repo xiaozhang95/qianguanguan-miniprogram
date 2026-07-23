@@ -1,11 +1,7 @@
 import { billList, billStats } from '../../api/bill'
-import { LOGO_BASE64 } from '../../config/logo'
+import { fmt, pad } from '../../utils/format'
 
 const { globalData, isLogin, watch } = getApp()
-
-function fmt(n: number) {
-  return n.toFixed(2)
-}
 
 const EXP_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#06b6d4']
 const INC_COLORS = ['#22c55e', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899']
@@ -32,7 +28,6 @@ interface PieItem {
 
 Page({
   data: {
-    LOGO_BASE64,
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
     showPicker: false,
@@ -80,7 +75,6 @@ Page({
         const monthStr = String(month)
 
         const daysInMonth = new Date(year, month, 0).getDate()
-        const pad = (n: number) => String(n).padStart(2, '0')
         const startDate = `${year}-${pad(month)}-01`
         const endDate = `${year}-${pad(month)}-${pad(daysInMonth)}`
 

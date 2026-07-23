@@ -1,7 +1,5 @@
 <view class="page" catchtouchmove="{{ showPicker ? 'onPrevent' : '' }}">
-  <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
-    <text class="nav-title">钱罐罐</text>
-  </view>
+  <fixed-nav-bar id="fixed-nav" title="钱罐罐" app="{{ app }}" />
 
   <view class="header">
     <view class="header-bg">
@@ -37,34 +35,9 @@
     />
   </van-popup>
 
-  <view class="stats-card">
-    <view class="stats-item">
-      <view class="stats-header">
-        <text class="stats-icon expense-icon">▼</text>
-        <text class="stats-label">支出</text>
-      </view>
-      <text class="stats-value expense">¥{{ expenseStr }}</text>
-    </view>
-    <view class="stats-item">
-      <view class="stats-header">
-        <text class="stats-icon income-icon">▲</text>
-        <text class="stats-label">收入</text>
-      </view>
-      <text class="stats-value income">¥{{ incomeStr }}</text>
-    </view>
-    <view class="stats-item">
-      <view class="stats-header">
-        <text class="stats-icon {{ balanceClass }}">◆</text>
-        <text class="stats-label">结余</text>
-      </view>
-      <text class="stats-value {{ balanceClass }}">¥{{ balanceStr }}</text>
-    </view>
-  </view>
+  <stats-card expense-str="{{ expenseStr }}" income-str="{{ incomeStr }}" balance-str="{{ balanceStr }}" balance-class="{{ balanceClass }}" />
 
-  <view wx:if="{{ loading }}" class="loading-wrap">
-    <van-loading size="48rpx" color="#1677ff" />
-    <text class="loading-text">加载中...</text>
-  </view>
+  <loading-block loading="{{ loading }}" />
 
   <block wx:if="{{ !loading }}">
     <view class="card">

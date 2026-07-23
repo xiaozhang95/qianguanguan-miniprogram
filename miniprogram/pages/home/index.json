@@ -3,8 +3,10 @@
     "van-icon": "@vant/weapp/icon/index",
     "van-popup": "@vant/weapp/popup/index",
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
-    "van-loading": "@vant/weapp/loading/index",
-    "van-empty": "@vant/weapp/empty/index"
+    "van-empty": "@vant/weapp/empty/index",
+    "stats-card": "/components/stats-card/stats-card",
+    "fixed-nav-bar": "/components/fixed-nav-bar/fixed-nav-bar",
+    "loading-block": "/components/loading-block/loading-block"
   },
   "navigationStyle": "custom"
 }

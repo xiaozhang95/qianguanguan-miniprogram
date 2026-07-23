@@ -1,49 +1,8 @@
-.page {
-  background: var(--bg);
-  padding-bottom: 60rpx;
-}
+﻿@import '../../styles/common';
 
-.header {
-  width: 100%;
-  height: var(--header-height);
-  position: relative;
-  overflow: hidden;
-}
-
-.header-bg {
-  position: absolute;
-  inset: 0;
-  background: var(--theme-gradient);
-}
-
-.header-circle {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.c1 {
-  width: 300rpx;
-  height: 300rpx;
-  top: -100rpx;
-  right: -60rpx;
-}
-
-.c2 {
-  width: 200rpx;
-  height: 200rpx;
-  bottom: -40rpx;
-  left: -40rpx;
-}
-
+/* ===== 我的页面专属 ===== */
 .header-content {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-  padding: 0 var(--padding-lg) 60rpx;
-  box-sizing: border-box;
+  align-items: flex-start;
 }
 
 .header-row {
@@ -80,7 +39,7 @@
 .header-appname {
   font-size: 34rpx;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .header-tagline {
@@ -91,7 +50,7 @@
 .header-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-white);
 }
 
 .header-role {
@@ -99,14 +58,25 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
-.header-action {
+.login-action {
+  margin: 60rpx var(--padding-lg) var(--margin);
+  padding: 32rpx;
   display: flex;
   align-items: center;
-  padding: 12rpx 28rpx;
-  border-radius: 16rpx;
-  border: 2rpx solid rgba(255, 255, 255, 0.35);
-  color: #fff;
-  font-size: 26rpx;
+  justify-content: center;
+  gap: 12rpx;
+  background: var(--theme-gradient);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 8rpx 24rpx rgba(22, 119, 255, 0.35);
+  color: var(--color-white);
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+
+.login-action:active {
+  opacity: 0.85;
+  transform: scale(0.98);
 }
 
 .menu-group {
@@ -125,42 +95,11 @@
   vertical-align: middle;
 }
 
-.menu-icon-share {
-  color: #22c55e !important;
-}
+.menu-icon-share { color: var(--color-income) !important; }
+.menu-icon-profile { color: #8b5cf6 !important; }
+.menu-icon-exit { color: var(--color-expense) !important; }
 
-.menu-icon-profile {
-  color: #8b5cf6 !important;
-}
-
-.menu-icon-exit {
-  color: #ef4444 !important;
-}
-
-.login-action {
-  margin: 60rpx var(--padding-lg) var(--margin);
-  padding: 32rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  background: var(--theme-gradient);
-  border-radius: var(--border-radius-lg);
-  box-shadow: 0 8rpx 24rpx rgba(22, 119, 255, 0.35);
-  color: #fff;
-  font-size: 32rpx;
-  font-weight: 600;
-  letter-spacing: 4rpx;
-}
-
-.login-action:active {
-  opacity: 0.85;
-  transform: scale(0.98);
-}
-
-.share-btn {
-  display: none;
-}
+.share-btn { display: none; }
 
 .footer {
   text-align: center;

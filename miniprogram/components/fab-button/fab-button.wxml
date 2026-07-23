@@ -1,0 +1,3 @@
+<view class="fab" bindtap="onTap">
+  <van-icon name="plus" size="48rpx" color="var(--color-white)" />
+</view>

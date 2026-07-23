@@ -1,13 +1,11 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
 import config from '../../config/index'
-import { LOGO_BASE64 } from '../../config/logo'
 import { wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
 Page({
   data: {
-    LOGO_BASE64,
     categories: [] as Category[],
     filteredCategories: [] as Category[],
     loading: false,

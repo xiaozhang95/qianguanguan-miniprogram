@@ -1,0 +1,3 @@
+<view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
+  <text class="nav-title">{{ title }}</text>
+</view>

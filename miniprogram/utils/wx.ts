@@ -33,10 +33,6 @@ export function wxNavigateTo(name: string) {
   return wx.navigateTo({ url: '/pages/' + name + '/index' })
 }
 
-export function wxSwitchTab(name: string) {
-  return wx.switchTab({ url: '/pages/' + name + '/index' })
-}
-
 export function wxShowShareMenu() {
   return wx.showShareMenu({
     withShareTicket: true,
@@ -44,33 +40,6 @@ export function wxShowShareMenu() {
   })
 }
 
-export function wxReadFile(filePath: string, encoding = 'base64') {
-  return new Promise<WechatMiniprogram.ReadFileSuccessCallbackResult>((resolve, reject) => {
-    wx.getFileSystemManager().readFile({
-      filePath,
-      encoding,
-      success: (res) => resolve(res),
-      fail: (err) => reject(err)
-    } as WechatMiniprogram.ReadFileOption)
-  })
-}
-
 export function wxNavigateBack() {
   return wx.navigateBack()
-}
-
-export function wxDownloadFile(url: string) {
-  return new Promise<WechatMiniprogram.DownloadFileSuccessCallbackResult>((resolve, reject) => {
-    wx.downloadFile({
-      url,
-      success: (res) => {
-        if (res.statusCode === 200) {
-          resolve(res)
-        } else {
-          reject(new Error('download failed: ' + res.statusCode))
-        }
-      },
-      fail: (err) => reject(err)
-    })
-  })
 }

@@ -33,11 +33,6 @@ interface LoginResult {
   userInfo?: UserInfo
 }
 
-interface CaptchaResult {
-  captchaKey: string
-  captchaImage: string
-}
-
 interface Category {
   id: string
   name: string

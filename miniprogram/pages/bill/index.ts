@@ -1,18 +1,10 @@
 import { billDelete, billList, billSave, billStats, billUpdate, type BillSaveParams } from '../../api/bill'
 import { categoryList, type Category } from '../../api/category'
 import config from '../../config/index'
-import { LOGO_BASE64 } from '../../config/logo'
+import { fmt, pad } from '../../utils/format'
 import { wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
-
-function fmt(n: number) {
-  return n.toFixed(2)
-}
-
-function pad(n: number) {
-  return String(n).padStart(2, '0')
-}
 
 function todayStr() {
   const d = new Date()
@@ -26,8 +18,6 @@ interface BillGroup {
 
 Page({
   data: {
-    LOGO_BASE64,
-    disableScroll: false,
     filterDate: todayStr(),
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,

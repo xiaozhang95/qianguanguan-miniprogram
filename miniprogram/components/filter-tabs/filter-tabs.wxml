@@ -1,0 +1,9 @@
+<view class="filter-bar">
+  <view
+    wx:for="{{ tabs }}"
+    wx:key="index"
+    class="filter-tab {{ activeIndex === index ? 'active ' + item.type : '' }}"
+    bindtap="onChange"
+    data-idx="{{ index }}"
+  >{{ item.label }}</view>
+</view>

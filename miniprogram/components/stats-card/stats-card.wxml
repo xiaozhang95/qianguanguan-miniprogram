@@ -1,0 +1,23 @@
+<view class="stats-card">
+  <view class="stats-item">
+    <view class="stats-header">
+      <text class="stats-icon expense-icon">▼</text>
+      <text class="stats-label">支出</text>
+    </view>
+    <text class="stats-value expense">¥{{ expenseStr }}</text>
+  </view>
+  <view class="stats-item">
+    <view class="stats-header">
+      <text class="stats-icon income-icon">▲</text>
+      <text class="stats-label">收入</text>
+    </view>
+    <text class="stats-value income">¥{{ incomeStr }}</text>
+  </view>
+  <view class="stats-item">
+    <view class="stats-header">
+      <text class="stats-icon {{ balanceClass }}">◆</text>
+      <text class="stats-label">结余</text>
+    </view>
+    <text class="stats-value {{ balanceClass }}">¥{{ balanceStr }}</text>
+  </view>
+</view>
