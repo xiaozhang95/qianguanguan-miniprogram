@@ -60,11 +60,18 @@
     </view>
   </view>
 
-  <van-tabs active="{{ activeTab }}" bind:change="onTabChange" custom-class="filter-tabs" swipeable>
-    <van-tab title="全部"></van-tab>
-    <van-tab title="支出"></van-tab>
-    <van-tab title="收入"></van-tab>
-  </van-tabs>
+  <view class="filter-bar">
+    <view
+      class="filter-tab {{ activeTab === 0 ? 'active expense' : '' }}"
+      bindtap="onFilterChange"
+      data-idx="0"
+    >支出</view>
+    <view
+      class="filter-tab {{ activeTab === 1 ? 'active income' : '' }}"
+      bindtap="onFilterChange"
+      data-idx="1"
+    >收入</view>
+  </view>
 
   <view wx:if="{{ loading }}" class="loading-wrap">
     <van-loading size="48rpx" color="#1677ff" />
@@ -149,7 +156,6 @@
           value="{{ formAmount }}"
           placeholder="0.00"
           bindinput="onFormAmountInput"
-          focus="{{ !editingBill }}"
         />
       </view>
 
@@ -183,13 +189,13 @@
     </view>
   </van-popup>
 
-  <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-style="max-height: 50vh;" custom-class="cat-popup">
+  <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-class="cat-popup">
     <view class="cat-picker-wrap">
       <view class="cat-picker-header">
         <text class="cat-picker-title">选择分类</text>
         <van-icon name="cross" size="40rpx" color="#999" bindtap="onFormCategoryClose" />
       </view>
-      <scroll-view scroll-y class="cat-list">
+      <view class="cat-list">
         <block wx:for="{{ filteredCategories }}" wx:key="id">
           <view
             class="cat-item {{ formCategoryId === item.id ? 'active' : '' }}"
@@ -204,7 +210,7 @@
         <view wx:if="{{ filteredCategories.length === 0 }}" class="cat-empty">
           <text>暂无分类，请先在Web端添加</text>
         </view>
-      </scroll-view>
+      </view>
     </view>
   </van-popup>
 </view>

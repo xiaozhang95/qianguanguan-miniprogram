@@ -28,7 +28,7 @@ Page({
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
     filterDay: new Date().getDate(),
-    filterType: '' as string,
+    filterType: 'EXPENSE' as string,
     activeTab: 0,
     showDatePicker: false,
     currentDate: Date.now(),
@@ -73,11 +73,12 @@ Page({
   },
 
   onShow() {
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ active: 1 })
-    }
     this.setData({ app: globalData })
     this.init()
+  },
+
+  onHide() {
+    this.setData({ showForm: false, showCategoryPicker: false, showDatePicker: false })
   },
 
   init() {
@@ -146,9 +147,9 @@ Page({
       })
   },
 
-  onTabChange(e: WechatMiniprogram.CustomEvent) {
-    const idx = e.detail.index as number
-    const types = ['', 'EXPENSE', 'INCOME']
+  onFilterChange(e: WechatMiniprogram.CustomEvent) {
+    const idx = Number(e.currentTarget.dataset.idx)
+    const types = ['EXPENSE', 'INCOME']
     this.setData({ activeTab: idx, filterType: types[idx] })
     this.loadData()
   },
@@ -218,7 +219,6 @@ Page({
         formRemark: '',
         filteredCategories: expenseCats
       })
-      wx.hideTabBar({ animation: false })
     })
   },
 
@@ -237,7 +237,6 @@ Page({
         formRemark: bill.remark || '',
         filteredCategories: cats
       })
-      wx.hideTabBar({ animation: false })
     })
   },
 
@@ -294,7 +293,6 @@ Page({
 
   onFormClose() {
     this.setData({ showForm: false })
-    wx.showTabBar({ animation: false })
   },
 
   onFormTypeChange(e: WechatMiniprogram.CustomEvent) {
@@ -360,7 +358,6 @@ Page({
       .then(({ msg }) => {
         wxShowToast({ title: msg || '保存成功' })
         this.setData({ showForm: false, saving: false })
-        wx.showTabBar({ animation: false })
         this.loadData()
         this.loadCategories()
       })

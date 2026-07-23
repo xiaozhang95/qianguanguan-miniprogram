@@ -1,7 +1,8 @@
 .page {
   background: var(--bg);
-  min-height: calc(100vh - 100rpx);
+  min-height: 100vh;
   padding-bottom: 20rpx;
+  box-sizing: border-box;
 }
 
 .header {
@@ -160,16 +161,38 @@
   color: #1677ff;
 }
 
-.filter-tabs {
+.filter-bar {
   margin: var(--margin) var(--padding-lg) 0;
-  --tabs-line-height: 76rpx;
-  --tabs-card-height: 76rpx;
-  --tabs-nav-background: var(--card-bg);
-  --tabs-bottom-bar-color: #1677ff;
-  --tabs-bottom-bar-height: 4rpx;
-  border-radius: var(--border-radius-lg);
+  display: flex;
+  gap: 16rpx;
+  padding: 6rpx;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  overflow: hidden;
+}
+
+.filter-tab {
+  flex: 1;
+  text-align: center;
+  padding: 18rpx 0;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: var(--color-light);
+  transition: all .25s;
+}
+
+.filter-tab.active {
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, .12);
+}
+
+.filter-tab.active.expense {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+}
+
+.filter-tab.active.income {
+  background: linear-gradient(135deg, #22c55e, #4ade80);
 }
 
 .loading-wrap {
@@ -316,7 +339,7 @@
 
 .fab {
   position: fixed;
-  bottom: 160rpx;
+  bottom: 32rpx;
   right: 40rpx;
   width: 100rpx;
   height: 100rpx;
@@ -343,10 +366,10 @@
 .form-wrap {
   flex: 1;
   overflow-y: auto;
-  padding: var(--padding-lg) var(--padding-lg) 140rpx;
+  padding: var(--padding-lg) var(--padding-lg) 28rpx;
   display: flex;
   flex-direction: column;
-  gap: var(--margin);
+  gap: 24rpx;
 }
 
 .form-header {
@@ -363,23 +386,27 @@
 
 .form-type {
   display: flex;
-  gap: var(--gap);
+  gap: 16rpx;
+  padding: 6rpx;
+  margin-top: 16rpx;
+  background: var(--bg);
+  border-radius: var(--border-radius);
 }
 
 .type-tab {
   flex: 1;
   text-align: center;
-  padding: 20rpx 0;
-  border-radius: var(--border-radius);
-  background: var(--bg);
-  font-size: var(--font-size);
-  color: var(--color-secondary);
-  transition: all 0.2s;
+  padding: 18rpx 0;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: var(--color-light);
+  transition: all .25s;
 }
 
 .type-tab.active {
-  font-weight: 600;
   color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, .12);
 }
 
 .type-tab.active.expense {
@@ -449,16 +476,23 @@
 }
 
 .cat-picker-wrap {
-  flex: 1;
+  max-height: 50vh;
   overflow-y: auto;
-  padding: var(--padding-lg) var(--padding-lg) 140rpx;
 }
 
 .cat-picker-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--margin);
+  padding: var(--padding-lg) var(--padding-lg) var(--margin);
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+.cat-list {
+  padding: 0 var(--padding-lg) 40rpx;
 }
 
 .cat-picker-title {
