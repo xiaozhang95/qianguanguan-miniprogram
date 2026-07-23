@@ -39,14 +39,17 @@ Page({
     wxNavigateBack()
   },
   handleSave() {
-    const { avatarUrl, name, phone, email } = this.data
-    if (!name.trim()) {
+    var name = (this.data.name || '').trim()
+    if (!name) {
       wxShowToast({ title: '请输入昵称' })
       return
     }
+    var phone = (this.data.phone || '').trim()
+    var email = (this.data.email || '').trim()
+    var avatarUrl = this.data.avatarUrl
 
     const doSave = function (avatar: string) {
-      userProfile({ avatar, name: name.trim(), phone: phone.trim(), email: email.trim() })
+      userProfile({ avatar: avatar, name: name, phone: phone, email: email })
         .then((res: CtmResponse<UserInfo>) => {
           wxShowToast({ title: '保存成功' })
           update('userInfo', res.data)

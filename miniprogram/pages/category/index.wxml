@@ -1,0 +1,132 @@
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content">
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <text class="nav-title">分类管理</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="filter-bar">
+    <view
+      wx:for="{{ tabs }}"
+      wx:key="*this"
+      class="filter-tab {{ activeTab === index ? 'active' : '' }}"
+      bindtap="onTabChange"
+      data-idx="{{ index }}"
+    >{{ item }}</view>
+  </view>
+
+  <view wx:if="{{ loading }}" class="loading-wrap">
+    <van-loading size="48rpx" color="#1677ff" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:if="{{ !loading }}">
+    <view wx:if="{{ filteredCategories.length > 0 }}" class="cat-list-wrap">
+      <view class="cat-section">
+        <block wx:for="{{ filteredCategories }}" wx:key="id">
+          <van-swipe-cell
+            wx:if="{{ item.userId !== null }}"
+            right-width="{{ 160 }}"
+            custom-class="cat-swipe"
+          >
+            <view class="cat-row" bindtap="onEdit" data-cat="{{ item }}">
+              <view class="cat-left">
+                <text class="cat-icon">{{ item.icon }}</text>
+                <text class="cat-name">{{ item.name }}</text>
+              </view>
+              <view class="cat-right">
+                <view class="cat-tag {{ item.type === 'INCOME' ? 'income' : 'expense' }}">
+                  <text>{{ item.type === 'INCOME' ? '收入' : '支出' }}</text>
+                </view>
+                <view class="cat-tag custom">自定义</view>
+              </view>
+            </view>
+            <view slot="right" class="swipe-actions">
+              <view class="swipe-btn swipe-edit" bindtap="onEdit" data-cat="{{ item }}">编辑</view>
+              <view class="swipe-btn swipe-delete" bindtap="onDelete" data-id="{{ item.id }}">删除</view>
+            </view>
+          </van-swipe-cell>
+          <view wx:else class="cat-row cat-row-system">
+            <view class="cat-left">
+              <text class="cat-icon">{{ item.icon }}</text>
+              <text class="cat-name">{{ item.name }}</text>
+            </view>
+            <view class="cat-right">
+              <view class="cat-tag {{ item.type === 'INCOME' ? 'income' : 'expense' }}">
+                <text>{{ item.type === 'INCOME' ? '收入' : '支出' }}</text>
+              </view>
+              <view class="cat-tag system">默认</view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+    <van-empty wx:else description="暂无分类" />
+  </block>
+
+  <view class="fab" bindtap="onAdd">
+    <van-icon name="plus" size="48rpx" color="#fff" />
+  </view>
+
+  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup">
+    <view class="form-wrap">
+      <view class="form-header">
+        <text class="form-title">{{ editingCategory ? '编辑分类' : '新增分类' }}</text>
+        <van-icon name="cross" size="40rpx" color="#999" bindtap="onFormClose" />
+      </view>
+
+      <view class="form-type">
+        <view
+          class="type-tab {{ formType === 'EXPENSE' ? 'active expense' : '' }}"
+          bindtap="onFormTypeChange"
+          data-type="EXPENSE"
+        >支出</view>
+        <view
+          class="type-tab {{ formType === 'INCOME' ? 'active income' : '' }}"
+          bindtap="onFormTypeChange"
+          data-type="INCOME"
+        >收入</view>
+      </view>
+
+      <view class="form-field">
+        <text class="field-label">名称</text>
+        <input
+          class="field-input"
+          value="{{ formName }}"
+          placeholder="如：餐饮"
+          maxlength="50"
+          bindinput="onNameInput"
+        />
+      </view>
+
+      <view class="form-field">
+        <text class="field-label">图标</text>
+        <input
+          class="field-input"
+          value="{{ formIcon }}"
+          placeholder="如：🍜"
+          maxlength="500"
+          bindinput="onIconInput"
+        />
+      </view>
+
+      <view class="form-field">
+        <text class="field-label">排序</text>
+        <van-stepper value="{{ formSort }}" min="0" step="1" bind:change="onSortChange" />
+      </view>
+
+      <van-button
+        custom-class="save-btn"
+        block
+        loading="{{ saving }}"
+        bindtap="onFormSubmit"
+      >保存</van-button>
+    </view>
+  </van-popup>
+</view>

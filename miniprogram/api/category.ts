@@ -9,3 +9,26 @@ export function categoryList(type?: string) {
     data
   })
 }
+
+export function categorySave(data: CategorySaveParams) {
+  return request<Category>({
+    url: '/category/save',
+    method: 'POST',
+    data
+  })
+}
+
+export function categoryUpdate(id: string, data: CategorySaveParams) {
+  return request<Category>({
+    url: `/category/update/${id}`,
+    method: 'PUT',
+    data
+  })
+}
+
+export function categoryDelete(id: string) {
+  return request({
+    url: `/category/delete/${id}`,
+    method: 'DELETE'
+  })
+}

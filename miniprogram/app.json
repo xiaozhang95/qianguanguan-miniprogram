@@ -3,7 +3,8 @@
     "pages/home/index",
     "pages/bill/index",
     "pages/setting/index",
-    "pages/user/index"
+    "pages/user/index",
+    "pages/category/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -26,6 +27,12 @@
         "text": "账单",
         "iconPath": "assets/icons/bill.png",
         "selectedIconPath": "assets/icons/bill-active.png"
+      },
+      {
+        "pagePath": "pages/category/index",
+        "text": "分类",
+        "iconPath": "assets/icons/category.png",
+        "selectedIconPath": "assets/icons/category-active.png"
       },
       {
         "pagePath": "pages/setting/index",
