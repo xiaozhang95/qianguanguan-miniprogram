@@ -1,23 +1,30 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
+import config from '../../config/index'
+import { LOGO_BASE64 } from '../../config/logo'
 import { wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
 Page({
   data: {
+    LOGO_BASE64,
     categories: [] as Category[],
     filteredCategories: [] as Category[],
     loading: false,
     activeTab: 0,
-    tabs: ['全部', '支出', '收入'],
+    tabs: ['支出', '收入'],
 
     showForm: false,
     editingCategory: null as Category | null,
     formName: '',
     formIcon: '',
+    formIconFile: '',
+    iconChanged: false,
     formType: 'EXPENSE',
     formSort: 0,
     saving: false,
+    isScrolled: false,
+    choosingImage: false,
 
     app: null as any
   },
@@ -30,12 +37,15 @@ Page({
   },
 
   onShow() {
-    this.setData({ app: globalData })
+    this.setData({ app: globalData, isScrolled: false })
     this.init()
   },
 
   onHide() {
-    this.setData({ showForm: false })
+    if (!this.data.choosingImage) {
+      this.setData({ showForm: false })
+    }
+    this.setData({ isScrolled: false })
   },
 
   init() {
@@ -50,7 +60,14 @@ Page({
     this.setData({ loading: true })
     categoryList()
       .then(({ data }) => {
-        const cats = data || []
+        const cats = (data || []).map((c: Category) => {
+          const isImg = c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http'))
+          return {
+            ...c,
+            iconIsImage: isImg,
+            icon: isImg && c.icon.startsWith('/upload/') ? config.url + c.icon : c.icon
+          }
+        })
         this.setData({ categories: cats, loading: false })
         this.applyFilter()
       })
@@ -62,12 +79,10 @@ Page({
   applyFilter() {
     const { activeTab, categories } = this.data
     let filtered: Category[]
-    if (activeTab === 1) {
+    if (activeTab === 0) {
       filtered = categories.filter((c: Category) => c.type === 'EXPENSE')
-    } else if (activeTab === 2) {
-      filtered = categories.filter((c: Category) => c.type === 'INCOME')
     } else {
-      filtered = categories
+      filtered = categories.filter((c: Category) => c.type === 'INCOME')
     }
     this.setData({ filteredCategories: filtered })
   },
@@ -79,12 +94,18 @@ Page({
     })
   },
 
+  onSystemTap() {
+    wxShowToast({ title: '系统默认分类，不允许编辑' })
+  },
+
   onAdd() {
     this.setData({
       showForm: true,
       editingCategory: null,
       formName: '',
       formIcon: '',
+      formIconFile: '',
+      iconChanged: false,
       formType: 'EXPENSE',
       formSort: 0
     })
@@ -93,11 +114,15 @@ Page({
   onEdit(e: WechatMiniprogram.CustomEvent) {
     const cat = e.currentTarget.dataset.cat as Category
     const isSystem = cat.userId === null
+    const isImg = cat.icon && (cat.icon.startsWith('/upload/') || cat.icon.startsWith('http'))
+    const imgUrl = isImg ? (cat.icon.startsWith('/upload/') ? config.url + cat.icon : cat.icon) : ''
     this.setData({
       showForm: true,
       editingCategory: isSystem ? null : cat,
       formName: cat.name,
-      formIcon: cat.icon,
+      formIcon: isImg ? '' : cat.icon,
+      formIconFile: imgUrl,
+      iconChanged: false,
       formType: cat.type,
       formSort: cat.sort
     })
@@ -141,37 +166,96 @@ Page({
     this.setData({ formSort: parseInt(e.detail.value) || 0 })
   },
 
+  onChooseIcon() {
+    this.setData({ choosingImage: true })
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['compressed'],
+      sourceType: ['album', 'camera'],
+      success: (res) => {
+        this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
+      },
+      fail: () => {
+        this.setData({ choosingImage: false })
+      }
+    })
+  },
+
+  onRemoveIcon() {
+    this.setData({ formIconFile: '', iconChanged: true })
+  },
+
   onFormSubmit() {
-    const { formName, formIcon, formType, formSort, editingCategory } = this.data
+    const { formName, formIcon, formIconFile, iconChanged, formType, formSort, editingCategory } = this.data
 
     if (!formName.trim()) {
       wxShowToast({ title: '请输入分类名称' })
       return
     }
-    if (!formIcon.trim()) {
-      wxShowToast({ title: '请输入图标（如表情符号）' })
+    if (!formIcon.trim() && !formIconFile) {
+      wxShowToast({ title: '请输入图标或上传图片' })
       return
-    }
-
-    const params: CategorySaveParams = {
-      name: formName.trim(),
-      icon: formIcon.trim(),
-      type: formType,
-      sort: formSort
     }
 
     this.setData({ saving: true })
 
-    const request = editingCategory ? categoryUpdate(editingCategory.id, params) : categorySave(params)
-    request
-      .then(({ msg }) => {
-        wxShowToast({ title: msg || '保存成功' })
-        this.setData({ showForm: false, saving: false })
-        this.loadCategories()
-      })
-      .catch(() => {
-        this.setData({ saving: false })
-      })
+    const doSave = (icon: string) => {
+      const params: CategorySaveParams = {
+        name: formName.trim(),
+        icon,
+        type: formType,
+        sort: formSort
+      }
+      const req = editingCategory ? categoryUpdate(editingCategory.id, params) : categorySave(params)
+      req
+        .then(({ msg }) => {
+          wxShowToast({ title: msg || '保存成功' })
+          this.setData({ showForm: false, saving: false, formIconFile: '' })
+          this.loadCategories()
+        })
+        .catch(() => {
+          this.setData({ saving: false })
+        })
+    }
+
+    if (formIconFile) {
+      if (iconChanged) {
+        wx.uploadFile({
+          url: config.url + config.baseUrl + '/upload',
+          filePath: formIconFile,
+          name: 'file',
+          header: { Authorization: globalData.token },
+          success: (res) => {
+            const data = JSON.parse(res.data)
+            if (data.code === 200) {
+              doSave(data.data.url)
+            } else {
+              wxShowToast({ title: data.msg || '上传失败' })
+              this.setData({ saving: false })
+            }
+          },
+          fail: () => {
+            wxShowToast({ title: '上传失败' })
+            this.setData({ saving: false })
+          }
+        })
+      } else {
+        doSave(formIconFile)
+      }
+    } else {
+      doSave(formIcon.trim())
+    }
+  },
+
+  onPrevent() {
+    return
+  },
+
+  onPageScroll(e: { scrollTop: number }) {
+    const scrolled = e.scrollTop > 40
+    if (scrolled !== this.data.isScrolled) {
+      this.setData({ isScrolled: scrolled })
+    }
   },
 
   onShareAppMessage() {

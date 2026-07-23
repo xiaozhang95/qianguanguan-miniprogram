@@ -22,11 +22,32 @@
 		"miniprogram": {
 			"list": [
 				{
-					"name": "pages/bill/index",
-					"pathName": "pages/bill/index",
+					"name": "pages/user/index",
+					"pathName": "pages/user/index",
 					"query": "",
 					"scene": null,
 					"launchMode": "default"
+				},
+				{
+					"name": "pages/category/index",
+					"pathName": "pages/category/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
+				},
+				{
+					"name": "pages/category/index",
+					"pathName": "pages/category/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
+				},
+				{
+					"name": "pages/bill/index",
+					"pathName": "pages/bill/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
 				},
 				{
 					"name": "pages/setting/index",

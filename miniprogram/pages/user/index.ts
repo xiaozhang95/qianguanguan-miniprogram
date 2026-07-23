@@ -1,5 +1,6 @@
 import { userProfile } from '../../api/user'
-import { wxNavigateBack, wxReadFile, wxShowToast } from '../../utils/wx'
+import config from '../../config/index'
+import { wxNavigateBack, wxShowToast } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
@@ -9,7 +10,8 @@ Page({
     avatarUrl: '',
     name: '',
     phone: '',
-    email: ''
+    email: '',
+    saving: false
   },
   onShow() {
     const u = globalData.userInfo || {}
@@ -18,7 +20,7 @@ Page({
       avatar: u.avatar || '',
       avatarUrl: '',
       name: u.name || '',
-      phone: u.phone || '',
+      phone: u.email || '',
       email: u.email || ''
     })
   },
@@ -47,26 +49,46 @@ Page({
     var phone = (this.data.phone || '').trim()
     var email = (this.data.email || '').trim()
     var avatarUrl = this.data.avatarUrl
+    var currentAvatar = this.data.avatar
 
-    const doSave = function (avatar: string) {
-      userProfile({ avatar: avatar, name: name, phone: phone, email: email })
+    this.setData({ saving: true })
+
+    const doSave = (avatar: string) => {
+      userProfile({ avatar, name, phone, email })
         .then((res: CtmResponse<UserInfo>) => {
           wxShowToast({ title: '保存成功' })
           update('userInfo', res.data)
-          setTimeout(function () {
+          setTimeout(() => {
             wxNavigateBack()
           }, 1000)
         })
+        .catch(() => {
+          this.setData({ saving: false })
+        })
     }
 
-    if (avatarUrl) {
-      wxReadFile(avatarUrl, 'base64').then(function (res) {
-        doSave('data:image/png;base64,' + res.data)
-      }, function () {
-        doSave('')
+    if (avatarUrl && avatarUrl !== currentAvatar) {
+      wx.uploadFile({
+        url: config.url + config.baseUrl + '/upload',
+        filePath: avatarUrl,
+        name: 'file',
+        header: { Authorization: globalData.token },
+        success: (res) => {
+          const data = JSON.parse(res.data)
+          if (data.code === 200) {
+            doSave(data.data.url)
+          } else {
+            wxShowToast({ title: data.msg || '上传失败' })
+            this.setData({ saving: false })
+          }
+        },
+        fail: () => {
+          wxShowToast({ title: '上传失败' })
+          this.setData({ saving: false })
+        }
       })
     } else {
-      doSave('')
+      doSave(currentAvatar || '')
     }
   }
 })

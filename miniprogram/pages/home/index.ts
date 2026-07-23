@@ -64,8 +64,12 @@ Page({
   },
 
   onShow() {
-    this.setData({ app: globalData })
+    this.setData({ app: globalData, isScrolled: false })
     this.loadData()
+  },
+
+  onHide() {
+    this.setData({ isScrolled: false })
   },
 
   loadData() {
@@ -246,6 +250,10 @@ Page({
 
   onPickerClose() {
     this.setData({ showPicker: false })
+  },
+
+  onPrevent() {
+    return
   },
 
   onPageScroll(e: { scrollTop: number }) {

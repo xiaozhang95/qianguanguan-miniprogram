@@ -109,92 +109,20 @@
   font-size: 26rpx;
 }
 
-.stats-card {
-  margin: -40rpx var(--padding-lg) 0;
-  padding: var(--padding-lg) var(--padding);
-  background: var(--card-bg);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  position: relative;
-  z-index: 10;
-}
-
-.stats-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12rpx;
-}
-
-.stats-item:not(:last-child) {
-  border-right: 1rpx solid #f0f0f0;
-}
-
-.stats-header {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.stats-icon-text {
-  font-size: 22rpx;
-}
-
-.expense-icon {
-  color: #ef4444;
-}
-
-.income-icon {
-  color: #22c55e;
-}
-
-.balance-icon {
-  color: #1677ff;
-}
-
-.stats-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-light);
-}
-
-.stats-value {
-  font-size: var(--font-size);
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.stats-value.expense {
-  color: #ef4444;
-}
-
-.stats-value.income {
-  color: #22c55e;
-}
-
-.stats-value.balance {
-  color: #1677ff;
-}
-
 .menu-group {
-  margin-top: var(--margin) !important;
-  margin-left: var(--padding-lg) !important;
-  margin-right: var(--padding-lg) !important;
-  --cell-line-height: 56rpx;
+  margin: var(--margin) var(--padding-lg) 0 !important;
+  --cell-line-height: 72rpx;
+  --cell-font-size: var(--font-size);
   --cell-right-icon-size: 28rpx;
+}
+
+.menu-group--first {
+  margin-top: -20rpx !important;
 }
 
 .menu-icon {
   margin-right: var(--gap);
-}
-
-.menu-icon-category {
-  color: #f59e0b !important;
-}
-
-.menu-icon-book {
-  color: #3b82f6 !important;
+  vertical-align: middle;
 }
 
 .menu-icon-share {
@@ -207,6 +135,27 @@
 
 .menu-icon-exit {
   color: #ef4444 !important;
+}
+
+.login-action {
+  margin: 60rpx var(--padding-lg) var(--margin);
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  background: var(--theme-gradient);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 8rpx 24rpx rgba(22, 119, 255, 0.35);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+  letter-spacing: 4rpx;
+}
+
+.login-action:active {
+  opacity: 0.85;
+  transform: scale(0.98);
 }
 
 .share-btn {

@@ -91,13 +91,14 @@
 .avatar-row {
   display: flex;
   align-items: center;
-  padding: 12rpx 32rpx 24rpx;
+  padding: 24rpx 32rpx;
   border-bottom: 1rpx solid #f0f0f0;
-  margin-bottom: 8rpx;
 }
 
 .avatar-label {
-  width: 190rpx;
+  max-width: 6.2em;
+  min-width: 6.2em;
+  margin-right: 12px;
   font-size: 28rpx;
   color: #333;
   flex-shrink: 0;
@@ -161,7 +162,9 @@
 }
 
 .field-label {
-  width: 190rpx;
+  max-width: 6.2em;
+  min-width: 6.2em;
+  margin-right: 12px;
   font-size: 28rpx;
   color: #333;
   flex-shrink: 0;
@@ -172,3 +175,5 @@
   font-size: 28rpx;
   color: #333;
 }
+
+

@@ -69,6 +69,7 @@
 .nav-fixed--show {
   opacity: 1;
   transform: translateY(0);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
 .nav-bar {
@@ -90,8 +91,12 @@
 }
 
 .nav-logo {
-  width: 36rpx;
-  height: 36rpx;
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 10rpx;
+  padding: 6rpx;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #0958d9, #1677ff);
   margin-right: 12rpx;
   flex-shrink: 0;
 }

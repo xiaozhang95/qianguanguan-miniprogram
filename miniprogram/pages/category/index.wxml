@@ -1,4 +1,8 @@
-<view class="page">
+<view class="page" catchtouchmove="{{ showForm ? 'onPrevent' : '' }}">
+  <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
+    <text class="nav-title">分类管理</text>
+  </view>
+
   <view class="header">
     <view class="header-bg">
       <view class="header-circle c1"></view>
@@ -15,7 +19,7 @@
     <view
       wx:for="{{ tabs }}"
       wx:key="*this"
-      class="filter-tab {{ activeTab === index ? 'active' : '' }}"
+      class="filter-tab {{ activeTab === index ? (index === 0 ? 'active expense' : 'active income') : '' }}"
       bindtap="onTabChange"
       data-idx="{{ index }}"
     >{{ item }}</view>
@@ -37,7 +41,8 @@
           >
             <view class="cat-row" bindtap="onEdit" data-cat="{{ item }}">
               <view class="cat-left">
-                <text class="cat-icon">{{ item.icon }}</text>
+                <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
+                <text wx:else class="cat-icon">{{ item.icon }}</text>
                 <text class="cat-name">{{ item.name }}</text>
               </view>
               <view class="cat-right">
@@ -52,9 +57,10 @@
               <view class="swipe-btn swipe-delete" bindtap="onDelete" data-id="{{ item.id }}">删除</view>
             </view>
           </van-swipe-cell>
-          <view wx:else class="cat-row cat-row-system">
+          <view wx:else class="cat-row cat-row-system" bindtap="onSystemTap">
             <view class="cat-left">
-              <text class="cat-icon">{{ item.icon }}</text>
+              <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
+              <text wx:else class="cat-icon">{{ item.icon }}</text>
               <text class="cat-name">{{ item.name }}</text>
             </view>
             <view class="cat-right">
@@ -74,7 +80,7 @@
     <van-icon name="plus" size="48rpx" color="#fff" />
   </view>
 
-  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup">
+  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup" lock-scroll>
     <view class="form-wrap">
       <view class="form-header">
         <text class="form-title">{{ editingCategory ? '编辑分类' : '新增分类' }}</text>
@@ -105,15 +111,28 @@
         />
       </view>
 
-      <view class="form-field">
+      <view class="form-field form-field--icon">
         <text class="field-label">图标</text>
-        <input
-          class="field-input"
-          value="{{ formIcon }}"
-          placeholder="如：🍜"
-          maxlength="500"
-          bindinput="onIconInput"
-        />
+        <view class="icon-pick-wrap">
+          <view wx:if="{{ formIconFile }}" class="icon-preview">
+            <image class="icon-preview-img" src="{{ formIconFile }}" mode="aspectFill"></image>
+            <view class="icon-preview-remove" bindtap="onRemoveIcon">
+              <van-icon name="cross" size="24rpx" color="#fff" />
+            </view>
+          </view>
+          <view wx:else class="icon-actions">
+            <input
+              class="field-input"
+              value="{{ formIcon }}"
+              placeholder="如：🍜"
+              maxlength="500"
+              bindinput="onIconInput"
+            />
+            <view class="icon-upload-btn" bindtap="onChooseIcon">
+              <van-icon name="photograph" size="36rpx" color="#1677ff" />
+            </view>
+          </view>
+        </view>
       </view>
 
       <view class="form-field">

@@ -1,6 +1,5 @@
-<view class="page">
+<view class="page" catchtouchmove="{{ showForm || showCategoryPicker || showDatePicker ? 'onPrevent' : '' }}">
   <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
-    <image class="nav-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit"></image>
     <text class="nav-title">账单</text>
   </view>
 
@@ -28,7 +27,7 @@
     </view>
   </view>
 
-  <van-popup show="{{ showDatePicker }}" position="bottom" bind:close="onDatePickerClose" round>
+  <van-popup show="{{ showDatePicker }}" position="bottom" bind:close="onDatePickerClose" round lock-scroll>
     <van-datetime-picker
       type="date"
       value="{{ currentDate }}"
@@ -88,24 +87,21 @@
       <block wx:for="{{ billGroups }}" wx:key="date">
         <view class="bill-group">
           <block wx:for="{{ item.items }}" wx:for-item="bill" wx:key="id">
-            <van-swipe-cell right-width="{{ 160 }}" custom-class="bill-item">
-              <view class="bill-row" bindtap="onEditBill" data-bill="{{ bill }}">
-                <view class="bill-left">
-                  <text wx:if="{{ bill.categoryIcon }}" class="bill-icon">{{ bill.categoryIcon }}</text>
-                  <view class="bill-info">
-                    <text class="bill-category">{{ bill.categoryName }}</text>
-                    <text wx:if="{{ bill.remark }}" class="bill-remark">{{ bill.remark }}</text>
-                  </view>
+            <view class="bill-row" bindtap="onEditBill" data-bill="{{ bill }}">
+              <view class="bill-left">
+                <image wx:if="{{ bill.categoryIcon && bill.categoryIcon.indexOf('http') === 0 }}" class="bill-icon-img" src="{{ bill.categoryIcon }}" mode="aspectFill"></image>
+                <text wx:elif="{{ bill.categoryIcon }}" class="bill-icon">{{ bill.categoryIcon }}</text>
+                <view class="bill-info">
+                  <text class="bill-category">{{ bill.categoryName }}</text>
+                  <text wx:if="{{ bill.remark }}" class="bill-remark">{{ bill.remark }}</text>
                 </view>
+              </view>
+              <view class="bill-right">
                 <text class="bill-amount {{ bill.type === 'INCOME' ? 'income' : 'expense' }}">
                   {{ bill.amountPrefix }}¥{{ bill.amountStr }}
                 </text>
               </view>
-              <view slot="right" class="swipe-actions">
-                <view class="swipe-btn swipe-edit" bindtap="onEditBill" data-bill="{{ bill }}">编辑</view>
-                <view class="swipe-btn swipe-delete" bindtap="onDeleteBill" data-id="{{ bill.id }}">删除</view>
-              </view>
-            </van-swipe-cell>
+            </view>
           </block>
         </view>
       </block>
@@ -117,7 +113,7 @@
     <van-icon name="plus" size="48rpx" color="#fff" />
   </view>
 
-  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup">
+  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup" lock-scroll>
     <view class="form-wrap">
       <view class="form-header">
         <text class="form-title">{{ editingBill ? '编辑账单' : '记一笔' }}</text>
@@ -193,7 +189,7 @@
     </view>
   </van-popup>
 
-  <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-class="cat-popup">
+  <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-class="cat-popup" lock-scroll>
     <view class="cat-picker-wrap">
       <view class="cat-picker-header">
         <text class="cat-picker-title">选择分类</text>
@@ -206,7 +202,8 @@
             bindtap="onFormCategorySelect"
             data-cat="{{ item }}"
           >
-            <text class="cat-icon">{{ item.icon }}</text>
+            <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
+            <text wx:else class="cat-icon">{{ item.icon }}</text>
             <text class="cat-name">{{ item.name }}</text>
             <van-icon wx:if="{{ formCategoryId === item.id }}" name="success" size="36rpx" color="#1677ff" />
           </view>

@@ -11,9 +11,6 @@
           <text class="header-appname">钱罐罐</text>
           <text class="header-tagline">好好记账，天天向上</text>
         </view>
-        <view class="header-action" bindtap="handleToLogin">
-          <text>登录</text>
-        </view>
       </view>
       <view class="header-row" wx:else>
         <image class="header-avatar" wx:if="{{ app.userInfo.avatar }}" src="{{ app.userInfo.avatar }}" mode="aspectFill"></image>
@@ -26,41 +23,8 @@
     </view>
   </view>
 
-  <view class="stats-card">
-    <view class="stats-item">
-      <view class="stats-header">
-        <text class="stats-icon-text expense-icon">▼</text>
-        <text class="stats-label">支出</text>
-      </view>
-      <text class="stats-value expense">¥{{ stats.expense }}</text>
-    </view>
-    <view class="stats-item">
-      <view class="stats-header">
-        <text class="stats-icon-text income-icon">▲</text>
-        <text class="stats-label">收入</text>
-      </view>
-      <text class="stats-value income">¥{{ stats.income }}</text>
-    </view>
-    <view class="stats-item">
-      <view class="stats-header">
-        <text class="stats-icon-text balance-icon">◆</text>
-        <text class="stats-label">结余</text>
-      </view>
-      <text class="stats-value balance">¥{{ stats.income - stats.expense }}</text>
-    </view>
-  </view>
-
-  <van-cell-group inset custom-class="menu-group">
-    <van-cell title="分类管理" is-link bind:click="handleToClassification">
-      <van-icon slot="icon" name="label-o" size="36rpx" custom-class="menu-icon menu-icon-category" />
-    </van-cell>
-    <van-cell title="账本管理" is-link bind:click="handleToBook">
-      <van-icon slot="icon" name="balance-list-o" size="36rpx" custom-class="menu-icon menu-icon-book" />
-    </van-cell>
-  </van-cell-group>
-
-  <van-cell-group inset custom-class="menu-group">
-    <van-cell title="分享给好友" is-link>
+  <van-cell-group inset custom-class="menu-group menu-group--first">
+    <van-cell wx:if="{{ app.userInfo }}" title="分享给好友" is-link>
       <van-icon slot="icon" name="share-o" size="36rpx" custom-class="menu-icon menu-icon-share" />
       <button class="share-btn" slot="right-icon" open-type="share" hover-class="none"></button>
     </van-cell>
@@ -68,6 +32,11 @@
       <van-icon slot="icon" name="user-o" size="36rpx" custom-class="menu-icon menu-icon-profile" />
     </van-cell>
   </van-cell-group>
+
+  <view wx:if="{{ !app.userInfo }}" class="login-action" bindtap="handleToLogin">
+    <van-icon name="wechat" size="40rpx" color="#fff" />
+    <text>一键登录</text>
+  </view>
 
   <van-cell-group wx:if="{{ app.userInfo }}" inset custom-class="menu-group">
     <van-cell title="退出登录" is-link bind:click="handleToExitLogin">

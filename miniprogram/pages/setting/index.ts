@@ -1,46 +1,20 @@
-import { billStats } from '../../api/bill'
 import { LOGO_BASE64 } from '../../config/logo'
 import { wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
-const { globalData, login, exitLogin, isLogin, watch } = getApp()
+const { globalData, login, exitLogin, watch } = getApp()
 
 Page({
   data: {
-    LOGO_BASE64,
-    stats: {
-      income: 0,
-      expense: 0
-    }
+    LOGO_BASE64
   },
   onLoad() {
     wxShowShareMenu()
     watch((gd: typeof globalData) => {
       this.setData({ app: gd })
-      this.loadStats()
     })
   },
   onShow() {
     this.setData({ app: globalData })
-    this.loadStats()
-  },
-  loadStats() {
-    isLogin(false)
-      .then(() => {
-        const now = new Date()
-        billStats(String(now.getFullYear()), String(now.getMonth() + 1)).then(({ data }) => {
-          this.setData({
-            stats: {
-              income: data.totalIncome,
-              expense: data.totalExpense
-            }
-          })
-        })
-      })
-      .catch(() => {
-        this.setData({
-          stats: { income: 0, expense: 0 }
-        })
-      })
   },
   handleToLogin() {
     wxShowToast({ title: '请求中...', mask: true })
@@ -52,14 +26,6 @@ Page({
         wxShowToast({ title: '登录失败' })
       })
   },
-  handleToClassification() {
-    isLogin().then(() => {
-      wxNavigateTo('category')
-    }).catch(() => {})
-  },
-  handleToBook() {
-    wxShowToast({ title: '暂未开放' })
-  },
   handleToUser() {
     wxNavigateTo('user')
   },
@@ -67,8 +33,7 @@ Page({
     exitLogin(() => {
       wxShowToast({ title: '已退出登录' })
       this.setData({
-        app: globalData,
-        stats: { income: 0, expense: 0 }
+        app: globalData
       })
     })
   },

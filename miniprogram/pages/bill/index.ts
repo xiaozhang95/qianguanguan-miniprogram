@@ -1,5 +1,6 @@
 import { billDelete, billList, billSave, billStats, billUpdate, type BillSaveParams } from '../../api/bill'
 import { categoryList, type Category } from '../../api/category'
+import config from '../../config/index'
 import { LOGO_BASE64 } from '../../config/logo'
 import { wxShowToast } from '../../utils/wx'
 
@@ -26,6 +27,7 @@ interface BillGroup {
 Page({
   data: {
     LOGO_BASE64,
+    disableScroll: false,
     filterDate: todayStr(),
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
@@ -77,12 +79,12 @@ Page({
   },
 
   onShow() {
-    this.setData({ app: globalData })
+    this.setData({ app: globalData, isScrolled: false })
     this.init()
   },
 
   onHide() {
-    this.setData({ showForm: false, showCategoryPicker: false, showDatePicker: false })
+    this.setData({ showForm: false, showCategoryPicker: false, showDatePicker: false, isScrolled: false })
   },
 
   init() {
@@ -96,12 +98,19 @@ Page({
 
   loadCategories() {
     categoryList().then(({ data }) => {
-      const cats = data || []
+      const cats = (data || []).map((c: Category) => {
+        const isImg = c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http'))
+        return {
+          ...c,
+          iconIsImage: isImg,
+          icon: isImg && c.icon.startsWith('/upload/') ? config.url + c.icon : c.icon
+        }
+      })
       this.setData({
         categories: cats,
-        incomeCategories: cats.filter((c: Category) => c.type === 'INCOME'),
-        expenseCategories: cats.filter((c: Category) => c.type === 'EXPENSE'),
-        filteredCategories: cats.filter((c: Category) => c.type === 'EXPENSE')
+        incomeCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'INCOME'),
+        expenseCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'EXPENSE'),
+        filteredCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'EXPENSE')
       })
     })
   },
@@ -127,6 +136,9 @@ Page({
         records.forEach((b: any) => {
           b.amountStr = fmt(b.amount)
           b.amountPrefix = b.type === 'INCOME' ? '+' : '-'
+          if (b.categoryIcon && b.categoryIcon.startsWith('/upload/')) {
+            b.categoryIcon = config.url + b.categoryIcon
+          }
           const arr = groupMap.get(b.billDate) || []
           arr.push(b)
           groupMap.set(b.billDate, arr)
@@ -258,9 +270,16 @@ Page({
   ensureCategories(cb: () => void) {
     if (this.data.categories.length === 0) {
       categoryList().then(({ data }) => {
-        const cats = data || []
-        const incomeCats = cats.filter((c: Category) => c.type === 'INCOME')
-        const expenseCats = cats.filter((c: Category) => c.type === 'EXPENSE')
+        const cats = (data || []).map((c: Category) => {
+          const isImg = c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http'))
+          return {
+            ...c,
+            iconIsImage: isImg,
+            icon: isImg && c.icon.startsWith('/upload/') ? config.url + c.icon : c.icon
+          }
+        })
+        const incomeCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'INCOME')
+        const expenseCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'EXPENSE')
         this.setData({
           categories: cats,
           incomeCategories: incomeCats,
@@ -369,6 +388,10 @@ Page({
       .catch(() => {
         this.setData({ saving: false })
       })
+  },
+
+  onPrevent() {
+    return
   },
 
   onFormDelete() {

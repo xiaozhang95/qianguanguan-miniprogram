@@ -1,6 +1,5 @@
-<view class="page">
+<view class="page" catchtouchmove="{{ showPicker ? 'onPrevent' : '' }}">
   <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
-    <image class="nav-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit"></image>
     <text class="nav-title">钱罐罐</text>
   </view>
 
@@ -25,7 +24,7 @@
     </view>
   </view>
 
-  <van-popup show="{{ showPicker }}" position="bottom" bind:close="onPickerClose" round>
+  <van-popup show="{{ showPicker }}" position="bottom" bind:close="onPickerClose" round lock-scroll>
     <van-datetime-picker
       type="year-month"
       value="{{ currentDate }}"
