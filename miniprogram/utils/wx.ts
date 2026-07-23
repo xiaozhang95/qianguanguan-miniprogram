@@ -58,3 +58,19 @@ export function wxReadFile(filePath: string, encoding = 'base64') {
 export function wxNavigateBack() {
   return wx.navigateBack()
 }
+
+export function wxDownloadFile(url: string) {
+  return new Promise<WechatMiniprogram.DownloadFileSuccessCallbackResult>((resolve, reject) => {
+    wx.downloadFile({
+      url,
+      success: (res) => {
+        if (res.statusCode === 200) {
+          resolve(res)
+        } else {
+          reject(new Error('download failed: ' + res.statusCode))
+        }
+      },
+      fail: (err) => reject(err)
+    })
+  })
+}

@@ -6,6 +6,7 @@ const { globalData, update } = getApp()
 Page({
   data: {
     avatar: '',
+    avatarUrl: '',
     name: '',
     phone: '',
     email: ''
@@ -15,15 +16,15 @@ Page({
     this.setData({
       app: globalData,
       avatar: u.avatar || '',
+      avatarUrl: '',
       name: u.name || '',
       phone: u.phone || '',
       email: u.email || ''
     })
   },
   onChooseAvatar(e: WechatMiniprogram.CustomEvent) {
-    wxReadFile(e.detail.avatarUrl, 'base64').then((res) => {
-      this.setData({ avatar: 'data:image/png;base64,' + res.data })
-    })
+    const url = e.detail.avatarUrl
+    this.setData({ avatarUrl: url, avatar: url })
   },
   onNameInput(e: WechatMiniprogram.Input) {
     this.setData({ name: e.detail.value })
@@ -38,19 +39,31 @@ Page({
     wxNavigateBack()
   },
   handleSave() {
-    const { avatar, name, phone, email } = this.data
+    const { avatarUrl, name, phone, email } = this.data
     if (!name.trim()) {
       wxShowToast({ title: '请输入昵称' })
       return
     }
 
-    userProfile({ avatar, name: name.trim(), phone: phone.trim(), email: email.trim() })
-      .then((res: CtmResponse<UserInfo>) => {
-        wxShowToast({ title: '保存成功' })
-        update('userInfo', res.data)
-        setTimeout(() => {
-          wxNavigateBack()
-        }, 1000)
+    const doSave = function (avatar: string) {
+      userProfile({ avatar, name: name.trim(), phone: phone.trim(), email: email.trim() })
+        .then((res: CtmResponse<UserInfo>) => {
+          wxShowToast({ title: '保存成功' })
+          update('userInfo', res.data)
+          setTimeout(function () {
+            wxNavigateBack()
+          }, 1000)
+        })
+    }
+
+    if (avatarUrl) {
+      wxReadFile(avatarUrl, 'base64').then(function (res) {
+        doSave('data:image/png;base64,' + res.data)
+      }, function () {
+        doSave('')
       })
+    } else {
+      doSave('')
+    }
   }
 })

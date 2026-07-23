@@ -22,11 +22,25 @@
 		"miniprogram": {
 			"list": [
 				{
-					"name": "pages/bill/index",
-					"pathName": "pages/bill/index",
+					"name": "pages/setting/index",
+					"pathName": "pages/setting/index",
 					"query": "",
 					"scene": null,
 					"launchMode": "default"
+				},
+				{
+					"name": "pages/user/index",
+					"pathName": "pages/user/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
+				},
+				{
+					"name": "pages/bill/index",
+					"pathName": "pages/bill/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
 				},
 				{
 					"name": "pages/user/index",

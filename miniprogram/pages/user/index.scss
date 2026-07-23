@@ -153,3 +153,22 @@
   border: none !important;
   color: #fff !important;
 }
+
+.field-row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 32rpx;
+}
+
+.field-label {
+  width: 190rpx;
+  font-size: 28rpx;
+  color: #333;
+  flex-shrink: 0;
+}
+
+.field-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}

@@ -82,13 +82,6 @@
     <view wx:if="{{ hasData }}" class="bill-list-wrap">
       <block wx:for="{{ billGroups }}" wx:key="date">
         <view class="bill-group">
-          <view class="group-header">
-            <text class="group-date">{{ item.date }}</text>
-            <text class="group-summary">
-              <text wx:if="{{ stats.totalExpense > 0 }}" class="group-expense">支出 ¥{{ stats.totalExpense }}</text>
-              <text wx:if="{{ stats.totalIncome > 0 }}" class="group-income">收入 ¥{{ stats.totalIncome }}</text>
-            </text>
-          </view>
           <block wx:for="{{ item.items }}" wx:for-item="bill" wx:key="id">
             <van-swipe-cell right-width="{{ 160 }}" custom-class="bill-item">
               <view class="bill-row" bindtap="onEditBill" data-bill="{{ bill }}">
