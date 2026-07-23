@@ -1,4 +1,9 @@
 <view class="page">
+  <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
+    <image class="nav-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit"></image>
+    <text class="nav-title">账单</text>
+  </view>
+
   <view class="header">
     <view class="header-bg">
       <view class="header-circle c1"></view>
@@ -53,10 +58,10 @@
     </view>
     <view class="stats-item">
       <view class="stats-header">
-        <text class="stats-icon balance-icon">◆</text>
+        <text class="stats-icon {{ balanceClass }}">◆</text>
         <text class="stats-label">结余</text>
       </view>
-      <text class="stats-value balance">¥{{ balanceStr }}</text>
+      <text class="stats-value {{ balanceClass }}">¥{{ balanceStr }}</text>
     </view>
   </view>
 
@@ -179,6 +184,12 @@
         loading="{{ saving }}"
         bindtap="onFormSubmit"
       >保存</van-button>
+      <van-button
+        wx:if="{{ editingBill }}"
+        custom-class="delete-btn"
+        block
+        bindtap="onFormDelete"
+      >删除</van-button>
     </view>
   </van-popup>
 

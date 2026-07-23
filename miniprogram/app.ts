@@ -8,7 +8,8 @@ App({
     updateFn: [] as AppCallback[],
     token: '',
     userInfo: null as UserInfo | null,
-    offsetTop: 0
+    offsetTop: 0,
+    capsuleTop: 0
   },
   watch(fn: AppCallback) {
     this.globalData.updateFn.push(fn)

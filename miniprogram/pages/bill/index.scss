@@ -68,6 +68,36 @@
   color: #fff;
 }
 
+.nav-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 0 32rpx;
+  box-sizing: border-box;
+  background: var(--theme-gradient);
+  opacity: 0;
+  transform: translateY(-100%);
+  transition:
+    opacity 0.3s,
+    transform 0.3s;
+}
+
+.nav-fixed--show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-logo {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
 .date-bar {
   display: flex;
   align-items: center;
@@ -94,7 +124,7 @@
 }
 
 .stats-card {
-  margin: -40rpx var(--padding-lg) 0;
+  margin: -20rpx var(--padding-lg) 0;
   padding: var(--padding-lg) var(--padding);
   background: var(--card-bg);
   border-radius: var(--border-radius-lg);
@@ -134,7 +164,15 @@
   color: #22c55e;
 }
 
-.balance-icon {
+.stats-icon.balance-negative {
+  color: #ef4444;
+}
+
+.stats-icon.balance-positive {
+  color: #22c55e;
+}
+
+.stats-icon.balance-zero {
   color: #1677ff;
 }
 
@@ -157,7 +195,15 @@
   color: #22c55e;
 }
 
-.stats-value.balance {
+.stats-value.balance-negative {
+  color: #ef4444;
+}
+
+.stats-value.balance-positive {
+  color: #22c55e;
+}
+
+.stats-value.balance-zero {
   color: #1677ff;
 }
 
@@ -178,13 +224,13 @@
   border-radius: 8rpx;
   font-size: 28rpx;
   color: var(--color-light);
-  transition: all .25s;
+  transition: all 0.25s;
 }
 
 .filter-tab.active {
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, .12);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
 }
 
 .filter-tab.active.expense {
@@ -400,13 +446,13 @@
   border-radius: 8rpx;
   font-size: 28rpx;
   color: var(--color-light);
-  transition: all .25s;
+  transition: all 0.25s;
 }
 
 .type-tab.active {
   color: #fff;
   font-weight: 600;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, .12);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
 }
 
 .type-tab.active.expense {
@@ -465,6 +511,16 @@
   background: var(--theme-gradient) !important;
   border: none !important;
   color: #fff !important;
+  font-size: var(--font-size) !important;
+}
+
+.delete-btn {
+  width: 100% !important;
+  margin-top: 16rpx;
+  border-radius: var(--border-radius) !important;
+  background: #fff !important;
+  border: 2rpx solid #ef4444 !important;
+  color: #ef4444 !important;
   font-size: var(--font-size) !important;
 }
 

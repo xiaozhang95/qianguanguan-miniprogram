@@ -1,5 +1,6 @@
 import { billDelete, billList, billSave, billStats, billUpdate, type BillSaveParams } from '../../api/bill'
 import { categoryList, type Category } from '../../api/category'
+import { LOGO_BASE64 } from '../../config/logo'
 import { wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
@@ -24,6 +25,7 @@ interface BillGroup {
 
 Page({
   data: {
+    LOGO_BASE64,
     filterDate: todayStr(),
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
@@ -39,6 +41,7 @@ Page({
     expenseStr: '0.00',
     incomeStr: '0.00',
     balanceStr: '0.00',
+    balanceClass: 'balance-zero',
     bills: [] as BillVO[],
     billGroups: [] as BillGroup[],
     loading: false,
@@ -61,6 +64,7 @@ Page({
     saving: false,
 
     deletingId: '',
+    isScrolled: false,
 
     app: null as any
   },
@@ -86,7 +90,7 @@ Page({
       this.loadCategories()
       this.loadData()
     }).catch(() => {
-      this.setData({ stats: { totalIncome: 0, totalExpense: 0, balance: 0 }, bills: [], billGroups: [], hasData: false, categories: [], incomeCategories: [], expenseCategories: [] })
+      this.setData({ stats: { totalIncome: 0, totalExpense: 0, balance: 0 }, bills: [], billGroups: [], hasData: false, categories: [], incomeCategories: [], expenseCategories: [], expenseStr: '0.00', incomeStr: '0.00', balanceStr: '0.00', balanceClass: 'balance-zero' })
     })
   },
 
@@ -112,8 +116,8 @@ Page({
     const dateStr = `${filterYear}-${pad(filterMonth)}-${pad(filterDay)}`
 
     Promise.all([
-      billStats(yearStr, monthStr, dayStr, filterType || undefined),
-      billList({ startDate: dateStr, endDate: dateStr, pageNum: 1, pageSize: 200 })
+      billStats(yearStr, monthStr, dayStr),
+      billList({ type: filterType, startDate: dateStr, endDate: dateStr, pageNum: 1, pageSize: 200 })
     ])
       .then(([statsRes, listRes]) => {
         const stats = statsRes.data
@@ -136,6 +140,7 @@ Page({
           expenseStr: fmt(stats.totalExpense),
           incomeStr: fmt(stats.totalIncome),
           balanceStr: fmt(stats.balance),
+          balanceClass: stats.balance < 0 ? 'balance-negative' : stats.balance > 0 ? 'balance-positive' : 'balance-zero',
           bills: records,
           billGroups,
           hasData: records.length > 0,
@@ -364,6 +369,32 @@ Page({
       .catch(() => {
         this.setData({ saving: false })
       })
+  },
+
+  onFormDelete() {
+    const { editingBill } = this.data
+    if (!editingBill) return
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这笔账单吗？',
+      success: (res) => {
+        if (res.confirm) {
+          billDelete(editingBill.id)
+            .then(({ msg }) => {
+              wxShowToast({ title: msg || '删除成功' })
+              this.setData({ showForm: false, editingBill: null })
+              this.loadData()
+            })
+        }
+      }
+    })
+  },
+
+  onPageScroll(e: { scrollTop: number }) {
+    const scrolled = e.scrollTop > 40
+    if (scrolled !== this.data.isScrolled) {
+      this.setData({ isScrolled: scrolled })
+    }
   },
 
   onShareAppMessage() {
