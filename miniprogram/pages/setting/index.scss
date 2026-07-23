@@ -42,7 +42,7 @@
   height: 100%;
   display: flex;
   align-items: flex-end;
-  padding: 0 40rpx 60rpx;
+  padding: 0 var(--padding-lg) 60rpx;
   box-sizing: border-box;
 }
 
@@ -110,7 +110,7 @@
 }
 
 .stats-card {
-  margin: -40rpx var(--margin) 0;
+  margin: -40rpx var(--padding-lg) 0;
   padding: var(--padding-lg) var(--padding);
   background: var(--card-bg);
   border-radius: var(--border-radius-lg);
@@ -179,6 +179,10 @@
 
 .menu-group {
   margin-top: var(--margin) !important;
+  margin-left: var(--padding-lg) !important;
+  margin-right: var(--padding-lg) !important;
+  --cell-line-height: 56rpx;
+  --cell-right-icon-size: 28rpx;
 }
 
 .menu-icon {

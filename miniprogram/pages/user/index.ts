@@ -13,6 +13,7 @@ Page({
   onShow() {
     const u = globalData.userInfo || {}
     this.setData({
+      app: globalData,
       avatar: u.avatar || '',
       name: u.name || '',
       phone: u.phone || '',

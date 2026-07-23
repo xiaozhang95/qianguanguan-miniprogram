@@ -5,7 +5,7 @@
 
 .header {
   width: 100%;
-  height: 280rpx;
+  height: 360rpx;
   position: relative;
   overflow: hidden;
 }
@@ -39,18 +39,31 @@
 .header-content {
   position: relative;
   z-index: 1;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-end;
+  height: 100%;
+  padding: 0 var(--padding-lg) 60rpx;
+  box-sizing: border-box;
 }
 
-.header-back {
+.nav-bar {
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 12rpx;
+  box-sizing: border-box;
+}
+
+.nav-back {
+  position: absolute;
   left: 24rpx;
-  height: 88rpx;
+  bottom: 12rpx;
   display: flex;
   align-items: center;
   gap: 8rpx;
@@ -59,9 +72,9 @@
 }
 
 .header-title {
-  font-size: 36rpx;
+  font-size: 42rpx;
   color: #fff;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .form-card {
@@ -78,27 +91,36 @@
 .avatar-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 32rpx 24rpx;
-  margin-bottom: 8rpx;
+  padding: 12rpx 32rpx 24rpx;
   border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 8rpx;
 }
 
 .avatar-label {
+  width: 190rpx;
   font-size: 28rpx;
   color: #333;
+  flex-shrink: 0;
 }
 
 .avatar-btn {
-  width: 100rpx;
-  height: 100rpx;
-  padding: 0;
-  margin: 0;
-  border: 2rpx dashed #e5e5e5;
-  border-radius: 50%;
-  background: #fafafa;
+  width: 100rpx !important;
+  min-width: 100rpx !important;
+  max-width: 100rpx !important;
+  height: 100rpx !important;
+  min-height: 100rpx !important;
+  max-height: 100rpx !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 2rpx dashed #e5e5e5 !important;
+  border-radius: 50% !important;
+  background: #fafafa !important;
   overflow: hidden;
-  line-height: 1;
+  line-height: 1 !important;
+}
+
+.avatar-btn::after {
+  border: none !important;
 }
 
 .avatar-btn image {
@@ -118,4 +140,16 @@
 .btn-wrap {
   padding: 0 20rpx;
   margin-top: 32rpx;
+}
+
+.btn-wrap van-button {
+  width: 100%;
+}
+
+.save-btn {
+  width: 100% !important;
+  border-radius: 12rpx !important;
+  background: linear-gradient(160deg, #1677ff, #4096ff) !important;
+  border: none !important;
+  color: #fff !important;
 }

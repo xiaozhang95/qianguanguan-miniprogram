@@ -5,6 +5,7 @@ interface IAppOption {
     token: string
     userInfo: UserInfo | null
     updateFn: Function[]
+    offsetTop: number
   }
 }
 

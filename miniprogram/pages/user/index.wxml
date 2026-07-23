@@ -5,9 +5,11 @@
       <view class="header-circle c2"></view>
     </view>
     <view class="header-content">
-      <view class="header-back" bindtap="handleBack">
-        <van-icon name="arrow-left" color="#fff" size="36rpx" />
-        <text>返回</text>
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <view class="nav-back" bindtap="handleBack">
+          <van-icon name="arrow-left" color="#fff" size="36rpx" />
+          <text>返回</text>
+        </view>
       </view>
       <text class="header-title">编辑个人资料</text>
     </view>
@@ -49,6 +51,6 @@
   </view>
 
   <view class="btn-wrap">
-    <van-button type="primary" block round bindtap="handleSave">保存</van-button>
+    <van-button custom-class="save-btn" block bindtap="handleSave">保存</van-button>
   </view>
 </view>

@@ -7,7 +7,8 @@ App({
   globalData: {
     updateFn: [] as AppCallback[],
     token: '',
-    userInfo: null as UserInfo | null
+    userInfo: null as UserInfo | null,
+    offsetTop: 0
   },
   watch(fn: AppCallback) {
     this.globalData.updateFn.push(fn)
@@ -53,6 +54,9 @@ App({
   onLaunch() {
     const token = wxGetStorageSync('token') || ''
     this.update('token', token)
+
+    const { top, height } = wx.getMenuButtonBoundingClientRect()
+    this.globalData.offsetTop = top + height
 
     this.isLogin(false)
       .then(() => {
