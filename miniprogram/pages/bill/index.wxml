@@ -1,0 +1,210 @@
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content">
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <text class="nav-title">账单</text>
+      </view>
+      <view class="date-bar">
+        <view class="date-arrow" bindtap="onDatePrev">
+          <van-icon name="arrow-left" size="32rpx" color="rgba(255,255,255,0.8)" />
+        </view>
+        <view class="date-text" bindtap="onDatePickerOpen">
+          <text>{{ filterYear }}年{{ filterMonth }}月{{ filterDay }}日</text>
+          <van-icon name="arrow-down" size="24rpx" color="rgba(255,255,255,0.6)" />
+        </view>
+        <view class="date-arrow" bindtap="onDateNext">
+          <van-icon name="arrow" size="32rpx" color="rgba(255,255,255,0.8)" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <van-popup show="{{ showDatePicker }}" position="bottom" bind:close="onDatePickerClose" round>
+    <van-datetime-picker
+      type="date"
+      value="{{ currentDate }}"
+      min-date="{{ minDate }}"
+      max-date="{{ maxDate }}"
+      bind:confirm="onDateConfirm"
+      bind:cancel="onDatePickerClose"
+      title="选择日期"
+      show-toolbar
+    />
+  </van-popup>
+
+  <view class="stats-card">
+    <view class="stats-item">
+      <view class="stats-header">
+        <text class="stats-icon expense-icon">▼</text>
+        <text class="stats-label">支出</text>
+      </view>
+      <text class="stats-value expense">¥{{ expenseStr }}</text>
+    </view>
+    <view class="stats-item">
+      <view class="stats-header">
+        <text class="stats-icon income-icon">▲</text>
+        <text class="stats-label">收入</text>
+      </view>
+      <text class="stats-value income">¥{{ incomeStr }}</text>
+    </view>
+    <view class="stats-item">
+      <view class="stats-header">
+        <text class="stats-icon balance-icon">◆</text>
+        <text class="stats-label">结余</text>
+      </view>
+      <text class="stats-value balance">¥{{ balanceStr }}</text>
+    </view>
+  </view>
+
+  <van-tabs active="{{ activeTab }}" bind:change="onTabChange" custom-class="filter-tabs" swipeable>
+    <van-tab title="全部"></van-tab>
+    <van-tab title="支出"></van-tab>
+    <van-tab title="收入"></van-tab>
+  </van-tabs>
+
+  <view wx:if="{{ loading }}" class="loading-wrap">
+    <van-loading size="48rpx" color="#1677ff" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:if="{{ !loading }}">
+    <view wx:if="{{ hasData }}" class="bill-list-wrap">
+      <block wx:for="{{ billGroups }}" wx:key="date">
+        <view class="bill-group">
+          <view class="group-header">
+            <text class="group-date">{{ item.date }}</text>
+            <text class="group-summary">
+              <text wx:if="{{ stats.totalExpense > 0 }}" class="group-expense">支出 ¥{{ stats.totalExpense }}</text>
+              <text wx:if="{{ stats.totalIncome > 0 }}" class="group-income">收入 ¥{{ stats.totalIncome }}</text>
+            </text>
+          </view>
+          <block wx:for="{{ item.items }}" wx:for-item="bill" wx:key="id">
+            <van-swipe-cell right-width="{{ 160 }}" custom-class="bill-item">
+              <view class="bill-row" bindtap="onEditBill" data-bill="{{ bill }}">
+                <view class="bill-left">
+                  <text wx:if="{{ bill.categoryIcon }}" class="bill-icon">{{ bill.categoryIcon }}</text>
+                  <view class="bill-info">
+                    <text class="bill-category">{{ bill.categoryName }}</text>
+                    <text wx:if="{{ bill.remark }}" class="bill-remark">{{ bill.remark }}</text>
+                  </view>
+                </view>
+                <text class="bill-amount {{ bill.type === 'INCOME' ? 'income' : 'expense' }}">
+                  {{ bill.amountPrefix }}¥{{ bill.amountStr }}
+                </text>
+              </view>
+              <view slot="right" class="swipe-actions">
+                <view class="swipe-btn swipe-edit" bindtap="onEditBill" data-bill="{{ bill }}">编辑</view>
+                <view class="swipe-btn swipe-delete" bindtap="onDeleteBill" data-id="{{ bill.id }}">删除</view>
+              </view>
+            </van-swipe-cell>
+          </block>
+        </view>
+      </block>
+    </view>
+    <van-empty wx:else description="今天还没有账单，记一笔吧" />
+  </block>
+
+  <view class="fab" bindtap="onAddBill">
+    <van-icon name="plus" size="48rpx" color="#fff" />
+  </view>
+
+  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup">
+    <view class="form-wrap">
+      <view class="form-header">
+        <text class="form-title">{{ editingBill ? '编辑账单' : '记一笔' }}</text>
+        <van-icon name="cross" size="40rpx" color="#999" bindtap="onFormClose" />
+      </view>
+
+      <view class="form-type">
+        <view
+          class="type-tab {{ formType === 'EXPENSE' ? 'active expense' : '' }}"
+          bindtap="onFormTypeChange"
+          data-type="EXPENSE"
+        >支出</view>
+        <view
+          class="type-tab {{ formType === 'INCOME' ? 'active income' : '' }}"
+          bindtap="onFormTypeChange"
+          data-type="INCOME"
+        >收入</view>
+      </view>
+
+      <view class="form-field" bindtap="onFormCategoryOpen">
+        <text class="field-label">分类</text>
+        <view class="field-value">
+          <text wx:if="{{ formCategoryName }}" class="field-text">{{ formCategoryName }}</text>
+          <text wx:else class="field-placeholder">请选择分类</text>
+          <van-icon name="arrow" size="28rpx" color="#ccc" />
+        </view>
+      </view>
+
+      <view class="form-field">
+        <text class="field-label">金额</text>
+        <input
+          class="field-input"
+          type="digit"
+          value="{{ formAmount }}"
+          placeholder="0.00"
+          bindinput="onFormAmountInput"
+          focus="{{ !editingBill }}"
+        />
+      </view>
+
+      <view class="form-field">
+        <text class="field-label">日期</text>
+        <picker mode="date" value="{{ formDate }}" bindchange="onFormDateChange">
+          <view class="field-value">
+            <text class="field-text">{{ formDate }}</text>
+            <van-icon name="arrow" size="28rpx" color="#ccc" />
+          </view>
+        </picker>
+      </view>
+
+      <view class="form-field">
+        <text class="field-label">备注</text>
+        <input
+          class="field-input"
+          value="{{ formRemark }}"
+          placeholder="选填"
+          maxlength="200"
+          bindinput="onFormRemarkInput"
+        />
+      </view>
+
+      <van-button
+        custom-class="save-btn"
+        block
+        loading="{{ saving }}"
+        bindtap="onFormSubmit"
+      >保存</van-button>
+    </view>
+  </van-popup>
+
+  <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-style="max-height: 50vh;" custom-class="cat-popup">
+    <view class="cat-picker-wrap">
+      <view class="cat-picker-header">
+        <text class="cat-picker-title">选择分类</text>
+        <van-icon name="cross" size="40rpx" color="#999" bindtap="onFormCategoryClose" />
+      </view>
+      <scroll-view scroll-y class="cat-list">
+        <block wx:for="{{ filteredCategories }}" wx:key="id">
+          <view
+            class="cat-item {{ formCategoryId === item.id ? 'active' : '' }}"
+            bindtap="onFormCategorySelect"
+            data-cat="{{ item }}"
+          >
+            <text class="cat-icon">{{ item.icon }}</text>
+            <text class="cat-name">{{ item.name }}</text>
+            <van-icon wx:if="{{ formCategoryId === item.id }}" name="success" size="36rpx" color="#1677ff" />
+          </view>
+        </block>
+        <view wx:if="{{ filteredCategories.length === 0 }}" class="cat-empty">
+          <text>暂无分类，请先在Web端添加</text>
+        </view>
+      </scroll-view>
+    </view>
+  </van-popup>
+</view>

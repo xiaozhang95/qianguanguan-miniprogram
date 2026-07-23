@@ -1,0 +1,142 @@
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content">
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <text class="nav-title">钱罐罐</text>
+      </view>
+      <view class="month-bar" bindtap="onPickerOpen">
+        <view class="month-arrow" catchtap="onMonthPrev">
+          <van-icon name="arrow-left" size="32rpx" color="rgba(255,255,255,0.8)" />
+        </view>
+        <text class="month-text">{{ filterYear }}年{{ filterMonth }}月</text>
+        <view class="month-arrow" catchtap="onMonthNext">
+          <van-icon name="arrow" size="32rpx" color="rgba(255,255,255,0.8)" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <van-popup show="{{ showPicker }}" position="bottom" bind:close="onPickerClose" round>
+    <van-datetime-picker
+      type="year-month"
+      value="{{ currentDate }}"
+      min-date="{{ minDate }}"
+      max-date="{{ maxDate }}"
+      bind:confirm="onMonthConfirm"
+      bind:cancel="onPickerClose"
+      title="选择月份"
+      show-toolbar
+    />
+  </van-popup>
+
+  <view class="stats-card">
+    <view class="stats-item">
+      <view class="stats-header">
+        <text class="stats-icon expense-icon">▼</text>
+        <text class="stats-label">支出</text>
+      </view>
+      <text class="stats-value expense">¥{{ expenseStr }}</text>
+    </view>
+    <view class="stats-item">
+      <view class="stats-header">
+        <text class="stats-icon income-icon">▲</text>
+        <text class="stats-label">收入</text>
+      </view>
+      <text class="stats-value income">¥{{ incomeStr }}</text>
+    </view>
+    <view class="stats-item">
+      <view class="stats-header">
+        <text class="stats-icon balance-icon">◆</text>
+        <text class="stats-label">结余</text>
+      </view>
+      <text class="stats-value balance">¥{{ balanceStr }}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{ loading }}" class="loading-wrap">
+    <van-loading size="48rpx" color="#1677ff" />
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <block wx:if="{{ !loading }}">
+    <view class="card">
+      <view class="card-title">{{ filterYear }}年{{ filterMonth }}月 收支趋势</view>
+      <scroll-view wx:if="{{ hasChart }}" class="chart-scroll" scroll-x enable-flex>
+        <view class="chart-container">
+          <block wx:for="{{ chartData }}" wx:key="date">
+            <view class="chart-column">
+              <view class="chart-bars">
+                <view
+                  class="bar bar-income"
+                  style="height: {{ item.incomeBar }}rpx;"
+                ></view>
+                <view
+                  class="bar bar-expense"
+                  style="height: {{ item.expenseBar }}rpx;"
+                ></view>
+              </view>
+              <text class="chart-label">{{ item.date }}</text>
+            </view>
+          </block>
+        </view>
+      </scroll-view>
+      <view wx:if="{{ hasChart }}" class="chart-legend">
+        <view class="legend-item">
+          <view class="legend-dot legend-dot-income"></view>
+          <text>收入</text>
+        </view>
+        <view class="legend-item">
+          <view class="legend-dot legend-dot-expense"></view>
+          <text>支出</text>
+        </view>
+      </view>
+      <van-empty wx:else description="暂无收支数据" />
+    </view>
+
+    <view wx:if="{{ hasExpensePie }}" class="card">
+      <view class="card-title">支出分类占比</view>
+      <view class="donut-wrap">
+        <view class="donut" style="background: {{ expenseConic }};">
+          <view class="donut-hole">
+            <text class="donut-label">支出</text>
+            <text class="donut-total">¥{{ expenseStr }}</text>
+          </view>
+        </view>
+      </view>
+      <view class="pie-legend">
+        <block wx:for="{{ expensePie }}" wx:key="name">
+          <view class="legend-row">
+            <view class="legend-dot" style="background: {{ item.color }};"></view>
+            <text class="legend-name">{{ item.name }}</text>
+            <text class="legend-value">¥{{ item.valueStr }}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view wx:if="{{ hasIncomePie }}" class="card">
+      <view class="card-title">收入分类占比</view>
+      <view class="donut-wrap">
+        <view class="donut" style="background: {{ incomeConic }};">
+          <view class="donut-hole">
+            <text class="donut-label">收入</text>
+            <text class="donut-total">¥{{ incomeStr }}</text>
+          </view>
+        </view>
+      </view>
+      <view class="pie-legend">
+        <block wx:for="{{ incomePie }}" wx:key="name">
+          <view class="legend-row">
+            <view class="legend-dot" style="background: {{ item.color }};"></view>
+            <text class="legend-name">{{ item.name }}</text>
+            <text class="legend-value">¥{{ item.valueStr }}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </block>
+</view>

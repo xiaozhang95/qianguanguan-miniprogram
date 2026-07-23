@@ -1,8 +1,32 @@
 {
-  "pages": ["pages/setting/index", "pages/user/index"],
+  "pages": [
+    "pages/home/index",
+    "pages/bill/index",
+    "pages/setting/index",
+    "pages/user/index"
+  ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#1677ff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/bill/index",
+        "text": "账单"
+      },
+      {
+        "pagePath": "pages/setting/index",
+        "text": "我的"
+      }
+    ]
   },
   "style": "v2",
   "rendererOptions": {
