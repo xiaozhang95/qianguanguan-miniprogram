@@ -1,0 +1,251 @@
+.page {
+  min-height: 100vh;
+  background: var(--bg);
+  padding-bottom: 60rpx;
+}
+
+.header {
+  width: 100%;
+  height: var(--header-height);
+  position: relative;
+  overflow: hidden;
+}
+
+.header-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--theme-gradient);
+}
+
+.header-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.c1 {
+  width: 300rpx;
+  height: 300rpx;
+  top: -100rpx;
+  right: -60rpx;
+}
+
+.c2 {
+  width: 200rpx;
+  height: 200rpx;
+  bottom: -40rpx;
+  left: -40rpx;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.logo-placeholder {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.header-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 3rpx solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.login-btn {
+  font-size: var(--font-size);
+  color: var(--theme);
+  background: #fff;
+  padding: 14rpx 56rpx;
+  border-radius: 48rpx;
+  font-weight: 600;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.greeting {
+  font-size: var(--font-size-lg);
+  color: #fff;
+  font-weight: 600;
+}
+
+.role-tag {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.15);
+  padding: 4rpx 20rpx;
+  border-radius: 20rpx;
+}
+
+.stats-card {
+  margin: -40rpx var(--margin) 0;
+  padding: var(--padding-lg) var(--padding);
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+.stats-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+}
+
+.stats-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats-icon text {
+  font-size: var(--font-size);
+  font-weight: 700;
+}
+
+.expense-icon {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.expense-icon text {
+  color: #ef4444;
+}
+
+.income-icon {
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.income-icon text {
+  color: #22c55e;
+}
+
+.stats-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.stats-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-light);
+}
+
+.stats-value {
+  font-size: var(--font-size);
+  font-weight: 700;
+}
+
+.stats-value.expense {
+  color: #ef4444;
+}
+
+.stats-value.income {
+  color: #22c55e;
+}
+
+.stats-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #eee;
+  border-radius: 1rpx;
+}
+
+.menu-section {
+  padding: 0 var(--margin);
+  margin-top: var(--margin);
+}
+
+.menu-card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: var(--padding) var(--padding-lg);
+}
+
+.menu-item:not(:last-child) {
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.menu-icon {
+  font-size: 36rpx;
+  margin-right: var(--gap);
+}
+
+.menu-label {
+  flex: 1;
+  font-size: var(--font-size);
+  color: var(--color);
+}
+
+.menu-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+  font-weight: 300;
+}
+
+.menu-share {
+  padding: 0;
+  display: block;
+}
+
+.menu-share button {
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  border: 0 !important;
+  outline: none !important;
+  padding: var(--padding) var(--padding-lg);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  font-size: inherit;
+}
+
+.menu-share button::after {
+  border: none;
+}
+
+.menu-item-exit .menu-label {
+  color: #ef4444;
+}
+
+.footer {
+  text-align: center;
+  padding: 48rpx var(--padding);
+}
+
+.footer text {
+  font-size: var(--font-size-xs);
+  color: var(--color-light);
+}
