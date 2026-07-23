@@ -6,6 +6,7 @@ interface IAppOption {
     userInfo: UserInfo | null
     updateFn: Function[]
     offsetTop: number
+    capsuleTop: number
   }
 }
 

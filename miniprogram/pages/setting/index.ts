@@ -1,6 +1,6 @@
 import { billStats } from '../../api/bill'
 import { LOGO_BASE64 } from '../../config/logo'
-import { wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast, wxSwitchTab } from '../../utils/wx'
+import { wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, isLogin, watch } = getApp()
 
@@ -54,7 +54,7 @@ Page({
   },
   handleToClassification() {
     isLogin().then(() => {
-      wxSwitchTab('category')
+      wxNavigateTo('category')
     }).catch(() => {})
   },
   handleToBook() {

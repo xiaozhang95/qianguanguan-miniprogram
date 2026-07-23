@@ -1,4 +1,9 @@
 <view class="page">
+  <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
+    <image class="nav-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit"></image>
+    <text class="nav-title">钱罐罐</text>
+  </view>
+
   <view class="header">
     <view class="header-bg">
       <view class="header-circle c1"></view>
@@ -50,10 +55,10 @@
     </view>
     <view class="stats-item">
       <view class="stats-header">
-        <text class="stats-icon balance-icon">◆</text>
+        <text class="stats-icon {{ balanceClass }}">◆</text>
         <text class="stats-label">结余</text>
       </view>
-      <text class="stats-value balance">¥{{ balanceStr }}</text>
+      <text class="stats-value {{ balanceClass }}">¥{{ balanceStr }}</text>
     </view>
   </view>
 
@@ -65,7 +70,7 @@
   <block wx:if="{{ !loading }}">
     <view class="card">
       <view class="card-title">{{ filterYear }}年{{ filterMonth }}月 收支趋势</view>
-      <scroll-view wx:if="{{ hasChart }}" class="chart-scroll" scroll-x enable-flex>
+      <scroll-view wx:if="{{ hasChart }}" class="chart-scroll" scroll-x enable-flex scroll-left="{{ chartScrollLeft }}" scroll-with-animation>
         <view class="chart-container">
           <block wx:for="{{ chartData }}" wx:key="date">
             <view class="chart-column">

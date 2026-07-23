@@ -5,8 +5,7 @@
     "van-swipe-cell": "@vant/weapp/swipe-cell/index",
     "van-loading": "@vant/weapp/loading/index",
     "van-empty": "@vant/weapp/empty/index",
-    "van-button": "@vant/weapp/button/index",
-    "van-stepper": "@vant/weapp/stepper/index"
+    "van-button": "@vant/weapp/button/index"
   },
   "navigationStyle": "custom"
 }

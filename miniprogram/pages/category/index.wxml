@@ -118,7 +118,12 @@
 
       <view class="form-field">
         <text class="field-label">排序</text>
-        <van-stepper value="{{ formSort }}" min="0" step="1" bind:change="onSortChange" />
+        <input
+          class="field-input"
+          type="number"
+          value="{{ formSort }}"
+          bindinput="onSortChange"
+        />
       </view>
 
       <van-button

@@ -1,4 +1,4 @@
-import { categoryDelete, categoryList, categorySave, categoryUpdate, type CategorySaveParams } from '../../api/category'
+import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
 import { wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
@@ -137,8 +137,8 @@ Page({
     this.setData({ formIcon: e.detail.value })
   },
 
-  onSortChange(e: WechatMiniprogram.CustomEvent) {
-    this.setData({ formSort: e.detail })
+  onSortChange(e: WechatMiniprogram.Input) {
+    this.setData({ formSort: parseInt(e.detail.value) || 0 })
   },
 
   onFormSubmit() {

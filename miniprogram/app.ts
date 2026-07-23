@@ -57,6 +57,7 @@ App({
 
     const { top, height } = wx.getMenuButtonBoundingClientRect()
     this.globalData.offsetTop = top + height
+    this.globalData.capsuleTop = top
 
     this.isLogin(false)
       .then(() => {

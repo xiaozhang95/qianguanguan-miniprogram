@@ -1,4 +1,5 @@
 import { billList, billStats } from '../../api/bill'
+import { LOGO_BASE64 } from '../../config/logo'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -31,6 +32,7 @@ interface PieItem {
 
 Page({
   data: {
+    LOGO_BASE64,
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
     showPicker: false,
@@ -48,6 +50,8 @@ Page({
     hasChart: false,
     hasIncomePie: false,
     hasExpensePie: false,
+    chartScrollLeft: 0,
+    isScrolled: false,
     loading: false,
     app: null as any
   },
@@ -89,7 +93,8 @@ Page({
             this.setData({
               expenseStr: fmt(stats.totalExpense),
               incomeStr: fmt(stats.totalIncome),
-              balanceStr: fmt(stats.balance)
+              balanceStr: fmt(stats.balance),
+              balanceClass: stats.balance < 0 ? 'balance-negative' : stats.balance > 0 ? 'balance-positive' : 'balance-zero'
             })
 
             const dailyMap = new Map<string, { income: number; expense: number }>()
@@ -119,6 +124,8 @@ Page({
               incomeBar: Math.round((d.income / maxVal) * 160),
               expenseBar: Math.round((d.expense / maxVal) * 160)
             }))
+
+            const hasChart = rawChart.some((d) => d.income > 0 || d.expense > 0)
 
             const incomeMap = new Map<string, number>()
             const expenseMap = new Map<string, number>()
@@ -151,15 +158,23 @@ Page({
               }))
               .sort((a, b) => b.percent - a.percent)
 
+            const now = new Date()
+            const isCurrentMonth = now.getFullYear() === year && (now.getMonth() + 1) === month
+            const rpxRate = wx.getSystemInfoSync().windowWidth / 750
+            const chartScrollLeft = isCurrentMonth
+              ? Math.max(0, (now.getDate() - 1) * 68 * rpxRate)
+              : 0
+
             this.setData({
               chartData,
               incomePie,
               expensePie,
               expenseConic: buildConic(expensePie),
               incomeConic: buildConic(incomePie),
-              hasChart: chartData.length > 0,
+              hasChart,
               hasIncomePie: incomePie.length > 0,
               hasExpensePie: expensePie.length > 0,
+              chartScrollLeft,
               loading: false
             })
           })
@@ -171,7 +186,8 @@ Page({
         this.setData({
           expenseStr: '0.00',
           incomeStr: '0.00',
-          balanceStr: '0.00',
+    balanceStr: '0.00',
+    balanceClass: 'balance-zero',
           chartData: [],
           incomePie: [],
           expensePie: [],
@@ -179,7 +195,8 @@ Page({
           incomeConic: '',
           hasChart: false,
           hasIncomePie: false,
-          hasExpensePie: false
+          hasExpensePie: false,
+          chartScrollLeft: 0
         })
       })
   },
@@ -229,6 +246,13 @@ Page({
 
   onPickerClose() {
     this.setData({ showPicker: false })
+  },
+
+  onPageScroll(e: { scrollTop: number }) {
+    const scrolled = e.scrollTop > 40
+    if (scrolled !== this.data.isScrolled) {
+      this.setData({ isScrolled: scrolled })
+    }
   },
 
   onShareAppMessage() {
