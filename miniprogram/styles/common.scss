@@ -136,7 +136,7 @@
 
 .stats-label {
   font-size: var(--font-size-xs);
-  color: var(--color-light);
+  color: var(--color);
 }
 
 .stats-value {
@@ -297,6 +297,12 @@
   flex: 1;
   font-size: var(--font-size);
   color: var(--color);
+}
+
+.form-field picker,
+.field-picker {
+  display: flex;
+  flex: 1;
 }
 
 .field-value {

@@ -35,6 +35,7 @@ Page({
     ],
     activeTab: 0,
     showDatePicker: false,
+    formDatePick: false,
     currentDate: Date.now(),
     minDate: new Date(2020, 0).getTime(),
     maxDate: Date.now(),
@@ -215,7 +216,7 @@ Page({
   },
 
   onDatePickerClose() {
-    this.setData({ showDatePicker: false })
+    this.setData({ showDatePicker: false, formDatePick: false })
   },
 
   onDateConfirm(e: WechatMiniprogram.CustomEvent) {
@@ -223,14 +224,23 @@ Page({
     const y = val.getFullYear()
     const m = val.getMonth() + 1
     const d = val.getDate()
-    this.setData({
-      filterDate: `${y}-${pad(m)}-${pad(d)}`,
-      filterYear: y,
-      filterMonth: m,
-      filterDay: d,
-      showDatePicker: false
-    })
-    this.loadData()
+    const dateStr = `${y}-${pad(m)}-${pad(d)}`
+    if (this.data.formDatePick) {
+      this.setData({ formDate: dateStr, showDatePicker: false, formDatePick: false })
+    } else {
+      this.setData({
+        filterDate: dateStr,
+        filterYear: y,
+        filterMonth: m,
+        filterDay: d,
+        showDatePicker: false
+      })
+      this.loadData()
+    }
+  },
+
+  onFormDateTap() {
+    this.setData({ formDatePick: true, showDatePicker: true, currentDate: new Date(this.data.formDate).getTime() })
   },
 
   onAddBill() {
@@ -325,10 +335,6 @@ Page({
 
   onFormAmountInput(e: WechatMiniprogram.Input) {
     this.setData({ formAmount: e.detail.value })
-  },
-
-  onFormDateChange(e: WechatMiniprogram.CustomEvent) {
-    this.setData({ formDate: e.detail.value })
   },
 
   onFormRemarkInput(e: WechatMiniprogram.Input) {

@@ -5,20 +5,6 @@
   padding-bottom: 120rpx;
 }
 
-.stats-group {
-  margin: -20rpx var(--padding-lg) 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--padding);
-  position: relative;
-  z-index: 10;
-}
-
-.stats-group .stats-card {
-  margin: 0;
-  border-radius: var(--border-radius);
-}
-
 .date-bar {
   display: flex;
   align-items: center;

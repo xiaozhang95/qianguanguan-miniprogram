@@ -38,9 +38,7 @@
     />
   </van-popup>
 
-  <view class="stats-group">
-    <stats-card expense-str="{{ expenseStr }}" income-str="{{ incomeStr }}" balance-str="{{ balanceStr }}" balance-class="{{ balanceClass }}" />
-  </view>
+  <stats-card expense-str="{{ expenseStr }}" income-str="{{ incomeStr }}" balance-str="{{ balanceStr }}" balance-class="{{ balanceClass }}" />
   <filter-tabs tabs="{{ filterTabs }}" active-index="{{ activeTab }}" bind:change="onFilterTabChange" />
 
   <loading-block loading="{{ loading }}" />
@@ -114,14 +112,12 @@
         />
       </view>
 
-      <view class="form-field">
+      <view class="form-field" bindtap="onFormDateTap">
         <text class="field-label">日期</text>
-        <picker mode="date" value="{{ formDate }}" bindchange="onFormDateChange">
-          <view class="field-value">
-            <text class="field-text">{{ formDate }}</text>
-            <van-icon name="arrow" size="28rpx" color="#ccc" />
-          </view>
-        </picker>
+        <view class="field-value">
+          <text class="field-text">{{ formDate }}</text>
+          <van-icon name="arrow" size="28rpx" color="var(--color-placeholder)" />
+        </view>
       </view>
 
       <view class="form-field">

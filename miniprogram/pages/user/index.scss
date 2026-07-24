@@ -42,14 +42,14 @@
 .avatar-row {
   display: flex;
   align-items: center;
-  padding: 24rpx 32rpx;
+  padding: var(--padding) var(--padding-lg);
   border-bottom: 1rpx solid var(--color-border);
 }
 
 .avatar-label {
   max-width: 6.2em;
   min-width: 6.2em;
-  margin-right: 12px;
+  margin-right: var(--gap-sm);
   font-size: 28rpx;
   color: var(--color);
   flex-shrink: 0;
@@ -69,6 +69,7 @@
   background: #fafafa !important;
   overflow: hidden;
   line-height: 1 !important;
+  flex-shrink: 0;
 }
 
 .avatar-btn::after {
@@ -99,13 +100,13 @@
 .field-row {
   display: flex;
   align-items: center;
-  padding: 24rpx 32rpx;
+  padding: var(--padding) var(--padding-lg);
 }
 
 .field-label {
   max-width: 6.2em;
   min-width: 6.2em;
-  margin-right: 12px;
+  margin-right: var(--gap-sm);
   font-size: 28rpx;
   color: var(--color);
   flex-shrink: 0;
@@ -115,4 +116,5 @@
   flex: 1;
   font-size: 28rpx;
   color: var(--color);
+  padding: 0;
 }
