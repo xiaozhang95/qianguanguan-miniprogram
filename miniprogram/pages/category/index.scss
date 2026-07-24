@@ -1,6 +1,64 @@
 ﻿@import '../../styles/common';
 
 /* ===== 分类页专属 ===== */
+.stats-group {
+  margin: -20rpx var(--padding-lg) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding);
+  position: relative;
+  z-index: 10;
+}
+
+.stats-group .stats-card {
+  margin: 0;
+  border-radius: var(--border-radius);
+}
+
+.cat-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: var(--margin);
+  padding: 0 4rpx;
+}
+
+.cat-section-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
+.cat-section-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-light);
+  background: var(--bg);
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+.swipe-actions {
+  display: flex;
+  height: 100%;
+}
+
+.swipe-btn {
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-white);
+}
+
+.swipe-edit {
+  background: var(--theme);
+}
+
+.swipe-delete {
+  background: var(--color-expense);
+}
+
 .cat-icon-editor {
   flex: 1;
   display: flex;

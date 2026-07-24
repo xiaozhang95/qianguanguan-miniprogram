@@ -1,5 +1,5 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
-import { BillType } from '../../constants'
+import { BillType } from '../../constants/index'
 import config from '../../config/index'
 import { wxShowToast } from '../../utils/wx'
 
@@ -7,11 +7,20 @@ const { globalData, isLogin, watch } = getApp()
 
 Page({
   data: {
+    BillType,
     categories: [] as Category[],
     filteredCategories: [] as Category[],
+    systemCategories: [] as Category[],
+    customCategories: [] as Category[],
+    expenseCount: 0,
+    incomeCount: 0,
+    totalCount: 0,
     loading: false,
     activeTab: 0,
-    tabs: ['支出', '收入'],
+    filterTabs: [
+      { label: '支出', type: 'expense' },
+      { label: '收入', type: 'income' }
+    ],
 
     showForm: false,
     editingCategory: null as Category | null,
@@ -83,11 +92,22 @@ Page({
     } else {
       filtered = categories.filter((c: Category) => c.type === BillType.INCOME)
     }
-    this.setData({ filteredCategories: filtered })
+    const systemCategories = filtered.filter((c: Category) => c.userId === null)
+    const customCategories = filtered.filter((c: Category) => c.userId !== null)
+    const expenseCount = categories.filter((c: Category) => c.type === BillType.EXPENSE).length
+    const incomeCount = categories.filter((c: Category) => c.type === BillType.INCOME).length
+    this.setData({
+      filteredCategories: filtered,
+      systemCategories,
+      customCategories,
+      expenseCount,
+      incomeCount,
+      totalCount: categories.length
+    })
   },
 
-  onTabChange(e: WechatMiniprogram.CustomEvent) {
-    const idx = Number(e.currentTarget.dataset.idx)
+  onFilterTabChange(e: WechatMiniprogram.CustomEvent) {
+    const idx = e.detail.index as number
     this.setData({ activeTab: idx }, () => {
       this.applyFilter()
     })
@@ -255,6 +275,8 @@ Page({
     if (scrolled !== this.data.isScrolled) {
       this.setData({ isScrolled: scrolled })
     }
+    const nav = this.selectComponent('#fixed-nav')
+    if (nav) nav.onPageScroll(e)
   },
 
   onShareAppMessage() {

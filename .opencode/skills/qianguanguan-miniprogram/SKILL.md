@@ -32,15 +32,85 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 - 每次代码修改后运行 `pnpm lint`（`tsc --noEmit && eslint .`），确保零错误
 - 如果 PowerShell 执行策略限制 `pnpm`，使用 `cmd /c "pnpm lint"`
 - **禁止**可选链 `?.` 和空值合并 `??` — 微信小程序基础库不支持（`es6: false`），用 `if (x) x()` 替代
+- **禁止** `Function` 类型 — ESLint 会报 `no-unsafe-function-type`，用具体回调类型替代
+- **禁止** `any` 类型 — ESLint 会报 `no-explicit-any`。`app` 字段用 `null as { offsetTop: number; capsuleTop: number } | null`
+- **禁止** `var` — 使用 `const` 或 `let`
+- 页面 JSON 只能注册真正在 WXML 中使用的组件，禁止冗余注册
 
 ## 微信小程序特有约束
 
-- **禁止** `Function` 类型 — ESLint 会报 `no-unsafe-function-type`，用具体回调类型替代
-- **禁止** `any` 类型 — ESLint 会报 `no-explicit-any`
 - `wx` API 统一用 `utils/wx.ts` 中的 Promise 封装，禁止页面内直接调 `wx.xxx`
 - 页面 JSON 使用 `"navigationStyle": "custom"` 自定义导航栏
 - Vant 组件在页面 JSON 中注册：`"usingComponents": { "van-xxx": "@vant/weapp/xxx/index" }`
-- Skyline 专用属性：`"rendererOptions": { "skyline": { "defaultDisplayBlock": true } }`
+- Skyline 专用属性：`"rendererOptions": { "skyline": { "defaultDisplayBlock": true, "defaultContentBox": true } }`
+- **不要**添加 `tagNameStyleIsolation`、`disableABTest`、`sdkVersionBegin/End` 等非法/过时配置
+- 模块导入必须带 `/index` 后缀（如 `'../../constants/index'`），否则微信编译器可能解析失败
+
+## 共用组件（`components/`）
+
+| 组件 | 用途 | Props |
+|------|------|-------|
+| `stats-card` | 收支/分类统计卡片 | expenseStr, incomeStr, balanceStr, balanceClass |
+| `fixed-nav-bar` | 滚动固定导航栏 | title, app（需页面 onPageScroll 转发） |
+| `filter-tabs` | 支出/收入筛选标签 | tabs[{label,type}], activeIndex; bind:change → e.detail.index |
+| `fab-button` | 悬浮加号按钮 | bind:tap |
+| `loading-block` | 加载状态 | loading, text |
+
+**所有页面必须使用组件，禁止内联重复 HTML。** 组件代码在 `components/` 下，样式统一走 `common.scss`。
+
+### 组件使用示例
+
+```xml
+<!-- page.wxml -->
+<fixed-nav-bar id="fixed-nav" title="账单" app="{{ app }}" />
+<stats-card expense-str="{{ expenseStr }}" income-str="{{ incomeStr }}" balance-str="{{ balanceStr }}" balance-class="{{ balanceClass }}" />
+<filter-tabs tabs="{{ filterTabs }}" active-index="{{ activeTab }}" bind:change="onFilterTabChange" />
+<loading-block loading="{{ loading }}" />
+<fab-button bind:tap="onAddBill" />
+```
+
+```ts
+// page.ts — filterTabs 数据格式
+filterTabs: [
+  { label: '支出', type: 'expense' },
+  { label: '收入', type: 'income' }
+]
+
+// filter-tabs 事件处理
+onFilterTabChange(e: WechatMiniprogram.CustomEvent) {
+  const idx = e.detail.index as number
+}
+```
+
+`fixed-nav-bar` 需要页面转发 `onPageScroll`：
+```ts
+onPageScroll(e: { scrollTop: number }) {
+  const nav = this.selectComponent('#fixed-nav')
+  if (nav) nav.onPageScroll(e)
+}
+```
+
+### 组件属性处理 null 值
+
+若框架报警告 `received type-uncompatible value: expected <String> but get null`，在组件 WXML 用 WXS 兜底：
+
+```xml
+<wxs module="f">
+  var cls = function(v) { return v || 'default'; };
+  module.exports = { cls: cls };
+</wxs>
+<text class="{{ f.cls(propName) }}">...</text>
+```
+
+同时在组件 TS 中将该属性 type 设为 `null`（允许任意类型），消除框架校验警告。
+
+## 枚举常量（`constants/index.ts`）
+
+- **强制使用** `BillType.INCOME` / `BillType.EXPENSE`，禁止字符串字面量 `'INCOME'` / `'EXPENSE'`
+- 标签文本使用 `BillTypeLabel`、`RoleLabel`
+- 可变的 `formType`/`filterType` 用 `BillType.EXPENSE as string` 加宽类型
+- TS 文件 import：`import { BillType } from '../../constants/index'`
+- WXML 中需要在 page data 里传入 `BillType` 才能用 `{{ BillType.INCOME }}`：`data: { BillType, ... }`
 
 ## 样式约定
 
@@ -55,7 +125,7 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 | 类别   | 变量                        | 值示例                    |
 | ------ | --------------------------- | ------------------------- |
 | 主题   | `--theme` `--theme-gradient` `--theme-light` | `#1677ff` / 渐变 / `rgba(...)` |
-| 颜色   | `--color` `--color-secondary` `--color-light` | `#1d1d1d` `#666` `#999` |
+| 颜色   | `--color` `--color-secondary` `--color-light` `--color-placeholder` | `#1d1d1d` `#666` `#999` `#ccc` |
 | 背景   | `--bg` `--card-bg`          | `#f5f5f5` `#fff`    |
 | 字号   | `--font-size-xs` `--font-size-sm` `--font-size` `--font-size-lg` `--font-size-xl` | 22/26/30/36/48rpx |
 | 间距   | `--padding-sm` `--padding` `--padding-lg` | 16/24/32rpx         |
@@ -85,13 +155,13 @@ color: #1d1d1d;
 
 ### 统计卡片与筛选栏布局
 
-账单页中统计卡片和筛选栏用 `.stats-group` 包裹，`flex column + gap` 控制间距，外层统一负 margin 与头部重叠，子元素 `margin: 0`：
+统计卡片和筛选栏之间用 `.stats-group` 包裹统计卡片，`flex column + gap` 控制间距，外层统一负 margin 与头部重叠：
 
 ```xml
 <view class="stats-group">
-  <view class="stats-card">...</view>
-  <view class="filter-bar">...</view>
+  <stats-card ... />
 </view>
+<filter-tabs ... />
 ```
 
 ```scss
@@ -101,8 +171,9 @@ color: #1d1d1d;
   position: relative; z-index: 10;
 }
 .stats-group .stats-card { margin: 0; border-radius: var(--border-radius); }
-.stats-group .filter-bar { margin: 0; border-radius: var(--border-radius); }
 ```
+
+**注意**：`filter-tabs` 不要放在 `.stats-group` 内部，因为它是独立组件，组件隔离样式无法穿透。
 
 ### 硬编码允许场景
 

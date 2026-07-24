@@ -1,3 +1,7 @@
+<wxs module="f">
+  var cls = function(v) { return v || 'balance-zero'; };
+  module.exports = { cls: cls };
+</wxs>
 <view class="stats-card">
   <view class="stats-item">
     <view class="stats-header">
@@ -15,9 +19,9 @@
   </view>
   <view class="stats-item">
     <view class="stats-header">
-      <text class="stats-icon {{ balanceClass }}">◆</text>
+      <text class="stats-icon {{ f.cls(balanceClass) }}">◆</text>
       <text class="stats-label">结余</text>
     </view>
-    <text class="stats-value {{ balanceClass }}">¥{{ balanceStr }}</text>
+    <text class="stats-value {{ f.cls(balanceClass) }}">¥{{ balanceStr }}</text>
   </view>
 </view>

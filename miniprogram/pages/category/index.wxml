@@ -1,7 +1,5 @@
 <view class="page" catchtouchmove="{{ showForm ? 'onPrevent' : '' }}">
-  <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
-    <text class="nav-title">分类管理</text>
-  </view>
+  <fixed-nav-bar id="fixed-nav" title="分类管理" app="{{ app }}" />
 
   <view class="header">
     <view class="header-bg">
@@ -15,70 +13,98 @@
     </view>
   </view>
 
-  <view class="filter-bar">
-    <view
-      wx:for="{{ tabs }}"
-      wx:key="*this"
-      class="filter-tab {{ activeTab === index ? (index === 0 ? 'active expense' : 'active income') : '' }}"
-      bindtap="onTabChange"
-      data-idx="{{ index }}"
-    >{{ item }}</view>
+  <view class="stats-group">
+    <view class="stats-card">
+      <view class="stats-item">
+        <view class="stats-header">
+          <text class="stats-icon expense-icon">▼</text>
+          <text class="stats-label">支出分类</text>
+        </view>
+        <text class="stats-value expense">{{ expenseCount }}</text>
+      </view>
+      <view class="stats-item">
+        <view class="stats-header">
+          <text class="stats-icon income-icon">▲</text>
+          <text class="stats-label">收入分类</text>
+        </view>
+        <text class="stats-value income">{{ incomeCount }}</text>
+      </view>
+      <view class="stats-item">
+        <view class="stats-header">
+          <text class="stats-icon balance-zero">◆</text>
+          <text class="stats-label">全部分类</text>
+        </view>
+        <text class="stats-value balance-zero">{{ totalCount }}</text>
+      </view>
+    </view>
   </view>
+  <filter-tabs tabs="{{ filterTabs }}" active-index="{{ activeTab }}" bind:change="onFilterTabChange" />
 
-  <view wx:if="{{ loading }}" class="loading-wrap">
-    <van-loading size="48rpx" color="#1677ff" />
-    <text class="loading-text">加载中...</text>
-  </view>
+  <loading-block loading="{{ loading }}" />
 
   <block wx:if="{{ !loading }}">
     <view wx:if="{{ filteredCategories.length > 0 }}" class="cat-list-wrap">
-      <view class="cat-section">
-        <block wx:for="{{ filteredCategories }}" wx:key="id">
-          <van-swipe-cell
-            wx:if="{{ item.userId !== null }}"
-            right-width="{{ 160 }}"
-            custom-class="cat-swipe"
-          >
-            <view class="cat-row" bindtap="onEdit" data-cat="{{ item }}">
+      <block wx:if="{{ customCategories.length > 0 }}">
+        <view class="cat-section-title">
+          <text class="cat-section-label">自定义分类</text>
+          <text class="cat-section-count">{{ customCategories.length }}</text>
+        </view>
+        <view class="cat-section">
+          <block wx:for="{{ customCategories }}" wx:key="id">
+            <van-swipe-cell
+              right-width="{{ 160 }}"
+              custom-class="cat-swipe"
+            >
+              <view class="cat-row" bindtap="onEdit" data-cat="{{ item }}">
+                <view class="cat-left">
+                  <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
+                  <text wx:else class="cat-icon">{{ item.icon }}</text>
+                  <text class="cat-name">{{ item.name }}</text>
+                </view>
+                <view class="cat-right">
+                  <view class="cat-tag {{ item.type === BillType.INCOME ? 'income' : 'expense' }}">
+                    <text>{{ item.type === BillType.INCOME ? '收入' : '支出' }}</text>
+                  </view>
+                  <view class="cat-tag custom">自定义</view>
+                </view>
+              </view>
+              <view slot="right" class="swipe-actions">
+                <view class="swipe-btn swipe-edit" bindtap="onEdit" data-cat="{{ item }}">编辑</view>
+                <view class="swipe-btn swipe-delete" bindtap="onDelete" data-id="{{ item.id }}">删除</view>
+              </view>
+            </van-swipe-cell>
+          </block>
+        </view>
+      </block>
+
+      <block wx:if="{{ systemCategories.length > 0 }}">
+        <view class="cat-section-title">
+          <text class="cat-section-label">系统分类</text>
+          <text class="cat-section-count">{{ systemCategories.length }}</text>
+        </view>
+        <view class="cat-section">
+          <block wx:for="{{ systemCategories }}" wx:key="id">
+            <view class="cat-row cat-row-system" bindtap="onSystemTap">
               <view class="cat-left">
                 <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
                 <text wx:else class="cat-icon">{{ item.icon }}</text>
                 <text class="cat-name">{{ item.name }}</text>
               </view>
               <view class="cat-right">
-                <view class="cat-tag {{ item.type === 'INCOME' ? 'income' : 'expense' }}">
-                  <text>{{ item.type === 'INCOME' ? '收入' : '支出' }}</text>
+                <view class="cat-tag {{ item.type === BillType.INCOME ? 'income' : 'expense' }}">
+                  <text>{{ item.type === BillType.INCOME ? '收入' : '支出' }}</text>
                 </view>
-                <view class="cat-tag custom">自定义</view>
+                <view class="cat-tag system">默认</view>
               </view>
             </view>
-            <view slot="right" class="swipe-actions">
-              <view class="swipe-btn swipe-edit" bindtap="onEdit" data-cat="{{ item }}">编辑</view>
-              <view class="swipe-btn swipe-delete" bindtap="onDelete" data-id="{{ item.id }}">删除</view>
-            </view>
-          </van-swipe-cell>
-          <view wx:else class="cat-row cat-row-system" bindtap="onSystemTap">
-            <view class="cat-left">
-              <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
-              <text wx:else class="cat-icon">{{ item.icon }}</text>
-              <text class="cat-name">{{ item.name }}</text>
-            </view>
-            <view class="cat-right">
-              <view class="cat-tag {{ item.type === 'INCOME' ? 'income' : 'expense' }}">
-                <text>{{ item.type === 'INCOME' ? '收入' : '支出' }}</text>
-              </view>
-              <view class="cat-tag system">默认</view>
-            </view>
-          </view>
-        </block>
-      </view>
+          </block>
+        </view>
+      </block>
     </view>
     <van-empty wx:else description="暂无分类" />
   </block>
 
-  <view class="fab" bindtap="onAdd">
-    <van-icon name="plus" size="48rpx" color="#fff" />
-  </view>
+  <fab-button bind:tap="onAdd" />
 
   <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup" lock-scroll>
     <view class="form-wrap">
@@ -89,14 +115,14 @@
 
       <view class="form-type">
         <view
-          class="type-tab {{ formType === 'EXPENSE' ? 'active expense' : '' }}"
+          class="type-tab {{ formType === BillType.EXPENSE ? 'active expense' : '' }}"
           bindtap="onFormTypeChange"
-          data-type="EXPENSE"
+          data-type="{{ BillType.EXPENSE }}"
         >支出</view>
         <view
-          class="type-tab {{ formType === 'INCOME' ? 'active income' : '' }}"
+          class="type-tab {{ formType === BillType.INCOME ? 'active income' : '' }}"
           bindtap="onFormTypeChange"
-          data-type="INCOME"
+          data-type="{{ BillType.INCOME }}"
         >收入</view>
       </view>
 

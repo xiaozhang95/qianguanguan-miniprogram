@@ -1,7 +1,5 @@
 <view class="page" catchtouchmove="{{ showForm || showCategoryPicker || showDatePicker ? 'onPrevent' : '' }}">
-  <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
-    <text class="nav-title">账单</text>
-  </view>
+  <fixed-nav-bar id="fixed-nav" title="账单" app="{{ app }}" />
 
   <view class="header">
     <view class="header-bg">
@@ -41,48 +39,11 @@
   </van-popup>
 
   <view class="stats-group">
-    <view class="stats-card">
-      <view class="stats-item">
-        <view class="stats-header">
-          <text class="stats-icon expense-icon">▼</text>
-          <text class="stats-label">支出</text>
-        </view>
-        <text class="stats-value expense">¥{{ expenseStr }}</text>
-      </view>
-      <view class="stats-item">
-        <view class="stats-header">
-          <text class="stats-icon income-icon">▲</text>
-          <text class="stats-label">收入</text>
-        </view>
-        <text class="stats-value income">¥{{ incomeStr }}</text>
-      </view>
-      <view class="stats-item">
-        <view class="stats-header">
-          <text class="stats-icon {{ balanceClass }}">◆</text>
-          <text class="stats-label">结余</text>
-        </view>
-        <text class="stats-value {{ balanceClass }}">¥{{ balanceStr }}</text>
-      </view>
-    </view>
-
-    <view class="filter-bar">
-      <view
-        class="filter-tab {{ activeTab === 0 ? 'active expense' : '' }}"
-        bindtap="onFilterChange"
-        data-idx="0"
-      >支出</view>
-      <view
-        class="filter-tab {{ activeTab === 1 ? 'active income' : '' }}"
-        bindtap="onFilterChange"
-        data-idx="1"
-      >收入</view>
-    </view>
+    <stats-card expense-str="{{ expenseStr }}" income-str="{{ incomeStr }}" balance-str="{{ balanceStr }}" balance-class="{{ balanceClass }}" />
   </view>
+  <filter-tabs tabs="{{ filterTabs }}" active-index="{{ activeTab }}" bind:change="onFilterTabChange" />
 
-  <view wx:if="{{ loading }}" class="loading-wrap">
-    <van-loading size="48rpx" color="#1677ff" />
-    <text class="loading-text">加载中...</text>
-  </view>
+  <loading-block loading="{{ loading }}" />
 
   <block wx:if="{{ !loading }}">
     <view wx:if="{{ hasData }}" class="bill-list-wrap">
@@ -111,9 +72,7 @@
     <van-empty wx:else description="今天还没有账单，记一笔吧" />
   </block>
 
-  <view class="fab" bindtap="onAddBill">
-    <van-icon name="plus" size="48rpx" color="#fff" />
-  </view>
+  <fab-button bind:tap="onAddBill" />
 
   <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup" lock-scroll>
     <view class="form-wrap">

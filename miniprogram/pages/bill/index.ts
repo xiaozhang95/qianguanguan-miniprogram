@@ -1,7 +1,7 @@
 import { billDelete, billList, billSave, billStats, billUpdate } from '../../api/bill'
-import { BillType } from '../../constants'
 import { categoryList } from '../../api/category'
 import config from '../../config/index'
+import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
 import { wxShowToast } from '../../utils/wx'
 
@@ -29,6 +29,10 @@ Page({
     filterMonth: new Date().getMonth() + 1,
     filterDay: new Date().getDate(),
     filterType: BillType.EXPENSE as string,
+    filterTabs: [
+      { label: '支出', type: 'expense' },
+      { label: '收入', type: 'income' }
+    ],
     activeTab: 0,
     showDatePicker: false,
     currentDate: Date.now(),
@@ -61,7 +65,6 @@ Page({
     showCategoryPicker: false,
     saving: false,
 
-    deletingId: '',
     isScrolled: false,
 
     app: null as { offsetTop: number; capsuleTop: number } | null
@@ -84,12 +87,26 @@ Page({
   },
 
   init() {
-    isLogin(false).then(() => {
-      this.loadCategories()
-      this.loadData()
-    }).catch(() => {
-      this.setData({ stats: { totalIncome: 0, totalExpense: 0, balance: 0 }, bills: [], billGroups: [], hasData: false, categories: [], incomeCategories: [], expenseCategories: [], expenseStr: '0.00', incomeStr: '0.00', balanceStr: '0.00', balanceClass: 'balance-zero' })
-    })
+    isLogin(false)
+      .then(() => {
+        this.loadCategories()
+        this.loadData()
+      })
+      .catch(() => {
+        this.setData({
+          stats: { totalIncome: 0, totalExpense: 0, balance: 0 },
+          bills: [],
+          billGroups: [],
+          hasData: false,
+          categories: [],
+          incomeCategories: [],
+          expenseCategories: [],
+          expenseStr: '0.00',
+          incomeStr: '0.00',
+          balanceStr: '0.00',
+          balanceClass: 'balance-zero'
+        })
+      })
   },
 
   loadCategories() {
@@ -120,10 +137,7 @@ Page({
     const dayStr = String(filterDay)
     const dateStr = `${filterYear}-${pad(filterMonth)}-${pad(filterDay)}`
 
-    Promise.all([
-      billStats(yearStr, monthStr, dayStr),
-      billList({ type: filterType, startDate: dateStr, endDate: dateStr, pageNum: 1, pageSize: 200 })
-    ])
+    Promise.all([billStats(yearStr, monthStr, dayStr), billList({ type: filterType, startDate: dateStr, endDate: dateStr, pageNum: 1, pageSize: 200 })])
       .then(([statsRes, listRes]) => {
         const stats = statsRes.data
         const records = listRes.data.records || []
@@ -161,8 +175,8 @@ Page({
       })
   },
 
-  onFilterChange(e: WechatMiniprogram.CustomEvent) {
-    const idx = Number(e.currentTarget.dataset.idx)
+  onFilterTabChange(e: WechatMiniprogram.CustomEvent) {
+    const idx = e.detail.index as number
     const types = [BillType.EXPENSE, BillType.INCOME]
     this.setData({ activeTab: idx, filterType: types[idx] })
     this.loadData()
@@ -290,28 +304,6 @@ Page({
     }
   },
 
-  onDeleteBill(e: WechatMiniprogram.CustomEvent) {
-    const id = e.currentTarget.dataset.id as string
-    wx.showModal({
-      title: '确认删除',
-      content: '确定要删除这笔账单吗？',
-      success: (res) => {
-        if (res.confirm) {
-          this.setData({ deletingId: id })
-          billDelete(id)
-            .then(({ msg }) => {
-              wxShowToast({ title: msg || '删除成功' })
-              this.setData({ deletingId: '' })
-              this.loadData()
-            })
-            .catch(() => {
-              this.setData({ deletingId: '' })
-            })
-        }
-      }
-    })
-  },
-
   onFormClose() {
     this.setData({ showForm: false })
   },
@@ -395,12 +387,11 @@ Page({
       content: '确定要删除这笔账单吗？',
       success: (res) => {
         if (res.confirm) {
-          billDelete(editingBill.id)
-            .then(({ msg }) => {
-              wxShowToast({ title: msg || '删除成功' })
-              this.setData({ showForm: false, editingBill: null })
-              this.loadData()
-            })
+          billDelete(editingBill.id).then(({ msg }) => {
+            wxShowToast({ title: msg || '删除成功' })
+            this.setData({ showForm: false, editingBill: null })
+            this.loadData()
+          })
         }
       }
     })
@@ -411,6 +402,8 @@ Page({
     if (scrolled !== this.data.isScrolled) {
       this.setData({ isScrolled: scrolled })
     }
+    const nav = this.selectComponent('#fixed-nav')
+    if (nav) nav.onPageScroll(e)
   },
 
   onShareAppMessage() {

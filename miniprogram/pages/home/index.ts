@@ -1,5 +1,5 @@
 import { billList, billStats } from '../../api/bill'
-import { BillType } from '../../constants'
+import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
 
 const { globalData, isLogin, watch } = getApp()
