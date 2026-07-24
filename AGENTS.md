@@ -26,7 +26,7 @@ RoleLabel[SUPER_ADMIN] = '管理员'      // 角色标签
 Colors.expense / income / balance / theme / border / ...
 ```
 
-**注意**: TS 的 `as const` 字面量类型与页面 data 的隐式 `string` 不兼容，当前在 TS 文件中使用字符串字面量 `'INCOME'`，后续统一改类型后可迁移到常量引用。
+**注意**: 可变的 `formType`/`filterType` 字段用 `BillType.EXPENSE as string` 初始化以保持 `string` 类型，避免 TS 字面量类型导致后续赋值报错。
 
 ## 共享样式 (`styles/common.scss`)
 
@@ -37,7 +37,7 @@ Colors.expense / income / balance / theme / border / ...
 - 间距: `var(--padding)` `var(--margin)` `var(--gap)`
 - 字号: `var(--font-size)` `var(--font-size-sm)` `var(--font-size-xs)`
 - 阴影: `var(--shadow)` `var(--shadow-lg)`
-- 圆角: `var(--border-radius)` `var(--border-radius-lg)`
+- 圆角: `var(--border-radius)`
 
 ## 共用组件 (`components/`)
 
@@ -83,7 +83,7 @@ onPageScroll(e: { scrollTop: number }) {
 
 **SCSS**: 页面 SCSS 只保留页面专属样式，公共样式统一在 `common.scss`。
 **颜色**: 必须使用 CSS 变量，禁止硬编码 `#ef4444` / `#22c55e` 等。
-**常量**: 类型值使用字符串字面量 `'INCOME'`（而非直接引用 BillType），标签文本使用 BillTypeLabel。
+**常量**: 强制使用 `BillType.INCOME` / `BillType.EXPENSE`，标签文本使用 `BillTypeLabel`。可变字段（`formType`/`filterType`）用 `as string` 加宽类型。
 **组件**: 重复的 UI 模式优先提取为组件（4文件: json/ts/wxml/scss）。
 
 ## 弹窗规范

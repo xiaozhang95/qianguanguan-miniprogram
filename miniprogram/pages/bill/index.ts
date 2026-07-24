@@ -1,5 +1,6 @@
-import { billDelete, billList, billSave, billStats, billUpdate, type BillSaveParams } from '../../api/bill'
-import { categoryList, type Category } from '../../api/category'
+import { billDelete, billList, billSave, billStats, billUpdate } from '../../api/bill'
+import { BillType } from '../../constants'
+import { categoryList } from '../../api/category'
 import config from '../../config/index'
 import { fmt, pad } from '../../utils/format'
 import { wxShowToast } from '../../utils/wx'
@@ -11,9 +12,14 @@ function todayStr() {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
+interface BillItem extends BillVO {
+  amountStr: string
+  amountPrefix: string
+}
+
 interface BillGroup {
   date: string
-  items: BillVO[]
+  items: BillItem[]
 }
 
 Page({
@@ -22,7 +28,7 @@ Page({
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
     filterDay: new Date().getDate(),
-    filterType: 'EXPENSE' as string,
+    filterType: BillType.EXPENSE as string,
     activeTab: 0,
     showDatePicker: false,
     currentDate: Date.now(),
@@ -46,7 +52,7 @@ Page({
 
     showForm: false,
     editingBill: null as BillVO | null,
-    formType: 'EXPENSE',
+    formType: BillType.EXPENSE as string,
     formCategoryId: '',
     formCategoryName: '',
     formAmount: '',
@@ -58,7 +64,7 @@ Page({
     deletingId: '',
     isScrolled: false,
 
-    app: null as any
+    app: null as { offsetTop: number; capsuleTop: number } | null
   },
 
   onLoad() {
@@ -89,7 +95,7 @@ Page({
   loadCategories() {
     categoryList().then(({ data }) => {
       const cats = (data || []).map((c: Category) => {
-        const isImg = c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http'))
+        const isImg = !!(c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http')))
         return {
           ...c,
           iconIsImage: isImg,
@@ -98,9 +104,9 @@ Page({
       })
       this.setData({
         categories: cats,
-        incomeCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'INCOME'),
-        expenseCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'EXPENSE'),
-        filteredCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'EXPENSE')
+        incomeCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.INCOME),
+        expenseCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.EXPENSE),
+        filteredCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.EXPENSE)
       })
     })
   },
@@ -122,16 +128,17 @@ Page({
         const stats = statsRes.data
         const records = listRes.data.records || []
 
-        const groupMap = new Map<string, any[]>()
-        records.forEach((b: any) => {
-          b.amountStr = fmt(b.amount)
-          b.amountPrefix = b.type === 'INCOME' ? '+' : '-'
-          if (b.categoryIcon && b.categoryIcon.startsWith('/upload/')) {
-            b.categoryIcon = config.url + b.categoryIcon
+        const groupMap = new Map<string, BillItem[]>()
+        records.forEach((b: BillVO) => {
+          const bill: BillItem = {
+            ...b,
+            amountStr: fmt(b.amount),
+            amountPrefix: b.type === BillType.INCOME ? '+' : '-',
+            categoryIcon: b.categoryIcon && b.categoryIcon.startsWith('/upload/') ? config.url + b.categoryIcon : b.categoryIcon
           }
-          const arr = groupMap.get(b.billDate) || []
-          arr.push(b)
-          groupMap.set(b.billDate, arr)
+          const arr = groupMap.get(bill.billDate) || []
+          arr.push(bill)
+          groupMap.set(bill.billDate, arr)
         })
         const billGroups: BillGroup[] = Array.from(groupMap.entries())
           .sort((a, b) => b[0].localeCompare(a[0]))
@@ -156,7 +163,7 @@ Page({
 
   onFilterChange(e: WechatMiniprogram.CustomEvent) {
     const idx = Number(e.currentTarget.dataset.idx)
-    const types = ['EXPENSE', 'INCOME']
+    const types = [BillType.EXPENSE, BillType.INCOME]
     this.setData({ activeTab: idx, filterType: types[idx] })
     this.loadData()
   },
@@ -198,7 +205,7 @@ Page({
   },
 
   onDateConfirm(e: WechatMiniprogram.CustomEvent) {
-    const val = new Date(e.detail as number)
+    const val = new Date(e.detail as unknown as number)
     const y = val.getFullYear()
     const m = val.getMonth() + 1
     const d = val.getDate()
@@ -218,7 +225,7 @@ Page({
       this.setData({
         showForm: true,
         editingBill: null,
-        formType: 'EXPENSE',
+        formType: BillType.EXPENSE as string,
         formCategoryId: '',
         formCategoryName: '',
         formAmount: '',
@@ -232,7 +239,7 @@ Page({
   onEditBill(e: WechatMiniprogram.CustomEvent) {
     const bill = e.currentTarget.dataset.bill as BillVO
     this.ensureCategories(() => {
-      const cats = bill.type === 'INCOME' ? this.data.incomeCategories : this.data.expenseCategories
+      const cats = bill.type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
       this.setData({
         showForm: true,
         editingBill: bill,
@@ -261,20 +268,20 @@ Page({
     if (this.data.categories.length === 0) {
       categoryList().then(({ data }) => {
         const cats = (data || []).map((c: Category) => {
-          const isImg = c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http'))
+          const isImg = !!(c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http')))
           return {
             ...c,
             iconIsImage: isImg,
             icon: isImg && c.icon.startsWith('/upload/') ? config.url + c.icon : c.icon
           }
         })
-        const incomeCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'INCOME')
-        const expenseCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === 'EXPENSE')
+        const incomeCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.INCOME)
+        const expenseCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.EXPENSE)
         this.setData({
           categories: cats,
           incomeCategories: incomeCats,
           expenseCategories: expenseCats,
-          filteredCategories: this.data.formType === 'INCOME' ? incomeCats : expenseCats
+          filteredCategories: this.data.formType === BillType.INCOME ? incomeCats : expenseCats
         })
         cb()
       })
@@ -311,7 +318,7 @@ Page({
 
   onFormTypeChange(e: WechatMiniprogram.CustomEvent) {
     const type = e.currentTarget.dataset.type as string
-    const cats = type === 'INCOME' ? this.data.incomeCategories : this.data.expenseCategories
+    const cats = type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
     this.setData({ formType: type, formCategoryId: '', formCategoryName: '', filteredCategories: cats })
   },
 
@@ -322,10 +329,6 @@ Page({
       formCategoryName: cat.name,
       showCategoryPicker: false
     })
-  },
-
-  onFormCategoryClose() {
-    this.setData({ showCategoryPicker: false })
   },
 
   onFormAmountInput(e: WechatMiniprogram.Input) {

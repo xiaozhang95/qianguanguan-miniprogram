@@ -1,4 +1,5 @@
 import { billList, billStats } from '../../api/bill'
+import { BillType } from '../../constants'
 import { fmt, pad } from '../../utils/format'
 
 const { globalData, isLogin, watch } = getApp()
@@ -48,7 +49,7 @@ Page({
     chartScrollLeft: 0,
     isScrolled: false,
     loading: false,
-    app: null as any
+    app: null as { offsetTop: number; capsuleTop: number } | null
   },
 
   onLoad() {
@@ -104,7 +105,7 @@ Page({
             records.forEach((b: BillVO) => {
               const entry = dailyMap.get(b.billDate)
               if (entry) {
-                if (b.type === 'INCOME') entry.income += b.amount
+                if (b.type === BillType.INCOME) entry.income += b.amount
                 else entry.expense += b.amount
               }
             })
@@ -128,7 +129,7 @@ Page({
             const incomeMap = new Map<string, number>()
             const expenseMap = new Map<string, number>()
             records.forEach((b: BillVO) => {
-              if (b.type === 'INCOME') {
+              if (b.type === BillType.INCOME) {
                 incomeMap.set(b.categoryName, (incomeMap.get(b.categoryName) || 0) + b.amount)
               } else {
                 expenseMap.set(b.categoryName, (expenseMap.get(b.categoryName) || 0) + b.amount)
@@ -200,11 +201,11 @@ Page({
   },
 
   onMonthConfirm(e: WechatMiniprogram.CustomEvent) {
-    const val = new Date(e.detail as number)
+    const val = new Date(e.detail as unknown as number)
     this.setData({
       filterYear: val.getFullYear(),
       filterMonth: val.getMonth() + 1,
-      currentDate: e.detail as number,
+      currentDate: e.detail as unknown as number,
       showPicker: false
     })
     this.loadData()
@@ -255,6 +256,8 @@ Page({
     if (scrolled !== this.data.isScrolled) {
       this.setData({ isScrolled: scrolled })
     }
+    const nav = this.selectComponent('#fixed-nav')
+    if (nav) nav.onPageScroll(e)
   },
 
   onShareAppMessage() {

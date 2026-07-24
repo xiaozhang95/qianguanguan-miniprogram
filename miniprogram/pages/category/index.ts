@@ -1,4 +1,5 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
+import { BillType } from '../../constants'
 import config from '../../config/index'
 import { wxShowToast } from '../../utils/wx'
 
@@ -18,13 +19,13 @@ Page({
     formIcon: '',
     formIconFile: '',
     iconChanged: false,
-    formType: 'EXPENSE',
+    formType: BillType.EXPENSE as string,
     formSort: 0,
     saving: false,
     isScrolled: false,
     choosingImage: false,
 
-    app: null as any
+    app: null as { offsetTop: number; capsuleTop: number } | null
   },
 
   onLoad() {
@@ -78,9 +79,9 @@ Page({
     const { activeTab, categories } = this.data
     let filtered: Category[]
     if (activeTab === 0) {
-      filtered = categories.filter((c: Category) => c.type === 'EXPENSE')
+      filtered = categories.filter((c: Category) => c.type === BillType.EXPENSE)
     } else {
-      filtered = categories.filter((c: Category) => c.type === 'INCOME')
+      filtered = categories.filter((c: Category) => c.type === BillType.INCOME)
     }
     this.setData({ filteredCategories: filtered })
   },
@@ -104,7 +105,7 @@ Page({
       formIcon: '',
       formIconFile: '',
       iconChanged: false,
-      formType: 'EXPENSE',
+      formType: BillType.EXPENSE as string,
       formSort: 0
     })
   },

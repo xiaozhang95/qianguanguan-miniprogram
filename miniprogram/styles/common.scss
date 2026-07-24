@@ -106,7 +106,7 @@
   margin: -20rpx var(--padding-lg) 0;
   padding: var(--padding-lg) var(--padding);
   background: var(--card-bg);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
   display: flex;
   position: relative;
@@ -202,7 +202,7 @@
   margin: var(--margin-lg) var(--padding-lg) 0;
   padding: var(--padding-lg);
   background: var(--card-bg);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius);
   box-shadow: var(--shadow);
 }
 
@@ -218,7 +218,7 @@
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  border-radius: 20rpx 20rpx 0 0 !important;
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
 }
 
 .form-wrap {
@@ -255,7 +255,7 @@
   flex: 1;
   text-align: center;
   padding: 18rpx 0;
-  border-radius: 8rpx;
+  border-radius: var(--border-radius);
   font-size: 28rpx;
   color: var(--color-light);
   transition: all 0.25s;
@@ -362,7 +362,7 @@
 /* ===== 分类标签 ===== */
 .cat-tag {
   padding: 4rpx 16rpx;
-  border-radius: 8rpx;
+  border-radius: var(--border-radius);
   font-size: var(--font-size-xs);
   font-weight: 500;
 }
@@ -458,7 +458,7 @@
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  border-radius: 24rpx 24rpx 0 0 !important;
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
 }
 
 .cat-picker-wrap {
@@ -592,22 +592,20 @@
 
 /* ===== 筛选栏 ===== */
 .filter-bar {
-  margin: -20rpx var(--padding-lg) 0;
+  margin: var(--padding) var(--padding-lg) 0;
   display: flex;
   gap: 16rpx;
   padding: 6rpx;
   background: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  position: relative;
-  z-index: 10;
 }
 
 .filter-tab {
   flex: 1;
   text-align: center;
   padding: 18rpx 0;
-  border-radius: 8rpx;
+  border-radius: var(--border-radius);
   font-size: 28rpx;
   color: var(--color-light);
   transition: all 0.25s;

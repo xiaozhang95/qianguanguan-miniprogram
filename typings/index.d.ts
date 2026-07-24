@@ -44,6 +44,7 @@ interface Category {
 }
 
 interface CategorySaveParams {
+  [key: string]: unknown
   name: string
   icon: string
   type: string
@@ -51,6 +52,7 @@ interface CategorySaveParams {
 }
 
 interface BillSaveParams {
+  [key: string]: unknown
   categoryId: string
   type: string
   amount: number
@@ -85,6 +87,7 @@ interface BillPage {
 }
 
 interface BillListParams {
+  [key: string]: unknown
   type?: string
   categoryId?: string
   startDate?: string

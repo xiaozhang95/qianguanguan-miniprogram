@@ -41,15 +41,15 @@ Page({
     wxNavigateBack()
   },
   handleSave() {
-    var name = (this.data.name || '').trim()
+    const name = (this.data.name || '').trim()
     if (!name) {
       wxShowToast({ title: '请输入昵称' })
       return
     }
-    var phone = (this.data.phone || '').trim()
-    var email = (this.data.email || '').trim()
-    var avatarUrl = this.data.avatarUrl
-    var currentAvatar = this.data.avatar
+    const phone = (this.data.phone || '').trim()
+    const email = (this.data.email || '').trim()
+    const avatarUrl = this.data.avatarUrl
+    const currentAvatar = this.data.avatar
 
     this.setData({ saving: true })
 

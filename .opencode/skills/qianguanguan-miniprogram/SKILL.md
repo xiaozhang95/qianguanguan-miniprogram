@@ -60,7 +60,7 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 | 字号   | `--font-size-xs` `--font-size-sm` `--font-size` `--font-size-lg` `--font-size-xl` | 22/26/30/36/48rpx |
 | 间距   | `--padding-sm` `--padding` `--padding-lg` | 16/24/32rpx         |
 | 外边距 | `--margin-sm` `--margin` `--margin-lg` | 12/20/32rpx        |
-| 圆角   | `--border-radius` `--border-radius-lg` | 12/20rpx           |
+| 圆角   | `--border-radius` | 12rpx           |
 | 阴影   | `--shadow-sm` `--shadow` `--shadow-lg` | 各级阴影              |
 
 ### SCSS 中优先使用 CSS 变量，禁止硬编码
@@ -75,6 +75,33 @@ color: var(--color);
 font-size: 30rpx;
 padding: 24rpx;
 color: #1d1d1d;
+```
+
+### 圆角规范
+
+- 全局统一使用 `var(--border-radius)`（12rpx），**没有** `--border-radius-lg`
+- 禁止硬编码 `8rpx`、`16rpx`、`20rpx`、`24rpx` 等圆角值
+- 例外：圆形元素（头像、FAB 等）使用 `border-radius: 50%`；图表条等装饰元素按需
+
+### 统计卡片与筛选栏布局
+
+账单页中统计卡片和筛选栏用 `.stats-group` 包裹，`flex column + gap` 控制间距，外层统一负 margin 与头部重叠，子元素 `margin: 0`：
+
+```xml
+<view class="stats-group">
+  <view class="stats-card">...</view>
+  <view class="filter-bar">...</view>
+</view>
+```
+
+```scss
+.stats-group {
+  margin: -20rpx var(--padding-lg) 0;
+  display: flex; flex-direction: column; gap: var(--padding);
+  position: relative; z-index: 10;
+}
+.stats-group .stats-card { margin: 0; border-radius: var(--border-radius); }
+.stats-group .filter-bar { margin: 0; border-radius: var(--border-radius); }
 ```
 
 ### 硬编码允许场景
