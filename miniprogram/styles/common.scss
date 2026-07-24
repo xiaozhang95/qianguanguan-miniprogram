@@ -220,6 +220,10 @@
   border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
 }
 
+.date-popup {
+  z-index: 10000;
+}
+
 .form-wrap {
   flex: 1;
   overflow-y: auto;

@@ -22,7 +22,7 @@
     </view>
   </view>
 
-  <van-popup show="{{ showPicker }}" position="bottom" bind:close="onPickerClose" round lock-scroll>
+  <van-popup show="{{ showPicker }}" position="bottom" bind:close="onPickerClose" round lock-scroll custom-class="date-popup" z-index="{{ 10000 }}">
     <van-datetime-picker
       type="year-month"
       value="{{ currentDate }}"

@@ -42,6 +42,8 @@ page {
   --shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
 
+  --popup-round-border-radius: 12rpx;
+
   background-color: var(--bg);
   color: var(--color);
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
