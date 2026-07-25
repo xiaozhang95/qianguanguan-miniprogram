@@ -1,5 +1,5 @@
 import { userInfo, loginByWid } from './api/user'
-import { wxGetStorageSync, wxHideLoading, wxSetStorageSync, wxShowLoading, wxShowToast } from './utils/wx'
+import { wxGetMenuButtonBoundingClientRect, wxGetStorageSync, wxHideLoading, wxSetStorageSync, wxShowLoading, wxShowToast } from './utils/wx'
 
 type AppCallback = (data: { token: string; userInfo: UserInfo | null }) => void
 
@@ -56,7 +56,7 @@ App({
     const token = wxGetStorageSync('token') || ''
     this.update('token', token)
 
-    const { top, height } = wx.getMenuButtonBoundingClientRect()
+    const { top, height } = wxGetMenuButtonBoundingClientRect()
     this.globalData.offsetTop = top + height
     this.globalData.capsuleTop = top
 

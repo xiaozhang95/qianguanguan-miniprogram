@@ -4,8 +4,8 @@
       <view class="header-circle c1"></view>
       <view class="header-circle c2"></view>
     </view>
-    <view class="header-content">
-      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+    <view class="header-content header-content--form">
+      <view class="nav-bar nav-bar--form" style="height:{{ app.offsetTop }}px">
         <view class="nav-back" bindtap="handleBack">
           <van-icon name="arrow-left" color="#fff" size="36rpx" />
           <text>返回</text>

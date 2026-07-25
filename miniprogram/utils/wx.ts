@@ -107,3 +107,7 @@ export function wxUploadFile(options: { url: string; filePath: string; name: str
     return task
   })
 }
+
+export function wxGetMenuButtonBoundingClientRect() {
+  return wx.getMenuButtonBoundingClientRect()
+}
