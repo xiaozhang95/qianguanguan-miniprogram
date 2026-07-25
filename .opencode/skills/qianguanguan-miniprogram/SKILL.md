@@ -268,3 +268,114 @@ userInfo().then(({ data }) => {
 | develop   | `http://localhost:8888`        |
 | trial     | `http://47.108.152.97:8888`   |
 | release   | `http://47.108.152.97:8888`   |
+
+## 键盘与底部弹窗（Skyline + HarmonyOS 兼容）
+
+Skyline 模式下，`van-popup position="bottom"` 内的输入框弹键盘会导致页面无法正常回位。**不要用 `van-popup` 做表单弹窗**，改用自定义固定定位容器。
+
+### 模板结构
+
+```xml
+<!-- 用 wx:if 控制显隐，替代 van-popup show -->
+<view wx:if="{{ showForm }}" class="form-overlay" bindtap="onFormClose">
+  <view class="form-container" style="bottom: {{ keyboardHeight }}px" catchtap>
+    <!-- 原有表单内容 -->
+  </view>
+</view>
+```
+
+### SCSS
+
+```scss
+.form-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0, 0, 0, 0.5);
+}
+.form-container {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: var(--color-white);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  padding: var(--padding-lg);
+  transition: bottom 0.25s;
+}
+```
+
+### TS 键盘高度修正
+
+`wx.onKeyboardHeightChange` 返回的键盘高度是相对**屏幕坐标系**（含状态栏），但 `position: fixed` 的 `bottom` 是相对**窗口坐标系**，需要减去状态栏高度：
+
+```ts
+let keyboardHandler: ((res: { height: number }) => void) | null = null
+
+data: {
+  keyboardHeight: 0,
+  lastKeyboardHeight: 0
+}
+
+startKeyboardListener() {
+  if (keyboardHandler) return
+  const sysInfo = wx.getSystemInfoSync()
+  const topGap = sysInfo.screenHeight - sysInfo.windowHeight  // 状态栏高度
+  keyboardHandler = (res: { height: number }) => {
+    if (res.height > 0) {
+      const adjusted = Math.max(0, res.height - topGap)
+      this.setData({ keyboardHeight: adjusted, lastKeyboardHeight: adjusted })
+    } else {
+      this.setData({ keyboardHeight: 0 })
+    }
+  }
+  wx.onKeyboardHeightChange(keyboardHandler)
+}
+
+stopKeyboardListener() {
+  if (keyboardHandler) {
+    wx.offKeyboardHeightChange(keyboardHandler)
+    keyboardHandler = null
+  }
+}
+```
+
+### 输入框
+
+所有输入框加 `adjust-position="{{false}}"` + `bindfocus`/`bindblur`：
+
+```xml
+<input adjust-position="{{false}}" bindfocus="onInputFocus" bindblur="onInputBlur" ... />
+```
+
+```ts
+onInputFocus() {
+  if (this.data.lastKeyboardHeight > 0) {
+    this.setData({ keyboardHeight: this.data.lastKeyboardHeight })
+  }
+},
+onInputBlur() {
+  this.setData({ keyboardHeight: 0 })
+}
+```
+
+### 生命周期
+
+```ts
+onHide() {
+  this.setData({ showForm: false, keyboardHeight: 0, ... })
+  this.stopKeyboardListener()
+}
+
+onFormClose() {
+  this.setData({ showForm: false, keyboardHeight: 0 })
+  this.stopKeyboardListener()
+}
+
+// 打开表单时（onAddBill / onEditBill）调用 this.startKeyboardListener()
+// 保存/删除成功后也要 stopKeyboardListener() + reset keyboardHeight: 0
+```
+
+### 原理
+
+| 坐标系 | 参考点 | 含义 |
+|--------|--------|------|
+| 屏幕 (screenHeight) | 含状态栏 76px | 键盘高度从此测量 |
+| 窗口 (windowHeight) | 不含状态栏 | `position: fixed` 的 `bottom` 从此测量 |
+
+修正公式：`adjustedHeight = keyboardHeight - (screenHeight - windowHeight)`
