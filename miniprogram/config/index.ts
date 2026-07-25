@@ -3,7 +3,8 @@ const env = wx.getAccountInfoSync().miniProgram.envVersion
 const config: Config = {
   develop: {
     baseUrl: '/api/business',
-    url: 'http://localhost:8888'
+    // url: 'http://localhost:8888',
+    url: 'http://192.168.1.8:8888'
   },
   trial: {
     baseUrl: '/api/business',
