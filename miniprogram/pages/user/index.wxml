@@ -41,6 +41,6 @@
   </view>
 
   <view class="btn-wrap">
-    <van-button custom-class="save-btn" block bindtap="handleSave">保存</van-button>
+    <van-button custom-class="save-btn" block loading="{{ saving }}" bindtap="handleSave">保存</van-button>
   </view>
 </view>

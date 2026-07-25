@@ -36,10 +36,11 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 - **禁止** `any` 类型 — ESLint 会报 `no-explicit-any`。`app` 字段用 `null as { offsetTop: number; capsuleTop: number } | null`
 - **禁止** `var` — 使用 `const` 或 `let`
 - 页面 JSON 只能注册真正在 WXML 中使用的组件，禁止冗余注册
+- **字符串拼接**使用 `+`，禁止模板字符串 `` `${}` ``（es6: false）
 
 ## 微信小程序特有约束
 
-- `wx` API 统一用 `utils/wx.ts` 中的 Promise 封装，禁止页面内直接调 `wx.xxx`
+- `wx` API 统一用 `utils/wx.ts` 中的 Promise 封装，**禁止页面内直接调 `wx.xxx`**
 - 页面 JSON 使用 `"navigationStyle": "custom"` 自定义导航栏
 - Vant 组件在页面 JSON 中注册：`"usingComponents": { "van-xxx": "@vant/weapp/xxx/index" }`
 - Skyline 专用属性：`"rendererOptions": { "skyline": { "defaultDisplayBlock": true, "defaultContentBox": true } }`
@@ -106,11 +107,177 @@ onPageScroll(e: { scrollTop: number }) {
 
 ## 枚举常量（`constants/index.ts`）
 
-- **强制使用** `BillType.INCOME` / `BillType.EXPENSE`，禁止字符串字面量 `'INCOME'` / `'EXPENSE'`
+- **强制使用** `BillType.INCOME` / `BillType.EXPENSE`，禁止字符串字面量
 - 标签文本使用 `BillTypeLabel`、`RoleLabel`
 - 可变的 `formType`/`filterType` 用 `BillType.EXPENSE as string` 加宽类型
-- TS 文件 import：`import { BillType } from '../../constants/index'`
+- **响应状态码** 使用 `ResponseCode.SUCCESS` = 200，禁止硬编码 `200`
+- TS 文件 import：`import { BillType, ResponseCode } from '../../constants/index'`
 - WXML 中需要在 page data 里传入 `BillType` 才能用 `{{ BillType.INCOME }}`：`data: { BillType, ... }`
+
+## 配置常量（`config/index.ts`）
+
+`config` 对象包含环境配置和路径常量：
+
+| 字段 | 值 | 用途 |
+|------|-----|------|
+| `url` | `http://47.108.152.97:8888` | 后端地址 |
+| `baseUrl` | `/api/business` | API 前缀 |
+| `uploadPath` | `/upload/` | 上传文件路径前缀 |
+
+**图标 URL 判断必须使用 `config.uploadPath`，禁止硬编码 `'/upload/'`。**
+
+```ts
+import config from '../../config/index'
+
+// 正确
+const isImg = !!(c.icon && (c.icon.indexOf(config.uploadPath) === 0 || c.icon.indexOf('http') === 0))
+const icon = isImg && c.icon.indexOf(config.uploadPath) === 0 ? config.url + c.icon : c.icon
+
+// 错误
+const isImg = !!(c.icon && c.icon.indexOf('/upload/') === 0)
+```
+
+## 导航跳转（`utils/wx.ts`）
+
+### 防抖导航
+
+所有 `navigateTo` 跳转必须使用 `debounceNavigateTo` 防止 Skyline 下双击触发两次：
+
+```ts
+import { debounceNavigateTo, wxNavigateBack } from '../../utils/wx'
+
+// 跳转页面（自动 500ms 防抖）
+debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
+debounceNavigateTo('bill-form', 'id=' + bill.id)
+debounceNavigateTo('category-form')
+
+// 返回上一页
+wxNavigateBack()
+```
+
+### 可用方法
+
+| 方法 | 参数 | 用途 |
+|------|------|------|
+| `wxNavigateTo(name, query?)` | 页面名, 可选 query string | 跳转页面 |
+| `debounceNavigateTo(name, query?)` | 同上 | 防抖跳转（500ms） |
+| `wxNavigateBack()` | 无 | 返回上一页 |
+| `wxShowToast({ title, icon?, duration? })` | title, icon='none', duration=2000 | 显示 toast |
+
+## 表单页面规范
+
+**禁止用弹窗（van-popup）做表单**，Skyline + HarmonyOS 下键盘兼容问题无解。统一用独立页面 + navigateTo 跳转。
+
+### 页面结构
+
+```
+pages/
+├── bill/index          # 账单列表（FAB → bill-form）
+├── bill-form/index     # 记一笔/编辑账单
+│   ├── 表单字段使用 .form-field + .field-label（common.scss）
+│   ├── 分类选择器用 van-popup + cat-picker-wrap
+│   ├── 日期选择器用 van-popup + van-datetime-picker
+│   └── 删除按钮用 .del-btn
+├── category/index      # 分类列表（FAB → category-form）
+└── category-form/index # 新增/编辑分类
+    ├── 图标选择用 ChooseImage + 上传
+    └── 删除按钮用 .del-btn
+```
+
+### 页面头部模板
+
+参考 `pages/user/index.wxml` 的 header 结构（渐变背景 + 回退按钮 + 标题）：
+
+```xml
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content">
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <view class="nav-back" bindtap="handleBack">
+          <van-icon name="arrow-left" color="#fff" size="36rpx" />
+          <text>返回</text>
+        </view>
+      </view>
+      <text class="header-title">页面标题</text>
+    </view>
+  </view>
+  ...
+</view>
+```
+
+### 表单卡片
+
+`form-card` 内使用 `.form-field` + `.field-label` + `.field-input` 布局，间距通过 flex gap 控制：
+
+```scss
+.form-card {
+  margin: -40rpx 20rpx 0;
+  padding: var(--padding-lg) var(--padding-lg) 28rpx;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+```
+
+### 删除按钮
+
+统一使用 `.del-btn` 样式（红色背景，白色文字）：
+
+```scss
+.del-btn {
+  width: 100% !important;
+  border-radius: var(--border-radius) !important;
+  background: var(--color-expense) !important;
+  border: none !important;
+  color: var(--color-white) !important;
+  font-size: var(--font-size) !important;
+}
+```
+
+```xml
+<van-button wx:if="{{ editing }}" custom-class="del-btn" block bindtap="onFormDelete">删除</van-button>
+```
+
+### 按钮区域
+
+多按钮时（保存 + 删除），用 `btn-wrap` + flex column gap 布局：
+
+```scss
+.btn-wrap {
+  padding: 0 20rpx;
+  margin-top: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+```
+
+## 图标回显逻辑
+
+后端返回的 `categoryIcon` 可能是完整 URL（`http://` 开头）或相对路径（`/upload/` 开头）或 emoji。TS 中生成 `iconIsImage` 标记，WXML 用 `wx:if` 判断：
+
+```ts
+const isImg = !!(b.categoryIcon && (b.categoryIcon.indexOf(config.uploadPath) === 0 || b.categoryIcon.indexOf('http') === 0))
+const bill: BillItem = {
+  ...b,
+  iconIsImage: isImg,
+  categoryIcon: isImg && b.categoryIcon.indexOf(config.uploadPath) === 0 ? config.url + b.categoryIcon : b.categoryIcon
+}
+```
+
+```xml
+<image wx:if="{{ bill.iconIsImage }}" class="bill-icon-img" src="{{ bill.categoryIcon }}" mode="aspectFill"></image>
+<text wx:else class="bill-icon">{{ bill.categoryIcon }}</text>
+```
 
 ## 样式约定
 
@@ -174,6 +341,10 @@ color: #1d1d1d;
 ```
 
 **注意**：`filter-tabs` 不要放在 `.stats-group` 内部，因为它是独立组件，组件隔离样式无法穿透。
+
+### 页面底部间距
+
+所有列表页（home、bill、category）统一加 `padding-bottom: 60rpx` 防止内容贴底。
 
 ### 硬编码允许场景
 
@@ -268,114 +439,3 @@ userInfo().then(({ data }) => {
 | develop   | `http://localhost:8888`        |
 | trial     | `http://47.108.152.97:8888`   |
 | release   | `http://47.108.152.97:8888`   |
-
-## 键盘与底部弹窗（Skyline + HarmonyOS 兼容）
-
-Skyline 模式下，`van-popup position="bottom"` 内的输入框弹键盘会导致页面无法正常回位。**不要用 `van-popup` 做表单弹窗**，改用自定义固定定位容器。
-
-### 模板结构
-
-```xml
-<!-- 用 wx:if 控制显隐，替代 van-popup show -->
-<view wx:if="{{ showForm }}" class="form-overlay" bindtap="onFormClose">
-  <view class="form-container" style="bottom: {{ keyboardHeight }}px" catchtap>
-    <!-- 原有表单内容 -->
-  </view>
-</view>
-```
-
-### SCSS
-
-```scss
-.form-overlay {
-  position: fixed; inset: 0; z-index: 9999;
-  background: rgba(0, 0, 0, 0.5);
-}
-.form-container {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  background: var(--color-white);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  padding: var(--padding-lg);
-  transition: bottom 0.25s;
-}
-```
-
-### TS 键盘高度修正
-
-`wx.onKeyboardHeightChange` 返回的键盘高度是相对**屏幕坐标系**（含状态栏），但 `position: fixed` 的 `bottom` 是相对**窗口坐标系**，需要减去状态栏高度：
-
-```ts
-let keyboardHandler: ((res: { height: number }) => void) | null = null
-
-data: {
-  keyboardHeight: 0,
-  lastKeyboardHeight: 0
-}
-
-startKeyboardListener() {
-  if (keyboardHandler) return
-  const sysInfo = wx.getSystemInfoSync()
-  const topGap = sysInfo.screenHeight - sysInfo.windowHeight  // 状态栏高度
-  keyboardHandler = (res: { height: number }) => {
-    if (res.height > 0) {
-      const adjusted = Math.max(0, res.height - topGap)
-      this.setData({ keyboardHeight: adjusted, lastKeyboardHeight: adjusted })
-    } else {
-      this.setData({ keyboardHeight: 0 })
-    }
-  }
-  wx.onKeyboardHeightChange(keyboardHandler)
-}
-
-stopKeyboardListener() {
-  if (keyboardHandler) {
-    wx.offKeyboardHeightChange(keyboardHandler)
-    keyboardHandler = null
-  }
-}
-```
-
-### 输入框
-
-所有输入框加 `adjust-position="{{false}}"` + `bindfocus`/`bindblur`：
-
-```xml
-<input adjust-position="{{false}}" bindfocus="onInputFocus" bindblur="onInputBlur" ... />
-```
-
-```ts
-onInputFocus() {
-  if (this.data.lastKeyboardHeight > 0) {
-    this.setData({ keyboardHeight: this.data.lastKeyboardHeight })
-  }
-},
-onInputBlur() {
-  this.setData({ keyboardHeight: 0 })
-}
-```
-
-### 生命周期
-
-```ts
-onHide() {
-  this.setData({ showForm: false, keyboardHeight: 0, ... })
-  this.stopKeyboardListener()
-}
-
-onFormClose() {
-  this.setData({ showForm: false, keyboardHeight: 0 })
-  this.stopKeyboardListener()
-}
-
-// 打开表单时（onAddBill / onEditBill）调用 this.startKeyboardListener()
-// 保存/删除成功后也要 stopKeyboardListener() + reset keyboardHeight: 0
-```
-
-### 原理
-
-| 坐标系 | 参考点 | 含义 |
-|--------|--------|------|
-| 屏幕 (screenHeight) | 含状态栏 76px | 键盘高度从此测量 |
-| 窗口 (windowHeight) | 不含状态栏 | `position: fixed` 的 `bottom` 从此测量 |
-
-修正公式：`adjustedHeight = keyboardHeight - (screenHeight - windowHeight)`

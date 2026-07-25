@@ -44,10 +44,6 @@
   box-sizing: border-box;
 }
 
-.header-content--left {
-  align-items: flex-start;
-}
-
 /* ===== 导航栏 ===== */
 .nav-bar {
   position: absolute;
@@ -90,16 +86,6 @@
   box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
-.nav-logo {
-  width: 44rpx;
-  height: 44rpx;
-  border-radius: 10rpx;
-  padding: 6rpx;
-  box-sizing: border-box;
-  background: linear-gradient(135deg, #0958d9, var(--theme));
-  margin-right: 12rpx;
-  flex-shrink: 0;
-}
 /* ===== 统计卡片 ===== */
 .stats-card {
   margin: -20rpx var(--padding-lg) 0;
@@ -152,10 +138,6 @@
 
 .income-icon {
   color: var(--color-income);
-}
-
-.balance-icon {
-  color: var(--color-balance);
 }
 
 .stats-value.expense {
@@ -212,37 +194,8 @@
   margin-bottom: var(--margin);
 }
 
-/* ===== 表单弹窗 ===== */
-.form-popup {
-  display: flex;
-  flex-direction: column;
-  z-index: 9999;
-  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
-}
-
 .date-popup {
   z-index: 10000;
-}
-
-.form-wrap {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--padding-lg) var(--padding-lg) 28rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
-}
-
-.form-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.form-title {
-  font-size: var(--font-size-lg);
-  font-weight: 700;
-  color: var(--color);
 }
 
 .form-type {
@@ -293,18 +246,13 @@
   flex-shrink: 0;
 }
 
-.field-label--wide {
-  width: 160rpx;
-}
-
 .field-input {
   flex: 1;
   font-size: var(--font-size);
   color: var(--color);
 }
 
-.form-field picker,
-.field-picker {
+.form-field picker {
   display: flex;
   flex: 1;
 }
@@ -334,17 +282,6 @@
   background: var(--theme-gradient) !important;
   border: none !important;
   color: var(--color-white) !important;
-  font-size: var(--font-size) !important;
-}
-
-/* ===== 删除按钮 ===== */
-.delete-btn {
-  width: 100% !important;
-  margin-top: 16rpx;
-  border-radius: var(--border-radius) !important;
-  background: var(--color-white) !important;
-  border: 2rpx solid var(--color-expense) !important;
-  color: var(--color-expense) !important;
   font-size: var(--font-size) !important;
 }
 

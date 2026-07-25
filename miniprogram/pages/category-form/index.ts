@@ -20,7 +20,6 @@ Page({
     formSort: 0,
     saving: false,
     deleting: false,
-    choosingImage: false,
 
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
@@ -75,7 +74,6 @@ Page({
   },
 
   onChooseIcon() {
-    this.setData({ choosingImage: true })
     wx.chooseImage({
       count: 1,
       sizeType: ['compressed'],
@@ -84,7 +82,7 @@ Page({
         this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
       },
       fail: () => {
-        this.setData({ choosingImage: false })
+        this.setData({ saving: false })
       }
     })
   },
