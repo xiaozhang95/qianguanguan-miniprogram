@@ -51,7 +51,7 @@
 
   <view class="btn-wrap">
     <van-button custom-class="save-btn" block loading="{{ saving }}" bindtap="onFormSubmit">保存</van-button>
-      <van-button wx:if="{{ editing }}" custom-class="del-btn" block bindtap="onFormDelete">删除</van-button>
+    <van-button wx:if="{{ editing }}" custom-class="del-btn" block bindtap="onFormDelete">删除</van-button>
   </view>
 
   <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-class="cat-popup" lock-scroll>
@@ -70,13 +70,22 @@
           </view>
         </block>
         <view wx:if="{{ filteredCategories.length === 0 }}" class="cat-empty">
-          <text>暂无分类，请先在Web端添加</text>
+          <text>暂无分类</text>
         </view>
       </view>
     </view>
   </van-popup>
 
   <van-popup show="{{ showDatePicker }}" position="bottom" bind:close="onDatePickerClose" round lock-scroll custom-class="date-popup">
-    <van-datetime-picker type="date" value="{{ currentDate }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:confirm="onDateConfirm" bind:cancel="onDatePickerClose" title="选择日期" show-toolbar />
+    <van-datetime-picker
+      type="date"
+      value="{{ currentDate }}"
+      min-date="{{ minDate }}"
+      max-date="{{ maxDate }}"
+      bind:confirm="onDateConfirm"
+      bind:cancel="onDatePickerClose"
+      title="选择日期"
+      show-toolbar
+    />
   </van-popup>
 </view>

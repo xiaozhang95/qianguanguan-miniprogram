@@ -1,4 +1,6 @@
+import config from '../config/index'
 import request from '../utils/request'
+import { wxUploadFile } from '../utils/wx'
 
 export function userInfo() {
   return request<UserInfo>({
@@ -19,5 +21,17 @@ export function userProfile(data: Record<string, unknown>) {
     url: '/user/profile',
     method: 'PUT',
     data
+  })
+}
+
+export function uploadAvatar(filePath: string) {
+  const { globalData } = getApp<{ globalData: { token: string } }>()
+  return wxUploadFile({
+    url: config.url + '/api/business/upload',
+    filePath,
+    name: 'file',
+    header: {
+      Authorization: globalData.token
+    }
   })
 }

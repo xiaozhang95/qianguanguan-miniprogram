@@ -1,7 +1,7 @@
 import { categoryList } from '../../api/category'
 import { BillType } from '../../constants/index'
 import config from '../../config/index'
-import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -98,12 +98,20 @@ Page({
   },
 
   onAdd() {
-    debounceNavigateTo('category-form')
+    isLogin(true).then(() => {
+      debounceNavigateTo('category-form')
+    }).catch(() => {
+      wxSwitchTab('setting')
+    })
   },
 
   onEdit(e: WechatMiniprogram.CustomEvent) {
     const cat = e.currentTarget.dataset.cat as Category
-    debounceNavigateTo('category-form', 'id=' + cat.id)
+    isLogin(true).then(() => {
+      debounceNavigateTo('category-form', 'id=' + cat.id)
+    }).catch(() => {
+      wxSwitchTab('setting')
+    })
   },
 
   onSystemTap() {

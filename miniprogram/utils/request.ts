@@ -27,7 +27,7 @@ export default async function request<T>(d: RequestInfo) {
           if (json.code !== ResponseCode.SUCCESS) {
             wxShowToast({ title: json.msg || '请求失败' })
 
-            if (json.code === 401) {
+            if (json.code === ResponseCode.UNAUTHORIZED) {
               exitLogin(() => {
                 wxShowToast({ title: '登录已过期，请重新登录' })
               })
@@ -43,7 +43,7 @@ export default async function request<T>(d: RequestInfo) {
       },
       fail: (error) => {
         wxShowToast({ title: '网络请求失败' })
-        reject({ code: 0, msg: error.errMsg, data: null as T })
+        reject({ code: ResponseCode.NETWORK_ERROR, msg: error.errMsg, data: null as T })
       }
     })
   })

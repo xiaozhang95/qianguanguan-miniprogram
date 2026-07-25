@@ -47,6 +47,6 @@
   </van-cell-group>
 
   <view class="footer">
-    <text>钱罐罐 - 好好记账，天天向上</text>
+    <text>钱罐罐</text>
   </view>
 </view>

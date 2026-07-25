@@ -50,5 +50,7 @@ export const Colors = {
 } as const
 
 export const ResponseCode = {
-  SUCCESS: 200
+  SUCCESS: 200,
+  UNAUTHORIZED: 401,
+  NETWORK_ERROR: 0
 } as const

@@ -1,19 +1,11 @@
 {
-  "pages": [
-    "pages/home/index",
-    "pages/bill/index",
-    "pages/bill-form/index",
-    "pages/setting/index",
-    "pages/user/index",
-    "pages/category/index",
-    "pages/category-form/index"
-  ],
+  "pages": ["pages/home/index", "pages/bill/index", "pages/bill-form/index", "pages/setting/index", "pages/user/index", "pages/category/index", "pages/category-form/index"],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },
   "tabBar": {
-    "color": "#999999",
+    "color": "#2c2c2c",
     "selectedColor": "#1677ff",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",

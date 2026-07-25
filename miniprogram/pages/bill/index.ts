@@ -2,7 +2,7 @@ import { billList, billStats } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
-import { debounceNavigateTo } from '../../utils/wx'
+import { debounceNavigateTo, wxSwitchTab } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -198,12 +198,20 @@ Page({
   },
 
   onAddBill() {
-    debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
+    isLogin(true).then(() => {
+      debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
+    }).catch(() => {
+      wxSwitchTab('setting')
+    })
   },
 
   onEditBill(e: WechatMiniprogram.CustomEvent) {
     const bill = e.currentTarget.dataset.bill as BillVO
-    debounceNavigateTo('bill-form', 'id=' + bill.id)
+    isLogin(true).then(() => {
+      debounceNavigateTo('bill-form', 'id=' + bill.id)
+    }).catch(() => {
+      wxSwitchTab('setting')
+    })
   },
 
   onPageScroll(e: { scrollTop: number }) {

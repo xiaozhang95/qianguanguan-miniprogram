@@ -367,14 +367,14 @@
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  border-radius: 16rpx;
+  border-radius: var(--border-radius);
   flex-shrink: 0;
 }
 
 .cat-icon-img {
   width: 72rpx;
   height: 72rpx;
-  border-radius: 16rpx;
+  border-radius: var(--border-radius);
   flex-shrink: 0;
 }
 
@@ -482,14 +482,14 @@
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  border-radius: 16rpx;
+  border-radius: var(--border-radius);
   flex-shrink: 0;
 }
 
 .bill-icon-img {
   width: 72rpx;
   height: 72rpx;
-  border-radius: 16rpx;
+  border-radius: var(--border-radius);
   flex-shrink: 0;
 }
 

@@ -57,6 +57,10 @@ export function wxNavigateBack() {
   return wx.navigateBack()
 }
 
+export function wxSwitchTab(name: string) {
+  return wx.switchTab({ url: '/pages/' + name + '/index' })
+}
+
 export function wxReadFile(filePath: string) {
   return new Promise<{ data: string }>((resolve, reject) => {
     wx.getFileSystemManager().readFile({

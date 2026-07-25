@@ -1,13 +1,13 @@
-import { userProfile } from '../../api/user'
+import { uploadAvatar, userProfile } from '../../api/user'
 import config from '../../config/index'
-import { wxNavigateBack, wxReadFile, wxShowToast } from '../../utils/wx'
+import { wxNavigateBack, wxShowToast } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
 Page({
   data: {
     avatar: '',
-    avatarUrl: '',
+    avatarFilePath: '',
     oldAvatar: '',
     name: '',
     phone: '',
@@ -22,7 +22,7 @@ Page({
     this.setData({
       app: globalData,
       avatar: avatarUrl,
-      avatarUrl: '',
+      avatarFilePath: '',
       oldAvatar: a,
       name: u.name || '',
       phone: u.phone || '',
@@ -30,11 +30,8 @@ Page({
     })
   },
   onChooseAvatar(e: WechatMiniprogram.CustomEvent) {
-    const url = e.detail.avatarUrl
-    wxReadFile(url).then((res) => {
-      const base64 = 'data:image/png;base64,' + res.data
-      this.setData({ avatarUrl: base64, avatar: base64 })
-    })
+    const filePath = e.detail.avatarUrl
+    this.setData({ avatarFilePath: filePath, avatar: filePath })
   },
   onNameInput(e: WechatMiniprogram.Input) {
     this.setData({ name: e.detail.value })
@@ -56,23 +53,34 @@ Page({
     }
     const phone = (this.data.phone || '').trim()
     const email = (this.data.email || '').trim()
-    const avatarUrl = this.data.avatarUrl
+    const avatarFilePath = this.data.avatarFilePath
     const oldAvatar = this.data.oldAvatar
 
     this.setData({ saving: true })
 
-    const avatar = avatarUrl || oldAvatar
+    const saveWithAvatar = (avatar: string) => {
+      userProfile({ avatar, name, phone, email })
+        .then((res: CtmResponse<UserInfo>) => {
+          wxShowToast({ title: '保存成功' })
+          update('userInfo', res.data)
+          setTimeout(function () {
+            wxNavigateBack()
+          }, 1000)
+        })
+        .catch(() => {
+          this.setData({ saving: false })
+        })
+    }
 
-    userProfile({ avatar, name, phone, email })
-      .then((res: CtmResponse<UserInfo>) => {
-        wxShowToast({ title: '保存成功' })
-        update('userInfo', res.data)
-        setTimeout(function () {
-          wxNavigateBack()
-        }, 1000)
+    if (avatarFilePath && avatarFilePath !== oldAvatar) {
+      uploadAvatar(avatarFilePath).then(res => {
+        const data = JSON.parse(res.data) as { url: string }
+        saveWithAvatar(data.url)
+      }).catch(() => {
+        saveWithAvatar(oldAvatar)
       })
-      .catch(() => {
-        this.setData({ saving: false })
-      })
+    } else {
+      saveWithAvatar(oldAvatar)
+    }
   }
 })

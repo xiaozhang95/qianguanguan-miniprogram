@@ -92,6 +92,7 @@
 
 .menu-group {
   margin: var(--margin) var(--padding-lg) 0 !important;
+  --cell-group-inset-border-radius: var(--border-radius);
   --cell-line-height: 72rpx;
   --cell-font-size: var(--font-size);
   --cell-right-icon-size: 28rpx;
