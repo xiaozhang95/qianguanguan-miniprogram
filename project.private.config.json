@@ -18,24 +18,5 @@
 		"checkInvalidKey": true,
 		"ignoreDevUnusedFiles": true
 	},
-	"condition": {
-		"miniprogram": {
-			"list": [
-				{
-					"name": "pages/setting/index",
-					"pathName": "pages/setting/index",
-					"query": "",
-					"scene": null,
-					"launchMode": "default"
-				},
-				{
-					"name": "pages/bill/index",
-					"pathName": "pages/bill/index",
-					"query": "",
-					"launchMode": "default",
-					"scene": null
-				}
-			]
-		}
-	}
+	"condition": {}
 }

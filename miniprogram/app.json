@@ -1,5 +1,5 @@
 {
-  "pages": ["pages/home/index", "pages/bill/index", "pages/bill-form/index", "pages/setting/index", "pages/user/index", "pages/category/index", "pages/category-form/index"],
+  "pages": ["pages/home/index", "pages/bill/index", "pages/bill-form/index", "pages/setting/index", "pages/user/index", "pages/category/index", "pages/category-form/index", "pages/qr-login/index"],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"

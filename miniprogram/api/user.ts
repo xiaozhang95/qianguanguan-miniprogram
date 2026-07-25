@@ -24,6 +24,14 @@ export function userProfile(data: Record<string, unknown>) {
   })
 }
 
+export function qrLoginConfirm(data: { sceneId: string; code: string }) {
+  return request<LoginResult>({
+    url: '/qr-login/confirm',
+    method: 'POST',
+    data
+  })
+}
+
 export function uploadAvatar(filePath: string) {
   const { globalData } = getApp<{ globalData: { token: string } }>()
   return wxUploadFile({
