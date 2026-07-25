@@ -45,35 +45,20 @@
 .header-name { font-size: 30rpx; font-weight: 600; color: var(--color-white); }
 .header-role { font-size: 22rpx; color: rgba(255, 255, 255, 0.65); }
 
-.login-area { margin: 40rpx var(--padding-lg); }
-.login-card {
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-lg);
-  padding: 48rpx var(--padding-lg) 40rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24rpx;
-}
-.login-logo {
-  width: 100rpx; height: 100rpx;
-  border-radius: var(--border-radius);
-  background: var(--theme-gradient);
-  padding: 20rpx;
-  box-sizing: border-box;
-}
-.login-slogan { font-size: var(--font-size-sm); color: var(--color-light); }
 .login-action {
-  width: 100%; padding: 28rpx;
-  display: flex; align-items: center; justify-content: center;
+  margin: 60rpx var(--padding-lg) var(--margin);
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 12rpx;
-  background: linear-gradient(135deg, #07c160, #06ad56);
-  border-radius: 60rpx;
+  background: var(--theme-gradient);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8rpx 24rpx rgba(22, 119, 255, 0.35);
   color: var(--color-white);
   font-size: 32rpx;
   font-weight: 600;
-  letter-spacing: 2rpx;
+  letter-spacing: 4rpx;
 }
 .login-action:active { opacity: 0.85; transform: scale(0.98); }
 
