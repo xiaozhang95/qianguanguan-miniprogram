@@ -1,4 +1,5 @@
 import config from '../config/index'
+import { ResponseCode } from '../constants/index'
 import { wxShowToast } from './wx'
 
 export default async function request<T>(d: RequestInfo) {
@@ -20,10 +21,10 @@ export default async function request<T>(d: RequestInfo) {
     wx.request({
       ...options,
       success: (response) => {
-        if (response.statusCode === 200) {
+        if (response.statusCode === ResponseCode.SUCCESS) {
           const json = response.data as CtmResponse<T>
 
-          if (json.code !== 200) {
+          if (json.code !== ResponseCode.SUCCESS) {
             wxShowToast({ title: json.msg || '请求失败' })
 
             if (json.code === 401) {

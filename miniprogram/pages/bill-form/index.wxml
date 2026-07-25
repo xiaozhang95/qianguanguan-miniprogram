@@ -1,0 +1,82 @@
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content">
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <view class="nav-back" bindtap="handleBack">
+          <van-icon name="arrow-left" color="#fff" size="36rpx" />
+          <text>返回</text>
+        </view>
+      </view>
+      <text class="header-title">{{ editing ? '编辑账单' : '记一笔' }}</text>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="form-type">
+      <view class="type-tab {{ formType === 'EXPENSE' ? 'active expense' : '' }}" bindtap="onFormTypeChange" data-type="EXPENSE">支出</view>
+      <view class="type-tab {{ formType === 'INCOME' ? 'active income' : '' }}" bindtap="onFormTypeChange" data-type="INCOME">收入</view>
+    </view>
+
+    <view class="form-field" bindtap="onFormCategoryOpen">
+      <text class="field-label">分类</text>
+      <view class="field-value">
+        <text wx:if="{{ formCategoryName }}" class="field-text">{{ formCategoryName }}</text>
+        <text wx:else class="field-placeholder">请选择分类</text>
+        <van-icon name="arrow" size="28rpx" color="#ccc" />
+      </view>
+    </view>
+
+    <view class="form-field">
+      <text class="field-label">金额</text>
+      <input class="field-input" type="digit" value="{{ formAmount }}" placeholder="0.00" bindinput="onFormAmountInput" />
+    </view>
+
+    <view class="form-field" bindtap="onFormDateTap">
+      <text class="field-label">日期</text>
+      <view class="field-value">
+        <text class="field-text">{{ formDate }}</text>
+        <van-icon name="arrow" size="28rpx" color="var(--color-placeholder)" />
+      </view>
+    </view>
+
+    <view class="form-field">
+      <text class="field-label">备注</text>
+      <input class="field-input" value="{{ formRemark }}" placeholder="选填" maxlength="200" bindinput="onFormRemarkInput" />
+    </view>
+  </view>
+
+  <view class="btn-wrap">
+    <van-button custom-class="save-btn" block loading="{{ saving }}" bindtap="onFormSubmit">保存</van-button>
+    <van-button wx:if="{{ editing }}" custom-class="delete-btn" block bindtap="onFormDelete">删除</van-button>
+  </view>
+
+  <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-class="cat-popup" lock-scroll>
+    <view class="cat-picker-wrap">
+      <view class="cat-picker-header">
+        <text class="cat-picker-title">选择分类</text>
+        <van-icon name="cross" size="40rpx" color="#999" bindtap="onFormCategoryClose" />
+      </view>
+      <view class="cat-list">
+        <block wx:for="{{ filteredCategories }}" wx:key="id">
+          <view class="cat-item {{ formCategoryId === item.id ? 'active' : '' }}" bindtap="onFormCategorySelect" data-cat="{{ item }}">
+            <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
+            <text wx:else class="cat-icon">{{ item.icon }}</text>
+            <text class="cat-name">{{ item.name }}</text>
+            <van-icon wx:if="{{ formCategoryId === item.id }}" name="success" size="36rpx" color="#1677ff" />
+          </view>
+        </block>
+        <view wx:if="{{ filteredCategories.length === 0 }}" class="cat-empty">
+          <text>暂无分类，请先在Web端添加</text>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+
+  <van-popup show="{{ showDatePicker }}" position="bottom" bind:close="onDatePickerClose" round lock-scroll custom-class="date-popup">
+    <van-datetime-picker type="date" value="{{ currentDate }}" min-date="{{ minDate }}" max-date="{{ maxDate }}" bind:confirm="onDateConfirm" bind:cancel="onDatePickerClose" title="选择日期" show-toolbar />
+  </van-popup>
+</view>

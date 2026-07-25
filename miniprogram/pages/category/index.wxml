@@ -1,4 +1,4 @@
-<view class="page" catchtouchmove="{{ showForm ? 'onPrevent' : '' }}">
+<view class="page">
   <fixed-nav-bar id="fixed-nav" title="分类管理" app="{{ app }}" />
 
   <view class="header">
@@ -105,78 +105,4 @@
   </block>
 
   <fab-button bind:tap="onAdd" />
-
-  <van-popup show="{{ showForm }}" position="bottom" bind:close="onFormClose" round custom-class="form-popup" lock-scroll>
-    <view class="form-wrap">
-      <view class="form-header">
-        <text class="form-title">{{ editingCategory ? '编辑分类' : '新增分类' }}</text>
-        <van-icon name="cross" size="40rpx" color="#999" bindtap="onFormClose" />
-      </view>
-
-      <view class="form-type">
-        <view
-          class="type-tab {{ formType === BillType.EXPENSE ? 'active expense' : '' }}"
-          bindtap="onFormTypeChange"
-          data-type="{{ BillType.EXPENSE }}"
-        >支出</view>
-        <view
-          class="type-tab {{ formType === BillType.INCOME ? 'active income' : '' }}"
-          bindtap="onFormTypeChange"
-          data-type="{{ BillType.INCOME }}"
-        >收入</view>
-      </view>
-
-      <view class="form-field">
-        <text class="field-label">名称</text>
-        <input
-          class="field-input"
-          value="{{ formName }}"
-          placeholder="如：餐饮"
-          maxlength="50"
-          bindinput="onNameInput"
-        />
-      </view>
-
-      <view class="form-field form-field--icon">
-        <text class="field-label">图标</text>
-        <view class="icon-pick-wrap">
-          <view wx:if="{{ formIconFile }}" class="icon-preview">
-            <image class="icon-preview-img" src="{{ formIconFile }}" mode="aspectFill"></image>
-            <view class="icon-preview-remove" bindtap="onRemoveIcon">
-              <van-icon name="cross" size="24rpx" color="#fff" />
-            </view>
-          </view>
-          <view wx:else class="icon-actions">
-            <input
-              class="field-input"
-              value="{{ formIcon }}"
-              placeholder="如：🍜"
-              maxlength="500"
-              bindinput="onIconInput"
-            />
-            <view class="icon-upload-btn" bindtap="onChooseIcon">
-              <van-icon name="photograph" size="36rpx" color="#1677ff" />
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <view class="form-field">
-        <text class="field-label">排序</text>
-        <input
-          class="field-input"
-          type="number"
-          value="{{ formSort }}"
-          bindinput="onSortChange"
-        />
-      </view>
-
-      <van-button
-        custom-class="save-btn"
-        block
-        loading="{{ saving }}"
-        bindtap="onFormSubmit"
-      >保存</van-button>
-    </view>
-  </van-popup>
 </view>

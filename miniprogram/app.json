@@ -2,9 +2,11 @@
   "pages": [
     "pages/home/index",
     "pages/bill/index",
+    "pages/bill-form/index",
     "pages/setting/index",
     "pages/user/index",
-    "pages/category/index"
+    "pages/category/index",
+    "pages/category-form/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

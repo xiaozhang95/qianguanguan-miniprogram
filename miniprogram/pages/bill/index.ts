@@ -1,15 +1,14 @@
-import { billDelete, billList, billSave, billStats, billUpdate } from '../../api/bill'
-import { categoryList } from '../../api/category'
+import { billList, billStats } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
-import { wxShowToast } from '../../utils/wx'
+import { wxNavigateTo } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
 function todayStr() {
   const d = new Date()
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
 }
 
 interface BillItem extends BillVO {
@@ -35,7 +34,6 @@ Page({
     ],
     activeTab: 0,
     showDatePicker: false,
-    formDatePick: false,
     currentDate: Date.now(),
     minDate: new Date(2020, 0).getTime(),
     maxDate: Date.now(),
@@ -50,23 +48,8 @@ Page({
     loading: false,
     hasData: false,
 
-    categories: [] as Category[],
-    incomeCategories: [] as Category[],
-    expenseCategories: [] as Category[],
-    filteredCategories: [] as Category[],
-
-    showForm: false,
-    editingBill: null as BillVO | null,
-    formType: BillType.EXPENSE as string,
-    formCategoryId: '',
-    formCategoryName: '',
-    formAmount: '',
-    formDate: todayStr(),
-    formRemark: '',
-    showCategoryPicker: false,
-    saving: false,
-
     isScrolled: false,
+    navigating: false,
 
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
@@ -84,13 +67,12 @@ Page({
   },
 
   onHide() {
-    this.setData({ showForm: false, showCategoryPicker: false, showDatePicker: false, isScrolled: false })
+    this.setData({ showDatePicker: false, isScrolled: false })
   },
 
   init() {
     isLogin(false)
       .then(() => {
-        this.loadCategories()
         this.loadData()
       })
       .catch(() => {
@@ -99,34 +81,12 @@ Page({
           bills: [],
           billGroups: [],
           hasData: false,
-          categories: [],
-          incomeCategories: [],
-          expenseCategories: [],
           expenseStr: '0.00',
           incomeStr: '0.00',
           balanceStr: '0.00',
           balanceClass: 'balance-zero'
         })
       })
-  },
-
-  loadCategories() {
-    categoryList().then(({ data }) => {
-      const cats = (data || []).map((c: Category) => {
-        const isImg = !!(c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http')))
-        return {
-          ...c,
-          iconIsImage: isImg,
-          icon: isImg && c.icon.startsWith('/upload/') ? config.url + c.icon : c.icon
-        }
-      })
-      this.setData({
-        categories: cats,
-        incomeCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.INCOME),
-        expenseCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.EXPENSE),
-        filteredCategories: cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.EXPENSE)
-      })
-    })
   },
 
   loadData() {
@@ -136,7 +96,7 @@ Page({
     const yearStr = String(filterYear)
     const monthStr = String(filterMonth)
     const dayStr = String(filterDay)
-    const dateStr = `${filterYear}-${pad(filterMonth)}-${pad(filterDay)}`
+    const dateStr = filterYear + '-' + pad(filterMonth) + '-' + pad(filterDay)
 
     Promise.all([billStats(yearStr, monthStr, dayStr), billList({ type: filterType, startDate: dateStr, endDate: dateStr, pageNum: 1, pageSize: 200 })])
       .then(([statsRes, listRes]) => {
@@ -149,7 +109,7 @@ Page({
             ...b,
             amountStr: fmt(b.amount),
             amountPrefix: b.type === BillType.INCOME ? '+' : '-',
-            categoryIcon: b.categoryIcon && b.categoryIcon.startsWith('/upload/') ? config.url + b.categoryIcon : b.categoryIcon
+            categoryIcon: b.categoryIcon && b.categoryIcon.indexOf('/upload/') === 0 ? config.url + b.categoryIcon : b.categoryIcon
           }
           const arr = groupMap.get(bill.billDate) || []
           arr.push(bill)
@@ -187,7 +147,7 @@ Page({
     const d = new Date(this.data.filterYear, this.data.filterMonth - 1, this.data.filterDay)
     d.setDate(d.getDate() - 1)
     this.setData({
-      filterDate: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+      filterDate: d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()),
       filterYear: d.getFullYear(),
       filterMonth: d.getMonth() + 1,
       filterDay: d.getDate()
@@ -199,7 +159,7 @@ Page({
     const d = new Date(this.data.filterYear, this.data.filterMonth - 1, this.data.filterDay)
     d.setDate(d.getDate() + 1)
     this.setData({
-      filterDate: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+      filterDate: d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()),
       filterYear: d.getFullYear(),
       filterMonth: d.getMonth() + 1,
       filterDay: d.getDate()
@@ -216,7 +176,7 @@ Page({
   },
 
   onDatePickerClose() {
-    this.setData({ showDatePicker: false, formDatePick: false })
+    this.setData({ showDatePicker: false })
   },
 
   onDateConfirm(e: WechatMiniprogram.CustomEvent) {
@@ -224,183 +184,30 @@ Page({
     const y = val.getFullYear()
     const m = val.getMonth() + 1
     const d = val.getDate()
-    const dateStr = `${y}-${pad(m)}-${pad(d)}`
-    if (this.data.formDatePick) {
-      this.setData({ formDate: dateStr, showDatePicker: false, formDatePick: false })
-    } else {
-      this.setData({
-        filterDate: dateStr,
-        filterYear: y,
-        filterMonth: m,
-        filterDay: d,
-        showDatePicker: false
-      })
-      this.loadData()
-    }
-  },
-
-  onFormDateTap() {
-    this.setData({ formDatePick: true, showDatePicker: true, currentDate: new Date(this.data.formDate).getTime() })
+    const dateStr = y + '-' + pad(m) + '-' + pad(d)
+    this.setData({
+      filterDate: dateStr,
+      filterYear: y,
+      filterMonth: m,
+      filterDay: d,
+      showDatePicker: false
+    })
+    this.loadData()
   },
 
   onAddBill() {
-    this.ensureCategories(() => {
-      const expenseCats = this.data.expenseCategories
-      this.setData({
-        showForm: true,
-        editingBill: null,
-        formType: BillType.EXPENSE as string,
-        formCategoryId: '',
-        formCategoryName: '',
-        formAmount: '',
-        formDate: this.data.filterDate,
-        formRemark: '',
-        filteredCategories: expenseCats
-      })
-    })
+    if (this.data.navigating) return
+    this.setData({ navigating: true })
+    wxNavigateTo('bill-form', 'date=' + this.data.filterDate)
+    this.setData({ navigating: false })
   },
 
   onEditBill(e: WechatMiniprogram.CustomEvent) {
+    if (this.data.navigating) return
     const bill = e.currentTarget.dataset.bill as BillVO
-    this.ensureCategories(() => {
-      const cats = bill.type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
-      this.setData({
-        showForm: true,
-        editingBill: bill,
-        formType: bill.type,
-        formCategoryId: bill.categoryId,
-        formCategoryName: bill.categoryName,
-        formAmount: String(bill.amount),
-        formDate: bill.billDate,
-        formRemark: bill.remark || '',
-        filteredCategories: cats
-      })
-    })
-  },
-
-  onFormCategoryOpen() {
-    this.ensureCategories(() => {
-      this.setData({ showCategoryPicker: true })
-    })
-  },
-
-  onFormCategoryClose() {
-    this.setData({ showCategoryPicker: false })
-  },
-
-  ensureCategories(cb: () => void) {
-    if (this.data.categories.length === 0) {
-      categoryList().then(({ data }) => {
-        const cats = (data || []).map((c: Category) => {
-          const isImg = !!(c.icon && (c.icon.startsWith('/upload/') || c.icon.startsWith('http')))
-          return {
-            ...c,
-            iconIsImage: isImg,
-            icon: isImg && c.icon.startsWith('/upload/') ? config.url + c.icon : c.icon
-          }
-        })
-        const incomeCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.INCOME)
-        const expenseCats = cats.filter((c: Category & { iconIsImage: boolean }) => c.type === BillType.EXPENSE)
-        this.setData({
-          categories: cats,
-          incomeCategories: incomeCats,
-          expenseCategories: expenseCats,
-          filteredCategories: this.data.formType === BillType.INCOME ? incomeCats : expenseCats
-        })
-        cb()
-      })
-    } else {
-      cb()
-    }
-  },
-
-  onFormClose() {
-    this.setData({ showForm: false })
-  },
-
-  onFormTypeChange(e: WechatMiniprogram.CustomEvent) {
-    const type = e.currentTarget.dataset.type as string
-    const cats = type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
-    this.setData({ formType: type, formCategoryId: '', formCategoryName: '', filteredCategories: cats })
-  },
-
-  onFormCategorySelect(e: WechatMiniprogram.CustomEvent) {
-    const cat = e.currentTarget.dataset.cat as Category
-    this.setData({
-      formCategoryId: cat.id,
-      formCategoryName: cat.name,
-      showCategoryPicker: false
-    })
-  },
-
-  onFormAmountInput(e: WechatMiniprogram.Input) {
-    this.setData({ formAmount: e.detail.value })
-  },
-
-  onFormRemarkInput(e: WechatMiniprogram.Input) {
-    this.setData({ formRemark: e.detail.value })
-  },
-
-  onFormSubmit() {
-    const { formType, formCategoryId, formAmount, formDate, formRemark, editingBill } = this.data
-
-    if (!formCategoryId) {
-      wxShowToast({ title: '请选择分类' })
-      return
-    }
-    const amount = parseFloat(formAmount)
-    if (!formAmount || isNaN(amount) || amount <= 0) {
-      wxShowToast({ title: '请输入有效金额' })
-      return
-    }
-    if (!formDate) {
-      wxShowToast({ title: '请选择日期' })
-      return
-    }
-
-    const params: BillSaveParams = {
-      categoryId: formCategoryId,
-      type: formType,
-      amount: Math.round(amount * 100) / 100,
-      billDate: formDate,
-      remark: formRemark || undefined
-    }
-
-    this.setData({ saving: true })
-
-    const request = editingBill ? billUpdate(editingBill.id, params) : billSave(params)
-    request
-      .then(({ msg }) => {
-        wxShowToast({ title: msg || '保存成功' })
-        this.setData({ showForm: false, saving: false })
-        this.loadData()
-        this.loadCategories()
-      })
-      .catch(() => {
-        this.setData({ saving: false })
-      })
-  },
-
-  onPrevent() {
-    return
-  },
-
-  onFormDelete() {
-    const { editingBill } = this.data
-    if (!editingBill) return
-    wx.showModal({
-      title: '确认删除',
-      content: '确定要删除这笔账单吗？',
-      success: (res) => {
-        if (res.confirm) {
-          billDelete(editingBill.id).then(({ msg }) => {
-            wxShowToast({ title: msg || '删除成功' })
-            this.setData({ showForm: false, editingBill: null })
-            this.loadData()
-          })
-        }
-      }
-    })
+    this.setData({ navigating: true })
+    wxNavigateTo('bill-form', 'id=' + bill.id)
+    this.setData({ navigating: false })
   },
 
   onPageScroll(e: { scrollTop: number }) {

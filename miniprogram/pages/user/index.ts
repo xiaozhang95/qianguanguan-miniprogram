@@ -1,5 +1,6 @@
 import { userProfile } from '../../api/user'
 import config from '../../config/index'
+import { ResponseCode } from '../../constants/index'
 import { wxNavigateBack, wxShowToast } from '../../utils/wx'
 
 const { globalData, update } = getApp()
@@ -75,7 +76,7 @@ Page({
         header: { Authorization: globalData.token },
         success: (res) => {
           const data = JSON.parse(res.data)
-          if (data.code === 200) {
+          if (data.code === ResponseCode.SUCCESS) {
             doSave(data.data.url)
           } else {
             wxShowToast({ title: data.msg || '上传失败' })

@@ -1,6 +1,5 @@
 ﻿@import '../../styles/common';
 
-/* ===== 个人资料页专属 ===== */
 .page {
   background: var(--bg);
   padding-bottom: 60rpx;
@@ -11,10 +10,12 @@
   padding-bottom: 60rpx;
 }
 
+.nav-bar {
+  justify-content: flex-start;
+  padding: 0 24rpx 12rpx;
+}
+
 .nav-back {
-  position: absolute;
-  left: 24rpx;
-  bottom: 12rpx;
   display: flex;
   align-items: center;
   gap: 8rpx;
@@ -30,20 +31,20 @@
 
 .form-card {
   margin: -40rpx 20rpx 0;
-  padding: 32rpx 0;
+  padding: var(--padding-lg) var(--padding-lg) 28rpx;
   background: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
   position: relative;
   z-index: 10;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
 }
 
 .avatar-row {
   display: flex;
   align-items: center;
-  padding: var(--padding) var(--padding-lg);
-  border-bottom: 1rpx solid var(--color-border);
 }
 
 .avatar-label {
@@ -93,28 +94,4 @@
 .btn-wrap {
   padding: 0 20rpx;
   margin-top: 32rpx;
-}
-
-.btn-wrap van-button { width: 100%; }
-
-.field-row {
-  display: flex;
-  align-items: center;
-  padding: var(--padding) var(--padding-lg);
-}
-
-.field-label {
-  max-width: 6.2em;
-  min-width: 6.2em;
-  margin-right: var(--gap-sm);
-  font-size: 28rpx;
-  color: var(--color);
-  flex-shrink: 0;
-}
-
-.field-input {
-  flex: 1;
-  font-size: 28rpx;
-  color: var(--color);
-  padding: 0;
 }

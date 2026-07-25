@@ -48,3 +48,7 @@ export const Colors = {
   bg: '#f5f5f5',
   white: '#ffffff'
 } as const
+
+export const ResponseCode = {
+  SUCCESS: 200
+} as const

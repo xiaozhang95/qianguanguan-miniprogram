@@ -1,0 +1,56 @@
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content">
+      <view class="nav-bar" style="height:{{ app.offsetTop }}px">
+        <view class="nav-back" bindtap="handleBack">
+          <van-icon name="arrow-left" color="#fff" size="36rpx" />
+          <text>返回</text>
+        </view>
+      </view>
+      <text class="header-title">{{ editing ? '编辑分类' : '新增分类' }}</text>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="form-type">
+      <view class="type-tab {{ formType === BillType.EXPENSE ? 'active expense' : '' }}" bindtap="onFormTypeChange" data-type="{{ BillType.EXPENSE }}">支出</view>
+      <view class="type-tab {{ formType === BillType.INCOME ? 'active income' : '' }}" bindtap="onFormTypeChange" data-type="{{ BillType.INCOME }}">收入</view>
+    </view>
+
+    <view class="form-field">
+      <text class="field-label">名称</text>
+      <input class="field-input" value="{{ formName }}" placeholder="如：餐饮" maxlength="50" bindinput="onNameInput" />
+    </view>
+
+    <view class="form-field">
+      <text class="field-label">图标</text>
+      <view class="icon-pick-wrap">
+        <view wx:if="{{ formIconFile }}" class="icon-preview">
+          <image class="icon-preview-img" src="{{ formIconFile }}" mode="aspectFill"></image>
+          <view class="icon-preview-remove" bindtap="onRemoveIcon">
+            <van-icon name="cross" size="24rpx" color="#fff" />
+          </view>
+        </view>
+        <view wx:else class="icon-actions">
+          <input class="field-input" value="{{ formIcon }}" placeholder="如：🍜" maxlength="500" bindinput="onIconInput" />
+          <view class="icon-upload-btn" bindtap="onChooseIcon">
+            <van-icon name="photograph" size="36rpx" color="#1677ff" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-field">
+      <text class="field-label">排序</text>
+      <input class="field-input" type="number" value="{{ formSort }}" bindinput="onSortChange" />
+    </view>
+  </view>
+
+  <view class="btn-wrap">
+    <van-button custom-class="save-btn" block loading="{{ saving }}" bindtap="onFormSubmit">保存</van-button>
+  </view>
+</view>

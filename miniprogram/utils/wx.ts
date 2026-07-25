@@ -29,8 +29,12 @@ export function wxGetStorageSync(key: string) {
   return wx.getStorageSync(key)
 }
 
-export function wxNavigateTo(name: string) {
-  return wx.navigateTo({ url: '/pages/' + name + '/index' })
+export function wxNavigateTo(name: string, query?: string) {
+  let url = '/pages/' + name + '/index'
+  if (query) {
+    url += '?' + query
+  }
+  return wx.navigateTo({ url })
 }
 
 export function wxShowShareMenu() {

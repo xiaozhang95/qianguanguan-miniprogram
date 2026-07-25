@@ -4,7 +4,6 @@
     "van-popup": "@vant/weapp/popup/index",
     "van-datetime-picker": "@vant/weapp/datetime-picker/index",
     "van-empty": "@vant/weapp/empty/index",
-    "van-button": "@vant/weapp/button/index",
     "stats-card": "/components/stats-card/stats-card",
     "fixed-nav-bar": "/components/fixed-nav-bar/fixed-nav-bar",
     "filter-tabs": "/components/filter-tabs/filter-tabs",
