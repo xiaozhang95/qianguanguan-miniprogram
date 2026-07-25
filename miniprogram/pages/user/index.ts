@@ -1,7 +1,6 @@
 import { userProfile } from '../../api/user'
 import config from '../../config/index'
-import { ResponseCode } from '../../constants/index'
-import { wxNavigateBack, wxShowToast } from '../../utils/wx'
+import { wxNavigateBack, wxReadFile, wxShowToast } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
@@ -9,6 +8,7 @@ Page({
   data: {
     avatar: '',
     avatarUrl: '',
+    oldAvatar: '',
     name: '',
     phone: '',
     email: '',
@@ -16,18 +16,25 @@ Page({
   },
   onShow() {
     const u = globalData.userInfo || {}
+    const a = u.avatar || ''
+    const isUpload = a.indexOf(config.uploadPath) === 0
+    const avatarUrl = isUpload ? config.url + a : a
     this.setData({
       app: globalData,
-      avatar: u.avatar || '',
+      avatar: avatarUrl,
       avatarUrl: '',
+      oldAvatar: a,
       name: u.name || '',
-      phone: u.email || '',
+      phone: u.phone || '',
       email: u.email || ''
     })
   },
   onChooseAvatar(e: WechatMiniprogram.CustomEvent) {
     const url = e.detail.avatarUrl
-    this.setData({ avatarUrl: url, avatar: url })
+    wxReadFile(url).then((res) => {
+      const base64 = 'data:image/png;base64,' + res.data
+      this.setData({ avatarUrl: base64, avatar: base64 })
+    })
   },
   onNameInput(e: WechatMiniprogram.Input) {
     this.setData({ name: e.detail.value })
@@ -50,46 +57,22 @@ Page({
     const phone = (this.data.phone || '').trim()
     const email = (this.data.email || '').trim()
     const avatarUrl = this.data.avatarUrl
-    const currentAvatar = this.data.avatar
+    const oldAvatar = this.data.oldAvatar
 
     this.setData({ saving: true })
 
-    const doSave = (avatar: string) => {
-      userProfile({ avatar, name, phone, email })
-        .then((res: CtmResponse<UserInfo>) => {
-          wxShowToast({ title: '保存成功' })
-          update('userInfo', res.data)
-          setTimeout(() => {
-            wxNavigateBack()
-          }, 1000)
-        })
-        .catch(() => {
-          this.setData({ saving: false })
-        })
-    }
+    const avatar = avatarUrl || oldAvatar
 
-    if (avatarUrl && avatarUrl !== currentAvatar) {
-      wx.uploadFile({
-        url: config.url + config.baseUrl + '/upload',
-        filePath: avatarUrl,
-        name: 'file',
-        header: { Authorization: globalData.token },
-        success: (res) => {
-          const data = JSON.parse(res.data)
-          if (data.code === ResponseCode.SUCCESS) {
-            doSave(data.data.url)
-          } else {
-            wxShowToast({ title: data.msg || '上传失败' })
-            this.setData({ saving: false })
-          }
-        },
-        fail: () => {
-          wxShowToast({ title: '上传失败' })
-          this.setData({ saving: false })
-        }
+    userProfile({ avatar, name, phone, email })
+      .then((res: CtmResponse<UserInfo>) => {
+        wxShowToast({ title: '保存成功' })
+        update('userInfo', res.data)
+        setTimeout(function () {
+          wxNavigateBack()
+        }, 1000)
       })
-    } else {
-      doSave(currentAvatar || '')
-    }
+      .catch(() => {
+        this.setData({ saving: false })
+      })
   }
 })

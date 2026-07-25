@@ -63,8 +63,8 @@
   max-height: 100rpx !important;
   padding: 0 !important;
   margin: 0 !important;
-  border: 2rpx dashed #e5e5e5 !important;
-  border-radius: 50% !important;
+  border: 2rpx dashed #ccc !important;
+  border-radius: var(--border-radius) !important;
   background: #fafafa !important;
   overflow: hidden;
   line-height: 1 !important;

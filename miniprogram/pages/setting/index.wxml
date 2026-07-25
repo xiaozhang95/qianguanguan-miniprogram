@@ -13,8 +13,10 @@
         </view>
       </view>
       <view class="header-row" wx:else>
-        <image class="header-avatar" wx:if="{{ app.userInfo.avatar }}" src="{{ app.userInfo.avatar }}" mode="aspectFill"></image>
-        <image class="header-logo" wx:else src="{{ LOGO_BASE64 }}" mode="aspectFit"></image>
+        <image class="header-avatar" wx:if="{{ avatar }}" src="{{ avatar }}" mode="aspectFill"></image>
+        <view wx:else class="avatar-empty">
+          <van-icon name="photograph" size="40rpx" color="#ccc" />
+        </view>
         <view class="header-info">
           <text class="header-name">您好，{{ app.userInfo.name || app.userInfo.username }}</text>
           <text class="header-role">{{ app.userInfo.role === 'SUPER_ADMIN' ? '管理员' : app.userInfo.role === 'ADMIN' ? '管理员' : '普通用户' }}</text>

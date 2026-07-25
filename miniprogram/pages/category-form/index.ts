@@ -1,7 +1,7 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
 import { BillType, ResponseCode } from '../../constants/index'
 import config from '../../config/index'
-import { wxNavigateBack, wxShowToast } from '../../utils/wx'
+import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
 
 const { globalData, isLogin } = getApp()
 
@@ -74,16 +74,14 @@ Page({
   },
 
   onChooseIcon() {
-    wx.chooseImage({
+    wxChooseImage({
       count: 1,
       sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
-      },
-      fail: () => {
-        this.setData({ saving: false })
-      }
+      sourceType: ['album', 'camera']
+    }).then((res) => {
+      this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
+    }).catch(() => {
+      this.setData({ saving: false })
     })
   },
 
@@ -125,20 +123,18 @@ Page({
 
     if (formIconFile) {
       if (iconChanged) {
-        wx.uploadFile({
+        wxUploadFile({
           url: config.url + config.baseUrl + '/upload',
           filePath: formIconFile,
           name: 'file',
-          header: { Authorization: globalData.token },
-          success: (res) => {
-            const data = JSON.parse(res.data)
-            if (data.code === ResponseCode.SUCCESS) {
-              doSave(data.data.url)
-            }
-          },
-          fail: () => {
-            this.setData({ saving: false })
+          header: { Authorization: globalData.token }
+        }).then((res) => {
+          const data = JSON.parse(res.data)
+          if (data.code === ResponseCode.SUCCESS) {
+            doSave(data.data.url)
           }
+        }).catch(() => {
+          this.setData({ saving: false })
         })
       } else {
         doSave(originalIcon)
@@ -154,21 +150,20 @@ Page({
 
   onDelete() {
     const { categoryId } = this.data
-    wx.showModal({
+    wxShowModal({
       title: '确认删除',
-      content: '确定要删除这个分类吗？',
-      success: (res) => {
-        if (res.confirm) {
-          this.setData({ deleting: true })
-          categoryDelete(categoryId)
-            .then(({ msg }) => {
-              wxShowToast({ title: msg || '删除成功' })
-              wxNavigateBack()
-            })
-            .catch(() => {
-              this.setData({ deleting: false })
-            })
-        }
+      content: '确定要删除这个分类吗？'
+    }).then((res) => {
+      if (res.confirm) {
+        this.setData({ deleting: true })
+        categoryDelete(categoryId)
+          .then(({ msg }) => {
+            wxShowToast({ title: msg || '删除成功' })
+            wxNavigateBack()
+          })
+          .catch(() => {
+            this.setData({ deleting: false })
+          })
       }
     })
   }

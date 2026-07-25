@@ -1,20 +1,30 @@
 import { LOGO_BASE64 } from '../../config/logo'
+import config from '../../config/index'
 import { debounceNavigateTo, wxLogin, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, watch } = getApp()
 
+function avatarUrl(u: { avatar?: string } | null) {
+  const a = (u && u.avatar) || ''
+  if (a.indexOf(config.uploadPath) === 0 || a.indexOf('http') === 0) {
+    return a.indexOf(config.uploadPath) === 0 ? config.url + a : a
+  }
+  return a
+}
+
 Page({
   data: {
-    LOGO_BASE64
+    LOGO_BASE64,
+    avatar: ''
   },
   onLoad() {
     wxShowShareMenu()
     watch((gd: typeof globalData) => {
-      this.setData({ app: gd })
+      this.setData({ app: gd, avatar: avatarUrl(gd.userInfo) })
     })
   },
   onShow() {
-    this.setData({ app: globalData })
+    this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
   },
   handleToLogin() {
     wxShowToast({ title: '请求中...', mask: true })

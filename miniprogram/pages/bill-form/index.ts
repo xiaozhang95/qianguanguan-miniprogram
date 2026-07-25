@@ -3,7 +3,7 @@ import { categoryList } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { pad } from '../../utils/format'
-import { wxNavigateBack, wxShowToast } from '../../utils/wx'
+import { wxNavigateBack, wxShowModal, wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin } = getApp()
 
@@ -188,16 +188,15 @@ Page({
   onFormDelete() {
     const { editing, billId } = this.data
     if (!editing || !billId) return
-    wx.showModal({
+    wxShowModal({
       title: '确认删除',
-      content: '确定要删除这笔账单吗？',
-      success: (res) => {
-        if (res.confirm) {
-          billDelete(billId).then(({ msg }) => {
-            wxShowToast({ title: msg || '删除成功' })
-            wxNavigateBack()
-          })
-        }
+      content: '确定要删除这笔账单吗？'
+    }).then((res) => {
+      if (res.confirm) {
+        billDelete(billId).then(({ msg }) => {
+          wxShowToast({ title: msg || '删除成功' })
+          wxNavigateBack()
+        })
       }
     })
   },

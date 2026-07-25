@@ -25,7 +25,18 @@
 .header-avatar {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 50%;
+  border-radius: var(--border-radius);
+  flex-shrink: 0;
+}
+
+.avatar-empty {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: var(--border-radius);
+  border: 2rpx dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 

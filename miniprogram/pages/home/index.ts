@@ -1,6 +1,7 @@
 import { billList, billStats } from '../../api/bill'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
+import { wxGetSystemInfoSync } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -159,7 +160,7 @@ Page({
 
             const now = new Date()
             const isCurrentMonth = now.getFullYear() === year && (now.getMonth() + 1) === month
-            const rpxRate = wx.getSystemInfoSync().windowWidth / 750
+            const rpxRate = wxGetSystemInfoSync().windowWidth / 750
             const chartScrollLeft = isCurrentMonth
               ? Math.max(0, (now.getDate() - 1) * 68 * rpxRate)
               : 0

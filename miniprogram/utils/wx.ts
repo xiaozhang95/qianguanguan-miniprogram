@@ -56,3 +56,50 @@ export function wxShowShareMenu() {
 export function wxNavigateBack() {
   return wx.navigateBack()
 }
+
+export function wxReadFile(filePath: string) {
+  return new Promise<{ data: string }>((resolve, reject) => {
+    wx.getFileSystemManager().readFile({
+      filePath,
+      encoding: 'base64',
+      success: (res) => resolve({ data: res.data as string }),
+      fail: reject
+    })
+  })
+}
+
+export function wxGetSystemInfoSync() {
+  return wx.getSystemInfoSync()
+}
+
+export function wxShowModal({ title = '', content = '' }) {
+  return new Promise<WechatMiniprogram.ShowModalSuccessCallbackResult>((resolve, reject) => {
+    wx.showModal({
+      title,
+      content,
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+export function wxChooseImage(options: { count: number; sizeType: ('original' | 'compressed')[]; sourceType: ('album' | 'camera')[] }) {
+  return new Promise<WechatMiniprogram.ChooseImageSuccessCallbackResult>((resolve, reject) => {
+    wx.chooseImage({
+      ...options,
+      success: resolve,
+      fail: reject
+    })
+  })
+}
+
+export function wxUploadFile(options: { url: string; filePath: string; name: string; header: Record<string, string> }) {
+  return new Promise<WechatMiniprogram.UploadFileSuccessCallbackResult>((resolve, reject) => {
+    const task = wx.uploadFile({
+      ...options,
+      success: resolve,
+      fail: reject
+    })
+    return task
+  })
+}
