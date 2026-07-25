@@ -1,6 +1,9 @@
 ﻿@import '../../styles/common';
 
-/* ===== 首页专属 ===== */
+.page {
+  padding-bottom: 60rpx;
+}
+
 .month-bar {
   display: flex;
   align-items: center;

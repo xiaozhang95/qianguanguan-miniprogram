@@ -37,6 +37,15 @@ export function wxNavigateTo(name: string, query?: string) {
   return wx.navigateTo({ url })
 }
 
+let lastNavTime = 0
+
+export function debounceNavigateTo(name: string, query?: string, threshold?: number) {
+  const now = Date.now()
+  if (now - lastNavTime < (threshold || 500)) return
+  lastNavTime = now
+  return wxNavigateTo(name, query)
+}
+
 export function wxShowShareMenu() {
   return wx.showShareMenu({
     withShareTicket: true,

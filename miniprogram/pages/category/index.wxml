@@ -51,11 +51,7 @@
         </view>
         <view class="cat-section">
           <block wx:for="{{ customCategories }}" wx:key="id">
-            <van-swipe-cell
-              right-width="{{ 160 }}"
-              custom-class="cat-swipe"
-            >
-              <view class="cat-row" bindtap="onEdit" data-cat="{{ item }}">
+             <view class="cat-row" bindtap="onEdit" data-cat="{{ item }}">
                 <view class="cat-left">
                   <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
                   <text wx:else class="cat-icon">{{ item.icon }}</text>
@@ -68,11 +64,6 @@
                   <view class="cat-tag custom">自定义</view>
                 </view>
               </view>
-              <view slot="right" class="swipe-actions">
-                <view class="swipe-btn swipe-edit" bindtap="onEdit" data-cat="{{ item }}">编辑</view>
-                <view class="swipe-btn swipe-delete" bindtap="onDelete" data-id="{{ item.id }}">删除</view>
-              </view>
-            </van-swipe-cell>
           </block>
         </view>
       </block>
@@ -84,7 +75,7 @@
         </view>
         <view class="cat-section">
           <block wx:for="{{ systemCategories }}" wx:key="id">
-            <view class="cat-row cat-row-system" bindtap="onSystemTap">
+            <view class="cat-row" bindtap="onSystemTap">
               <view class="cat-left">
                 <image wx:if="{{ item.iconIsImage }}" class="cat-icon-img" src="{{ item.icon }}" mode="aspectFill"></image>
                 <text wx:else class="cat-icon">{{ item.icon }}</text>

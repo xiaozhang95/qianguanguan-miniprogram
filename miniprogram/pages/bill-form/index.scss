@@ -45,15 +45,17 @@
 .btn-wrap {
   padding: 0 20rpx;
   margin-top: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
 }
 
-.delete-btn {
+.del-btn {
   width: 100% !important;
-  margin-top: 16rpx;
   border-radius: var(--border-radius) !important;
-  background: var(--color-white) !important;
-  border: 2rpx solid var(--color-expense) !important;
-  color: var(--color-expense) !important;
+  background: var(--color-expense) !important;
+  border: none !important;
+  color: var(--color-white) !important;
   font-size: var(--font-size) !important;
 }
 

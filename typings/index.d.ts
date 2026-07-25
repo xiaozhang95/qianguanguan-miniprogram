@@ -14,6 +14,7 @@ interface Config {
   [key: string]: {
     baseUrl: string
     url: string
+    uploadPath: string
   }
 }
 

@@ -45,6 +45,9 @@
 .btn-wrap {
   padding: 0 20rpx;
   margin-top: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
 }
 
 .icon-pick-wrap {
@@ -93,4 +96,13 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.del-btn {
+  width: 100% !important;
+  border-radius: var(--border-radius) !important;
+  background: var(--color-expense) !important;
+  border: none !important;
+  color: var(--color-white) !important;
+  font-size: var(--font-size) !important;
 }

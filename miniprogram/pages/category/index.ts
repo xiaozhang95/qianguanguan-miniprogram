@@ -1,7 +1,7 @@
-import { categoryDelete, categoryList } from '../../api/category'
+import { categoryList } from '../../api/category'
 import { BillType } from '../../constants/index'
 import config from '../../config/index'
-import { wxNavigateTo, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -23,7 +23,6 @@ Page({
     ],
 
     isScrolled: false,
-    navigating: false,
 
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
@@ -57,17 +56,17 @@ Page({
     categoryList()
       .then(({ data }) => {
         const cats = (data || []).map((c: Category) => {
-          const isImg = !!(c.icon && (c.icon.indexOf('/upload/') === 0 || c.icon.indexOf('http') === 0))
+          const isImg = !!(c.icon && (c.icon.indexOf(config.uploadPath) === 0 || c.icon.indexOf('http') === 0))
           return {
             ...c,
             iconIsImage: isImg,
-            icon: isImg && c.icon.indexOf('/upload/') === 0 ? config.url + c.icon : c.icon
+            icon: isImg && c.icon.indexOf(config.uploadPath) === 0 ? config.url + c.icon : c.icon
           }
         })
         const filterType = this.data.filterTabs[this.data.activeTab].type === 'expense' ? BillType.EXPENSE : BillType.INCOME
         const filtered = cats.filter((c) => c.type === filterType)
-        const system = cats.filter((c) => c.userId === null)
-        const custom = cats.filter((c) => c.userId !== null)
+        const system = filtered.filter((c) => c.userId === null)
+        const custom = filtered.filter((c) => c.userId !== null)
         const expenseCats = cats.filter((c) => c.type === BillType.EXPENSE)
         const incomeCats = cats.filter((c) => c.type === BillType.INCOME)
         this.setData({
@@ -89,46 +88,26 @@ Page({
   onFilterTabChange(e: WechatMiniprogram.CustomEvent) {
     const idx = e.detail.index as number
     const filterType = idx === 0 ? BillType.EXPENSE : BillType.INCOME
+    const filtered = this.data.categories.filter((c) => c.type === filterType)
     this.setData({
       activeTab: idx,
-      filteredCategories: this.data.categories.filter((c) => c.type === filterType)
+      filteredCategories: filtered,
+      customCategories: filtered.filter((c) => c.userId !== null),
+      systemCategories: filtered.filter((c) => c.userId === null)
     })
   },
 
   onAdd() {
-    if (this.data.navigating) return
-    this.setData({ navigating: true })
-    wxNavigateTo('category-form')
-    this.setData({ navigating: false })
+    debounceNavigateTo('category-form')
   },
 
   onEdit(e: WechatMiniprogram.CustomEvent) {
-    if (this.data.navigating) return
     const cat = e.currentTarget.dataset.cat as Category
-    this.setData({ navigating: true })
-    wxNavigateTo('category-form', 'id=' + cat.id)
-    this.setData({ navigating: false })
+    debounceNavigateTo('category-form', 'id=' + cat.id)
   },
 
   onSystemTap() {
     wxShowToast({ title: '系统分类不可编辑' })
-  },
-
-  onDelete(e: WechatMiniprogram.CustomEvent) {
-    const id = e.currentTarget.dataset.id as string
-    wx.showModal({
-      title: '确认删除',
-      content: '确定要删除这个分类吗？',
-      success: (res) => {
-        if (res.confirm) {
-          categoryDelete(id)
-            .then(({ msg }) => {
-              wxShowToast({ title: msg || '删除成功' })
-              this.loadCategories()
-            })
-        }
-      }
-    })
   },
 
   onPageScroll(e: { scrollTop: number }) {

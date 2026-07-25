@@ -1,5 +1,5 @@
 import { LOGO_BASE64 } from '../../config/logo'
-import { wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxLogin, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, watch } = getApp()
 
@@ -27,7 +27,7 @@ Page({
       })
   },
   handleToUser() {
-    wxNavigateTo('user')
+    debounceNavigateTo('user')
   },
   handleToExitLogin() {
     exitLogin(() => {

@@ -52,5 +52,6 @@
 
   <view class="btn-wrap">
     <van-button custom-class="save-btn" block loading="{{ saving }}" bindtap="onFormSubmit">保存</van-button>
+    <van-button wx:if="{{ editing }}" custom-class="del-btn" block loading="{{ deleting }}" bindtap="onDelete">删除</van-button>
   </view>
 </view>

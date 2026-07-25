@@ -2,7 +2,7 @@ import { billList, billStats } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
-import { wxNavigateTo } from '../../utils/wx'
+import { debounceNavigateTo } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -14,6 +14,7 @@ function todayStr() {
 interface BillItem extends BillVO {
   amountStr: string
   amountPrefix: string
+  iconIsImage: boolean
 }
 
 interface BillGroup {
@@ -49,7 +50,6 @@ Page({
     hasData: false,
 
     isScrolled: false,
-    navigating: false,
 
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
@@ -105,11 +105,13 @@ Page({
 
         const groupMap = new Map<string, BillItem[]>()
         records.forEach((b: BillVO) => {
+          const isImg = !!(b.categoryIcon && (b.categoryIcon.indexOf(config.uploadPath) === 0 || b.categoryIcon.indexOf('http') === 0))
           const bill: BillItem = {
             ...b,
             amountStr: fmt(b.amount),
             amountPrefix: b.type === BillType.INCOME ? '+' : '-',
-            categoryIcon: b.categoryIcon && b.categoryIcon.indexOf('/upload/') === 0 ? config.url + b.categoryIcon : b.categoryIcon
+            iconIsImage: isImg,
+            categoryIcon: isImg && b.categoryIcon.indexOf(config.uploadPath) === 0 ? config.url + b.categoryIcon : b.categoryIcon
           }
           const arr = groupMap.get(bill.billDate) || []
           arr.push(bill)
@@ -196,18 +198,12 @@ Page({
   },
 
   onAddBill() {
-    if (this.data.navigating) return
-    this.setData({ navigating: true })
-    wxNavigateTo('bill-form', 'date=' + this.data.filterDate)
-    this.setData({ navigating: false })
+    debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
   },
 
   onEditBill(e: WechatMiniprogram.CustomEvent) {
-    if (this.data.navigating) return
     const bill = e.currentTarget.dataset.bill as BillVO
-    this.setData({ navigating: true })
-    wxNavigateTo('bill-form', 'id=' + bill.id)
-    this.setData({ navigating: false })
+    debounceNavigateTo('bill-form', 'id=' + bill.id)
   },
 
   onPageScroll(e: { scrollTop: number }) {

@@ -1,4 +1,4 @@
-import { categoryList, categorySave, categoryUpdate } from '../../api/category'
+import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
 import { BillType, ResponseCode } from '../../constants/index'
 import config from '../../config/index'
 import { wxNavigateBack, wxShowToast } from '../../utils/wx'
@@ -19,6 +19,7 @@ Page({
     formType: BillType.EXPENSE as string,
     formSort: 0,
     saving: false,
+    deleting: false,
     choosingImage: false,
 
     app: null as { offsetTop: number; capsuleTop: number } | null
@@ -42,8 +43,8 @@ Page({
     categoryList().then(({ data: cats }) => {
       const cat = (cats || []).find((c) => c.id === id)
       if (!cat) return
-      const isImg = !!(cat.icon && (cat.icon.indexOf('/upload/') === 0 || cat.icon.indexOf('http') === 0))
-      const imgUrl = isImg ? (cat.icon.indexOf('/upload/') === 0 ? config.url + cat.icon : cat.icon) : ''
+      const isImg = !!(cat.icon && (cat.icon.indexOf(config.uploadPath) === 0 || cat.icon.indexOf('http') === 0))
+      const imgUrl = isImg ? (cat.icon.indexOf(config.uploadPath) === 0 ? config.url + cat.icon : cat.icon) : ''
       this.setData({
         formName: cat.name,
         formIcon: isImg ? '' : cat.icon,
@@ -151,5 +152,26 @@ Page({
 
   handleBack() {
     wxNavigateBack()
+  },
+
+  onDelete() {
+    const { categoryId } = this.data
+    wx.showModal({
+      title: '确认删除',
+      content: '确定要删除这个分类吗？',
+      success: (res) => {
+        if (res.confirm) {
+          this.setData({ deleting: true })
+          categoryDelete(categoryId)
+            .then(({ msg }) => {
+              wxShowToast({ title: msg || '删除成功' })
+              wxNavigateBack()
+            })
+            .catch(() => {
+              this.setData({ deleting: false })
+            })
+        }
+      }
+    })
   }
 })

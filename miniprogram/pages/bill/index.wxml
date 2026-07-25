@@ -50,8 +50,8 @@
           <block wx:for="{{ item.items }}" wx:for-item="bill" wx:key="id">
             <view class="bill-row" bindtap="onEditBill" data-bill="{{ bill }}">
               <view class="bill-left">
-                <image wx:if="{{ bill.categoryIcon && bill.categoryIcon.indexOf('http') === 0 }}" class="bill-icon-img" src="{{ bill.categoryIcon }}" mode="aspectFill"></image>
-                <text wx:elif="{{ bill.categoryIcon }}" class="bill-icon">{{ bill.categoryIcon }}</text>
+                <image wx:if="{{ bill.iconIsImage }}" class="bill-icon-img" src="{{ bill.categoryIcon }}" mode="aspectFill"></image>
+                <text wx:else class="bill-icon">{{ bill.categoryIcon }}</text>
                 <view class="bill-info">
                   <text class="bill-category">{{ bill.categoryName }}</text>
                   <text wx:if="{{ bill.remark }}" class="bill-remark">{{ bill.remark }}</text>

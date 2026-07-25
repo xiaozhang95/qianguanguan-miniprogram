@@ -48,10 +48,8 @@
 }
 
 .avatar-label {
-  max-width: 6.2em;
-  min-width: 6.2em;
-  margin-right: var(--gap-sm);
-  font-size: 28rpx;
+  width: 120rpx;
+  font-size: var(--font-size);
   color: var(--color);
   flex-shrink: 0;
 }

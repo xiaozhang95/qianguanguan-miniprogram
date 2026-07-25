@@ -1,6 +1,9 @@
 ﻿@import '../../styles/common';
 
-/* ===== 分类页专属 ===== */
+.page {
+  padding-bottom: 60rpx;
+}
+
 .stats-group {
   margin: -20rpx var(--padding-lg) 0;
   display: flex;
@@ -35,81 +38,4 @@
   background: var(--bg);
   padding: 2rpx 12rpx;
   border-radius: 20rpx;
-}
-
-.swipe-actions {
-  display: flex;
-  height: 100%;
-}
-
-.swipe-btn {
-  width: 80rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-sm);
-  color: var(--color-white);
-}
-
-.swipe-edit {
-  background: var(--theme);
-}
-
-.swipe-delete {
-  background: var(--color-expense);
-}
-
-.cat-icon-editor {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-}
-
-.icon-preview {
-  position: relative;
-  width: 120rpx;
-  height: 120rpx;
-  flex-shrink: 0;
-}
-
-.icon-pick-wrap {
-  flex: 1;
-}
-
-.icon-preview-img {
-  width: 100%;
-  height: 100%;
-  border-radius: var(--border-radius);
-}
-
-.icon-preview-remove {
-  position: absolute;
-  top: -8rpx;
-  right: -8rpx;
-  width: 36rpx;
-  height: 36rpx;
-  border-radius: 50%;
-  background: var(--color-expense);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-actions {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.icon-upload-btn {
-  width: 56rpx;
-  height: 56rpx;
-  border-radius: var(--border-radius);
-  border: 2rpx dashed #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
 }

@@ -59,11 +59,11 @@ Page({
   loadCategories() {
     categoryList().then(({ data }) => {
       const cats = (data || []).map((c: Category) => {
-        const isImg = !!(c.icon && (c.icon.indexOf('/upload/') === 0 || c.icon.indexOf('http') === 0))
+        const isImg = !!(c.icon && (c.icon.indexOf(config.uploadPath) === 0 || c.icon.indexOf('http') === 0))
         return {
           ...c,
           iconIsImage: isImg,
-          icon: isImg && c.icon.indexOf('/upload/') === 0 ? config.url + c.icon : c.icon
+          icon: isImg && c.icon.indexOf(config.uploadPath) === 0 ? config.url + c.icon : c.icon
         }
       })
       const incomeCats = cats.filter((c) => c.type === BillType.INCOME)

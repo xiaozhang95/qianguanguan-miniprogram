@@ -51,7 +51,7 @@
 
   <view class="btn-wrap">
     <van-button custom-class="save-btn" block loading="{{ saving }}" bindtap="onFormSubmit">保存</van-button>
-    <van-button wx:if="{{ editing }}" custom-class="delete-btn" block bindtap="onFormDelete">删除</van-button>
+      <van-button wx:if="{{ editing }}" custom-class="del-btn" block bindtap="onFormDelete">删除</van-button>
   </view>
 
   <van-popup show="{{ showCategoryPicker }}" position="bottom" bind:close="onFormCategoryClose" round custom-class="cat-popup" lock-scroll>
