@@ -1,5 +1,5 @@
 import config from '../../config/index'
-import { debounceNavigateTo, wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxLogin, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, watch } = getApp()
 
@@ -38,7 +38,7 @@ Page({
     debounceNavigateTo('user')
   },
   handleToQrLogin() {
-    wxNavigateTo('qr-login')
+    debounceNavigateTo('qr-login')
   },
   handleToExitLogin() {
     exitLogin(() => {
@@ -49,10 +49,10 @@ Page({
     })
   },
   handleToAgreement() {
-    wxNavigateTo('agreement', 'tab=service')
+    debounceNavigateTo('agreement', 'tab=service')
   },
   handleToPrivacy() {
-    wxNavigateTo('agreement', 'tab=privacy')
+    debounceNavigateTo('agreement', 'tab=privacy')
   },
   onShareAppMessage() {
     return {

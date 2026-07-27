@@ -3,7 +3,8 @@
 .agreement-tabs {
   --tabs-nav-background-color: var(--color-white);
   --tab-font-size: var(--font-size);
-  --tab-active-text-color: #1677ff;
+  --tab-active-text-color: var(--theme);
+  --tabs-bottom-bar-color: var(--theme);
 }
 
 .content {

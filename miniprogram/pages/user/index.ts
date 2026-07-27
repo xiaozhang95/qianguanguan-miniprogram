@@ -1,6 +1,6 @@
 import { sendEmailCode, uploadAvatar, userProfile } from '../../api/user'
 import config from '../../config/index'
-import { wxNavigateBack, wxNavigateTo, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxNavigateBack, wxShowToast } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
@@ -73,14 +73,14 @@ Page({
   handleBack() {
     wxNavigateBack()
   },
-  onAgreeChange(e: WechatMiniprogram.CustomEvent<boolean>) {
-    this.setData({ agreed: e.detail })
+  onAgreeChange(e: WechatMiniprogram.CustomEvent) {
+    this.setData({ agreed: e.detail as unknown as boolean })
   },
   handleToService() {
-    wxNavigateTo('agreement', 'tab=service')
+    debounceNavigateTo('agreement', 'tab=service')
   },
   handleToPrivacy() {
-    wxNavigateTo('agreement', 'tab=privacy')
+    debounceNavigateTo('agreement', 'tab=privacy')
   },
   handleSendCode() {
     const email = this.data.email

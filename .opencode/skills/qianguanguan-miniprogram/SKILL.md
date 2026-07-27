@@ -33,11 +33,10 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 - **禁止** `eslint-disable` 注释
 - 每次代码修改后运行 `pnpm lint`（`tsc --noEmit && eslint .`），确保零错误
 - 如果 PowerShell 执行策略限制 `pnpm`，使用 `cmd /c "pnpm lint"`
-- **禁止**可选链 `?.` 和空值合并 `??`（`es6: false`），用 `if (x) x()` 替代
+- **禁止**可选链 `?.` 和空值合并 `??`，用 `if (x) x()` 替代
 - **禁止** `Function` 类型，用具体回调类型替代
 - **禁止** `any` 类型，`app` 字段用 `null as { offsetTop: number; capsuleTop: number } | null`
 - **禁止** `var`，使用 `const` 或 `let`
-- **禁止**模板字符串 `` `${}` ``，使用 `+` 拼接（`es6: false`）
 - 页面 JSON 只能注册真正在 WXML 中使用的组件，禁止冗余注册
 
 ## 微信小程序特有约束
@@ -128,10 +127,16 @@ const bill: BillItem = {
 
 ```
 pages/
-├── bill/index          # 账单列表（FAB → bill-form）
-├── bill-form/index     # 记一笔/编辑账单
-├── category/index      # 分类列表（FAB → category-form）
-└── category-form/index # 新增/编辑分类
+├── home/index              # 首页：月度统计仪表盘（收支图、饼图）
+├── bill/index              # 账单列表（FAB → bill-form）
+├── bill-form/index         # 记一笔/编辑账单
+├── category/index          # 分类列表（FAB → category-form）
+├── category-form/index     # 新增/编辑分类
+├── user/index              # 用户资料编辑
+├── setting/index           # 我的/设置（tabBar 页）
+├── qr-login/index          # 扫码登录确认
+├── qr-bind/index           # 扫码绑定微信确认
+└── agreement/index         # 用户协议 & 隐私政策
 ```
 
 ### 表单页面头部模板

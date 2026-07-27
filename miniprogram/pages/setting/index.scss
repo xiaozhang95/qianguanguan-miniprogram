@@ -75,6 +75,13 @@
 .menu-icon-exit { color: var(--color-expense) !important; }
 .menu-icon-agreement { color: #1677ff !important; }
 .menu-icon-privacy { color: #52c41a !important; }
-.share-btn { display: none; }
+.share-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+}
 .footer { text-align: center; padding: 48rpx var(--padding); }
 .footer text { font-size: var(--font-size-xs); color: var(--color-light); }
