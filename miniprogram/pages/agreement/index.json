@@ -3,6 +3,7 @@
   "usingComponents": {
     "van-icon": "@vant/weapp/icon/index",
     "van-tabs": "@vant/weapp/tabs/index",
-    "van-tab": "@vant/weapp/tab/index"
+    "van-tab": "@vant/weapp/tab/index",
+    "fixed-nav-bar": "/components/fixed-nav-bar/fixed-nav-bar"
   }
 }

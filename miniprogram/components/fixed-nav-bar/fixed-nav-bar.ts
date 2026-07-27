@@ -1,7 +1,8 @@
 Component({
   properties: {
     title: { type: String, value: '' },
-    app: { type: Object, value: {} }
+    app: { type: Object, value: {} },
+    showBack: { type: Boolean, value: false }
   },
   data: {
     isScrolled: false
@@ -20,6 +21,9 @@ Component({
       if (scrolled !== this.data.isScrolled) {
         this.setData({ isScrolled: scrolled })
       }
+    },
+    onBack() {
+      this.triggerEvent('back')
     }
   }
 })

@@ -17,5 +17,9 @@ Page({
   },
   handleBack() {
     wxNavigateBack()
+  },
+  onPageScroll(e: { scrollTop: number }) {
+    const nav = this.selectComponent('#fixed-nav')
+    if (nav) nav.onPageScroll(e)
   }
 })

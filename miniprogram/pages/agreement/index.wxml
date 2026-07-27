@@ -1,4 +1,6 @@
 <view class="page">
+  <fixed-nav-bar id="fixed-nav" title="用户协议与隐私政策" app="{{ app }}" showBack bind:back="handleBack" />
+
   <view class="header">
     <view class="header-bg">
       <view class="header-circle c1"></view>

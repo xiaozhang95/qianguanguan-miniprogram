@@ -1,3 +1,7 @@
 <view class="nav-fixed {{ isScrolled ? 'nav-fixed--show' : '' }}" style="height:{{ app.offsetTop + 12 }}px; padding-top:{{ app.capsuleTop }}px; padding-bottom:12px">
-  <text class="nav-title">{{ title }}</text>
+  <view wx:if="{{ showBack }}" class="nav-back" bindtap="onBack">
+    <van-icon name="arrow-left" color="#fff" size="36rpx" />
+    <text>返回</text>
+  </view>
+  <text wx:else class="nav-title">{{ title }}</text>
 </view>
