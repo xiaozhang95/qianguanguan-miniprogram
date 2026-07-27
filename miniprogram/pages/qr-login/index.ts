@@ -1,12 +1,10 @@
 import { qrLoginConfirm } from '../../api/user'
-import { LOGO_BASE64 } from '../../config/logo'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
 Page({
   data: {
-    LOGO_BASE64,
     sceneId: '',
     loading: false
   },

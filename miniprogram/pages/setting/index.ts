@@ -1,4 +1,3 @@
-import { LOGO_BASE64 } from '../../config/logo'
 import config from '../../config/index'
 import { debounceNavigateTo, wxLogin, wxNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
@@ -14,7 +13,6 @@ function avatarUrl(u: { avatar?: string } | null) {
 
 Page({
   data: {
-    LOGO_BASE64,
     avatar: ''
   },
   onLoad() {

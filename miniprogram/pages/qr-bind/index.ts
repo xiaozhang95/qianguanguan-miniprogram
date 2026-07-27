@@ -1,12 +1,10 @@
 import { qrBindConfirm } from '../../api/user'
-import { LOGO_BASE64 } from '../../config/logo'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
 const { globalData } = getApp()
 
 Page({
   data: {
-    LOGO_BASE64,
     sceneId: '',
     loading: false
   },

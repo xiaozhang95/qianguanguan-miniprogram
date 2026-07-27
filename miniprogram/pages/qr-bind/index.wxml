@@ -17,7 +17,7 @@
 
   <view class="form-card">
     <view class="confirm-section">
-      <image class="confirm-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit" />
+      <image class="confirm-logo" src="/assets/logo.png" mode="aspectFit" />
       <text class="confirm-title">确认绑定</text>
       <text class="confirm-desc">将您的微信账号与钱罐罐网页端绑定</text>
     </view>

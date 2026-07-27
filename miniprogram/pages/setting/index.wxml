@@ -6,7 +6,7 @@
     </view>
     <view class="header-content">
       <view class="header-row" wx:if="{{ !app.userInfo }}">
-        <image class="header-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit"></image>
+        <image class="header-logo" src="/assets/logo.png" mode="aspectFit"></image>
         <view class="header-info">
           <text class="header-appname">钱罐罐</text>
           <text class="header-tagline">好好记账，天天向上</text>

@@ -17,7 +17,7 @@
 
   <view class="form-card">
     <view class="confirm-section">
-      <image class="confirm-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit" />
+      <image class="confirm-logo" src="/assets/logo.png" mode="aspectFit" />
       <text class="confirm-title">确认登录</text>
       <text class="confirm-desc">将使用您的微信账号登录钱罐罐网页版</text>
     </view>
