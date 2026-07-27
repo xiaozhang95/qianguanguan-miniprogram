@@ -5,7 +5,8 @@ import { wxUploadFile } from '../utils/wx'
 export function userInfo() {
   return request<UserInfo>({
     url: '/user/info',
-    method: 'GET'
+    method: 'GET',
+    errorMsg: false
   })
 }
 
@@ -27,6 +28,14 @@ export function userProfile(data: Record<string, unknown>) {
 export function qrLoginConfirm(data: { sceneId: string; code: string }) {
   return request<LoginResult>({
     url: '/qr-login/confirm',
+    method: 'POST',
+    data
+  })
+}
+
+export function qrBindConfirm(data: { sceneId: string; code: string }) {
+  return request({
+    url: '/wechat-bind/confirm',
     method: 'POST',
     data
   })

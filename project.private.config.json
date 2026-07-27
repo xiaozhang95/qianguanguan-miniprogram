@@ -1,41 +1,55 @@
 {
-  "libVersion": "2.32.3",
-  "projectname": "qianguanguan-miniprogram",
-  "setting": {
-    "urlCheck": false,
-    "coverView": false,
-    "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": true,
-    "preloadBackgroundData": false,
-    "autoAudits": false,
-    "useApiHook": true,
-    "showShadowRootInWxmlPanel": false,
-    "useStaticServer": false,
-    "useLanDebug": false,
-    "showES6CompileOption": false,
-    "compileHotReLoad": true,
-    "bigPackageSizeSupport": false,
-    "checkInvalidKey": true,
-    "ignoreDevUnusedFiles": true
-  },
-  "condition": {
-    "miniprogram": {
-      "list": [
-        {
-          "name": "pages/user/index",
-          "pathName": "pages/user/index",
-          "query": "",
-          "scene": null,
-          "launchMode": "default"
-        },
-        {
-          "name": "pages/setting/index",
-          "pathName": "pages/setting/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        }
-      ]
-    }
-  }
+	"libVersion": "2.32.3",
+	"projectname": "qianguanguan-miniprogram",
+	"setting": {
+		"urlCheck": false,
+		"coverView": false,
+		"lazyloadPlaceholderEnable": false,
+		"skylineRenderEnable": true,
+		"preloadBackgroundData": false,
+		"autoAudits": false,
+		"useApiHook": true,
+		"showShadowRootInWxmlPanel": false,
+		"useStaticServer": false,
+		"useLanDebug": false,
+		"showES6CompileOption": false,
+		"compileHotReLoad": true,
+		"bigPackageSizeSupport": false,
+		"checkInvalidKey": true,
+		"ignoreDevUnusedFiles": true
+	},
+	"condition": {
+		"miniprogram": {
+			"list": [
+				{
+					"name": "pages/qr-bind/index",
+					"pathName": "pages/qr-bind/index",
+					"query": "",
+					"scene": null,
+					"launchMode": "default"
+				},
+				{
+					"name": "pages/qr-login/index",
+					"pathName": "pages/qr-login/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
+				},
+				{
+					"name": "pages/user/index",
+					"pathName": "pages/user/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
+				},
+				{
+					"name": "pages/setting/index",
+					"pathName": "pages/setting/index",
+					"query": "",
+					"launchMode": "default",
+					"scene": null
+				}
+			]
+		}
+	}
 }

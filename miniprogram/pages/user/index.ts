@@ -16,11 +16,12 @@ Page({
     emailCode: '',
     sendCodeLoading: false,
     codeCountdown: 0,
+    emailChanged: false,
     agreed: false,
     saving: false
   },
   _countdownTimer: 0 as unknown as ReturnType<typeof setInterval>,
-  onShow() {
+  onLoad() {
     const u = globalData.userInfo || {}
     const a = u.avatar || ''
     const isUpload = a.indexOf(config.uploadPath) === 0
@@ -36,8 +37,12 @@ Page({
       email,
       oldEmail: email,
       emailCode: '',
-      codeCountdown: 0
+      codeCountdown: 0,
+      emailChanged: false
     })
+  },
+  onShow() {
+    this.setData({ app: globalData })
   },
   onUnload() {
     if (this._countdownTimer) {
@@ -68,8 +73,8 @@ Page({
   handleBack() {
     wxNavigateBack()
   },
-  onAgreeChange(e: WechatMiniprogram.CustomEvent<{ value: boolean }>) {
-    this.setData({ agreed: e.detail.value })
+  onAgreeChange(e: WechatMiniprogram.CustomEvent<boolean>) {
+    this.setData({ agreed: e.detail })
   },
   handleToService() {
     wxNavigateTo('agreement', 'tab=service')
@@ -113,7 +118,8 @@ Page({
     }
     const phone = (this.data.phone || '').trim()
     const email = (this.data.email || '').trim()
-    const emailChanged = email !== this.data.oldEmail
+    const oldEmailTrimmed = (this.data.oldEmail || '').trim()
+    const emailChanged = email !== oldEmailTrimmed
     if (emailChanged && !this.data.emailCode) {
       wxShowToast({ title: '请输入邮箱验证码' })
       return

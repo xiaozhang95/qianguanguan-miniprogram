@@ -1,6 +1,6 @@
 import { qrLoginConfirm } from '../../api/user'
 import { LOGO_BASE64 } from '../../config/logo'
-import { wxLogin, wxNavigateBack, wxShowToast } from '../../utils/wx'
+import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
@@ -8,8 +8,7 @@ Page({
   data: {
     LOGO_BASE64,
     sceneId: '',
-    loading: false,
-    success: false
+    loading: false
   },
   onLoad(options: Record<string, string>) {
     this.setData({ app: globalData })
@@ -21,7 +20,7 @@ Page({
     this.setData({ app: globalData })
   },
   handleBack() {
-    wxNavigateBack()
+    wxSwitchTab('home')
   },
   handleConfirm() {
     const sceneId = this.data.sceneId
@@ -33,12 +32,11 @@ Page({
         return qrLoginConfirm({ sceneId, code: res.code })
       })
       .then((res: CtmResponse<LoginResult>) => {
-        this.setData({ success: true, loading: false })
         update('token', res.data.token)
         update('userInfo', res.data.userInfo)
         wxShowToast({ title: '登录成功' })
         setTimeout(() => {
-          wxNavigateBack()
+          wxSwitchTab('home')
         }, 1000)
       })
       .catch(() => {

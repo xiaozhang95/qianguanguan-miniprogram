@@ -10,7 +10,8 @@ export default async function request<T>(d: RequestInfo) {
     header: {
       Authorization: token
     },
-    timeout: 10000
+    timeout: 10000,
+    errorMsg: true
   }
 
   const options = Object.assign(defaultOptions, d)
@@ -25,11 +26,15 @@ export default async function request<T>(d: RequestInfo) {
           const json = response.data as CtmResponse<T>
 
           if (json.code !== ResponseCode.SUCCESS) {
-            wxShowToast({ title: json.msg || '请求失败' })
+            if (options.errorMsg) {
+              wxShowToast({ title: json.msg || '请求失败' })
+            }
 
             if (json.code === ResponseCode.UNAUTHORIZED) {
               exitLogin(() => {
-                wxShowToast({ title: '登录已过期，请重新登录' })
+                if (options.errorMsg) {
+                  wxShowToast({ title: '登录已过期，请重新登录' })
+                }
               })
             }
             reject(json)
@@ -37,12 +42,16 @@ export default async function request<T>(d: RequestInfo) {
             resolve(json)
           }
         } else {
-          wxShowToast({ title: '服务器异常' })
+          if (options.errorMsg) {
+            wxShowToast({ title: '服务器异常' })
+          }
           reject({ code: response.statusCode, msg: '服务器异常', data: null as T })
         }
       },
       fail: (error) => {
-        wxShowToast({ title: '网络请求失败' })
+        if (options.errorMsg) {
+          wxShowToast({ title: '网络请求失败' })
+        }
         reject({ code: ResponseCode.NETWORK_ERROR, msg: error.errMsg, data: null as T })
       }
     })

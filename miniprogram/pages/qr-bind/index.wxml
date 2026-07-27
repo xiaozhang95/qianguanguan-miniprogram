@@ -1,0 +1,31 @@
+<view class="page">
+  <view class="header">
+    <view class="header-bg">
+      <view class="header-circle c1"></view>
+      <view class="header-circle c2"></view>
+    </view>
+    <view class="header-content header-content--form">
+      <view class="nav-bar nav-bar--form" style="height:{{ app.offsetTop }}px">
+        <view class="nav-back" bindtap="handleBack">
+          <van-icon name="arrow-left" color="#fff" size="36rpx" />
+          <text>返回</text>
+        </view>
+      </view>
+      <text class="header-title">绑定微信</text>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="confirm-section">
+      <image class="confirm-logo" src="{{ LOGO_BASE64 }}" mode="aspectFit" />
+      <text class="confirm-title">确认绑定</text>
+      <text class="confirm-desc">将您的微信账号与钱罐罐网页端绑定</text>
+    </view>
+  </view>
+
+  <view class="btn-wrap">
+    <van-button custom-class="save-btn" block loading="{{ loading }}" bindtap="handleConfirm">
+      确认绑定
+    </van-button>
+  </view>
+</view>

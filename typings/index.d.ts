@@ -109,4 +109,5 @@ interface RequestInfo {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE'
   timeout?: number
   data?: Record<string, unknown>
+  errorMsg?: boolean
 }
