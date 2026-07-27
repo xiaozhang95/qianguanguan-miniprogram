@@ -1,6 +1,6 @@
-import { uploadAvatar, userProfile } from '../../api/user'
+import { sendEmailCode, uploadAvatar, userProfile } from '../../api/user'
 import config from '../../config/index'
-import { wxNavigateBack, wxShowToast } from '../../utils/wx'
+import { wxNavigateBack, wxNavigateTo, wxShowToast } from '../../utils/wx'
 
 const { globalData, update } = getApp()
 
@@ -12,13 +12,20 @@ Page({
     name: '',
     phone: '',
     email: '',
+    oldEmail: '',
+    emailCode: '',
+    sendCodeLoading: false,
+    codeCountdown: 0,
+    agreed: false,
     saving: false
   },
+  _countdownTimer: 0 as unknown as ReturnType<typeof setInterval>,
   onShow() {
     const u = globalData.userInfo || {}
     const a = u.avatar || ''
     const isUpload = a.indexOf(config.uploadPath) === 0
     const avatarUrl = isUpload ? config.url + a : a
+    const email = u.email || ''
     this.setData({
       app: globalData,
       avatar: avatarUrl,
@@ -26,8 +33,16 @@ Page({
       oldAvatar: a,
       name: u.name || '',
       phone: u.phone || '',
-      email: u.email || ''
+      email,
+      oldEmail: email,
+      emailCode: '',
+      codeCountdown: 0
     })
+  },
+  onUnload() {
+    if (this._countdownTimer) {
+      clearInterval(this._countdownTimer)
+    }
   },
   onChooseAvatar(e: WechatMiniprogram.CustomEvent) {
     const filePath = e.detail.avatarUrl
@@ -40,12 +55,57 @@ Page({
     this.setData({ phone: e.detail.value })
   },
   onEmailInput(e: WechatMiniprogram.Input) {
-    this.setData({ email: e.detail.value })
+    const email = e.detail.value
+    const emailChanged = email !== this.data.oldEmail
+    this.setData({ email, emailChanged })
+    if (!emailChanged) {
+      this.setData({ emailCode: '' })
+    }
+  },
+  onEmailCodeInput(e: WechatMiniprogram.Input) {
+    this.setData({ emailCode: e.detail.value })
   },
   handleBack() {
     wxNavigateBack()
   },
+  onAgreeChange(e: WechatMiniprogram.CustomEvent<{ value: boolean }>) {
+    this.setData({ agreed: e.detail.value })
+  },
+  handleToService() {
+    wxNavigateTo('agreement', 'tab=service')
+  },
+  handleToPrivacy() {
+    wxNavigateTo('agreement', 'tab=privacy')
+  },
+  handleSendCode() {
+    const email = this.data.email
+    if (!email) {
+      wxShowToast({ title: '请先输入邮箱' })
+      return
+    }
+    this.setData({ sendCodeLoading: true })
+    sendEmailCode(email)
+      .then(() => {
+        wxShowToast({ title: '验证码已发送' })
+        this.setData({ codeCountdown: 60 })
+        this._countdownTimer = setInterval(() => {
+          const next = this.data.codeCountdown - 1
+          this.setData({ codeCountdown: next })
+          if (next <= 0) {
+            clearInterval(this._countdownTimer)
+          }
+        }, 1000)
+      })
+      .catch(() => {})
+      .finally(() => {
+        this.setData({ sendCodeLoading: false })
+      })
+  },
   handleSave() {
+    if (!this.data.agreed) {
+      wxShowToast({ title: '请先阅读并同意用户协议和隐私政策' })
+      return
+    }
     const name = (this.data.name || '').trim()
     if (!name) {
       wxShowToast({ title: '请输入昵称' })
@@ -53,13 +113,22 @@ Page({
     }
     const phone = (this.data.phone || '').trim()
     const email = (this.data.email || '').trim()
+    const emailChanged = email !== this.data.oldEmail
+    if (emailChanged && !this.data.emailCode) {
+      wxShowToast({ title: '请输入邮箱验证码' })
+      return
+    }
     const avatarFilePath = this.data.avatarFilePath
     const oldAvatar = this.data.oldAvatar
 
     this.setData({ saving: true })
 
     const saveWithAvatar = (avatar: string) => {
-      userProfile({ avatar, name, phone, email })
+      const payload: Record<string, unknown> = { avatar, name, phone, email }
+      if (emailChanged) {
+        payload.emailCode = this.data.emailCode
+      }
+      userProfile(payload)
         .then((res: CtmResponse<UserInfo>) => {
           wxShowToast({ title: '保存成功' })
           update('userInfo', res.data)

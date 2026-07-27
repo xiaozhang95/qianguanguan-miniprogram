@@ -50,6 +50,12 @@ Page({
       })
     })
   },
+  handleToAgreement() {
+    wxNavigateTo('agreement', 'tab=service')
+  },
+  handleToPrivacy() {
+    wxNavigateTo('agreement', 'tab=privacy')
+  },
   onShareAppMessage() {
     return {
       title: '钱罐罐 - 好好记账，天天向上',

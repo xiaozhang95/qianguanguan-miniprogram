@@ -1,0 +1,50 @@
+@import '../../styles/common';
+
+.agreement-tabs {
+  --tabs-nav-background-color: var(--color-white);
+  --tab-font-size: var(--font-size);
+  --tab-active-text-color: #1677ff;
+}
+
+.content {
+  padding: var(--padding-lg);
+  font-size: var(--font-size-sm);
+  color: #333;
+  line-height: 1.8;
+}
+
+.content .title {
+  font-size: var(--font-size);
+  font-weight: 700;
+  margin: var(--margin) 0 var(--padding-sm);
+}
+
+.content .sub-title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: var(--padding-sm) 0 var(--padding-xs);
+}
+
+.content .text {
+  margin-bottom: var(--padding-xs);
+  text-indent: 2em;
+}
+
+.content .list {
+  padding-left: 2em;
+  margin-bottom: var(--padding-xs);
+}
+
+.content .list .item {
+  margin-bottom: 4rpx;
+}
+
+.content .bold {
+  font-weight: 600;
+}
+
+.content .date {
+  text-align: right;
+  color: #999;
+  margin-top: var(--margin);
+}

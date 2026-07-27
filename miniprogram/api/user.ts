@@ -43,3 +43,11 @@ export function uploadAvatar(filePath: string) {
     }
   })
 }
+
+export function sendEmailCode(email: string) {
+  return request({
+    url: '/send-email-code',
+    method: 'POST',
+    data: { email }
+  })
+}

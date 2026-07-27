@@ -50,3 +50,36 @@
   align-items: center;
   justify-content: center;
 }
+
+.email-code-input {
+  flex: 1;
+  margin-right: var(--gap-sm);
+}
+
+.send-code-btn {
+  flex-shrink: 0 !important;
+  width: 100rpx !important;
+  height: 52rpx !important;
+  line-height: 52rpx !important;
+  font-size: var(--font-size-xs) !important;
+  border-radius: var(--border-radius) !important;
+  padding: 0 !important;
+}
+
+.agreement-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 0 20rpx;
+  margin-top: 32rpx;
+}
+
+.agreement-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+  line-height: 1.6;
+}
+
+.agreement-link {
+  color: #1677ff;
+}
