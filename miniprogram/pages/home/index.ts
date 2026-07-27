@@ -53,7 +53,16 @@ Page({
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
 
-  onLoad() {
+  onLoad(options: Record<string, string>) {
+    const scene = options.scene || ''
+    if (scene.startsWith('login:')) {
+      wx.reLaunch({ url: '/pages/qr-login/index?scene=' + scene.substring(6) })
+      return
+    }
+    if (scene.startsWith('bind:')) {
+      wx.reLaunch({ url: '/pages/qr-bind/index?scene=' + scene.substring(5) })
+      return
+    }
     watch((gd: typeof globalData) => {
       this.setData({ app: gd })
       this.loadData()
