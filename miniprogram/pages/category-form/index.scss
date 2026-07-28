@@ -41,7 +41,7 @@
   width: 56rpx;
   height: 56rpx;
   border-radius: var(--border-radius);
-  border: 2rpx dashed #ccc;
+  border: 2rpx dashed var(--color-placeholder);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -21,8 +21,8 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 |------|------|
 | `miniprogram/api/` | API 接口层 |
 | `miniprogram/pages/` | 页面 |
-| `miniprogram/config/` | 环境配置 + 静态资源 |
-| `miniprogram/utils/` | 工具函数（wx 封装、request 封装） |
+| `miniprogram/config/` | 环境配置 |
+| `miniprogram/utils/` | 工具函数（wx 封装、request 封装、格式化） |
 | `miniprogram/assets/` | 图片等静态资源 |
 | `miniprogram/styles/` | 全局共享样式 |
 | `miniprogram/components/` | 共用组件 |
@@ -41,7 +41,7 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 
 ## 微信小程序特有约束
 
-- **`wx` API 必须通过 `utils/wx.ts` 封装调用**，禁止页面/组件内直接调 `wx.xxx`
+- **`wx` API 必须通过 `utils/wx.ts` 封装调用**，禁止页面/组件内直接调 `wx.xxx`（config/index.ts 中模块级调用的 `wx.getAccountInfoSync()` 除外）
 - 页面 JSON 使用 `"navigationStyle": "custom"` 自定义导航栏
 - Vant 组件注册：`"usingComponents": { "van-xxx": "@vant/weapp/xxx/index" }`
 - Skyline 属性：`"rendererOptions": { "skyline": { "defaultDisplayBlock": true, "defaultContentBox": true } }`
@@ -69,6 +69,15 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 | `wxUploadFile(options)` | `uploadFile()` → Promise |
 | `wxGetMenuButtonBoundingClientRect()` | 获取胶囊按钮位置 |
 
+**注意**: `wx.reLaunch` 等未封装的方法如需使用，先添加到 `utils/wx.ts` 封装。
+
+## 工具函数（`utils/format.ts`）
+
+| 函数 | 用途 |
+|------|------|
+| `fmt(n)` | 金额格式化 `n.toFixed(2)` |
+| `pad(n)` | 补零 `String(n).padStart(2, '0')` |
+
 ## 枚举常量（`constants/index.ts`）
 
 | 常量 | 值 | 用途 |
@@ -76,6 +85,17 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 | `BillType.INCOME` | `'INCOME'` | 收入 |
 | `BillType.EXPENSE` | `'EXPENSE'` | 支出 |
 | `BillTypeLabel` | `{ INCOME: '收入', EXPENSE: '支出' }` | 类型标签 |
+| `Role.SUPER_ADMIN` | `'SUPER_ADMIN'` | 超级管理员 |
+| `Role.ADMIN` | `'ADMIN'` | 管理员 |
+| `Role.USER` | `'USER'` | 普通用户 |
+| `RoleLabel` | `{ SUPER_ADMIN: '管理员', ADMIN: '管理员', USER: '普通用户' }` | 角色标签 |
+| `Colors.theme` | `'#1677ff'` | 主题色 |
+| `Colors.expense` | `'#ef4444'` | 支出色 |
+| `Colors.income` | `'#22c55e'` | 收入色 |
+| `Colors.balance` | `'#1677ff'` | 结余色 |
+| `Colors.text` | `'#1d1d1d'` | 主文字色 |
+| `Colors.textSecondary` | `'#666666'` | 次要文字色 |
+| `Colors.textLight` | `'#999999'` | 浅色文字 |
 | `ResponseCode.SUCCESS` | `200` | 响应成功 |
 | `ResponseCode.UNAUTHORIZED` | `401` | 登录过期 |
 | `ResponseCode.NETWORK_ERROR` | `0` | 网络失败 |
@@ -83,14 +103,15 @@ description: Use when writing or modifying code in qianguanguan-miniprogram/. Co
 - **强制使用** 枚举常量，禁止代码中硬编码 `'INCOME'`、`'EXPENSE'`、`200`、`401` 等
 - 可变的 `formType`/`filterType` 用 `BillType.EXPENSE as string` 加宽类型
 - WXML 中用 `BillType` 需在 data 中传入：`data: { BillType, ... }`
+- WXML 中用 `RoleLabel` 同理需传入 data；角色判断用 `Role.xxx` 常量而非硬编码字符串
 
 ## 配置常量（`config/index.ts`）
 
 ```ts
 const config: Config = {
-  develop: { url: 'http://...', baseUrl: '/api/business', uploadPath: '/upload/' },
-  trial: { url: 'http://...', baseUrl: '/api/business', uploadPath: '/upload/' },
-  release: { url: 'http://...', baseUrl: '/api/business', uploadPath: '/upload/' }
+  develop: { url: 'https://www.qianguanguan.top', baseUrl: '/api/business', uploadPath: '/upload/' },
+  trial: { url: 'https://www.qianguanguan.top', baseUrl: '/api/business', uploadPath: '/upload/' },
+  release: { url: 'https://www.qianguanguan.top', baseUrl: '/api/business', uploadPath: '/upload/' }
 }
 ```
 
@@ -189,6 +210,7 @@ pages/
 | `.save-btn` | 保存按钮（蓝紫渐变） |
 | `.del-btn` | 删除按钮（红底白字） |
 | `.form-type` / `.type-tab` | 支出/收入切换标签 |
+| `.card` / `.card-title` | 通用卡片容器 |
 
 ## 导航跳转
 
@@ -214,6 +236,7 @@ isLogin(true).then(() => {
 
 | 变量 | 值示例 |
 |------|--------|
+| `--header-height` | `420rpx` |
 | `--theme` `--theme-gradient` `--theme-light` | `#1677ff` / 渐变 / `rgba(...)` |
 | `--color` `--color-secondary` `--color-light` `--color-placeholder` | `#1d1d1d` `#666` `#999` `#ccc` |
 | `--color-expense` `--color-income` `--color-balance` `--color-white` `--color-border` | `#ef4444` `#22c55e` `#1677ff` `#fff` `#f0f0f0` |
@@ -221,8 +244,10 @@ isLogin(true).then(() => {
 | `--font-size-xs` `--font-size-sm` `--font-size` `--font-size-lg` `--font-size-xl` | 22/26/30/36/48rpx |
 | `--padding-sm` `--padding` `--padding-lg` | 16/24/32rpx |
 | `--margin-sm` `--margin` `--margin-lg` | 12/20/32rpx |
+| `--gap-sm` `--gap` `--gap-lg` | 12/20/32rpx |
 | `--border-radius` | 12rpx |
 | `--shadow-sm` `--shadow` `--shadow-lg` | 各级阴影 |
+| `--popup-round-border-radius` | 12rpx（Vant popup 圆角） |
 
 ### 圆角规范
 
@@ -235,11 +260,11 @@ isLogin(true).then(() => {
 ```scss
 // 正确
 font-size: var(--font-size); padding: var(--padding); color: var(--color);
-border-radius: var(--border-radius);
+border-radius: var(--border-radius); color: var(--color-placeholder);
 
 // 错误
 font-size: 30rpx; padding: 24rpx; color: #1d1d1d;
-border-radius: 16rpx;
+border-radius: 16rpx; border: 2rpx dashed #ccc;
 ```
 
 ## 共用组件（`components/`）
@@ -252,11 +277,37 @@ border-radius: 16rpx;
 | `fab-button` | 悬浮加号按钮 | bind:tap |
 | `loading-block` | 加载状态 | loading, text |
 
+**使用示例**:
+```json
+// page.json
+{
+  "usingComponents": {
+    "stats-card": "/components/stats-card/stats-card",
+    "fixed-nav-bar": "/components/fixed-nav-bar/fixed-nav-bar"
+  }
+}
+```
+
+```xml
+<!-- page.wxml -->
+<fixed-nav-bar id="fixed-nav" title="页面标题" app="{{ app }}" />
+<stats-card expense-str="{{ expenseStr }}" income-str="{{ incomeStr }}" balance-str="{{ balanceStr }}" balance-class="{{ balanceClass }}" />
+```
+
+**fixed-nav-bar 需要页面转发 onPageScroll**:
+```ts
+onPageScroll(e: { scrollTop: number }) {
+  const comp = this.selectComponent('#fixed-nav')
+  if (comp) comp.onPageScroll(e)
+}
+```
+
 ## API 调用规范
 
 - 所有请求走 `utils/request.ts`，自动带 JWT、401 拦截、错误提示
 - `api/*.ts` 导出函数，返回 `Promise<CtmResponse<T>>`
 - 函数命名 = URL 路径转驼峰：`/user/info` → `userInfo()`, `/bill/stats` → `billStats()`
+- 外部上传（如分类图标）用 `wxUploadFile` 直接上传到 `config.url + config.baseUrl + '/upload'`
 
 ## 全局状态（`app.ts`）
 

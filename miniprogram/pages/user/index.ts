@@ -18,9 +18,10 @@ Page({
     codeCountdown: 0,
     emailChanged: false,
     agreed: false,
-    saving: false
+    saving: false,
+    app: null as { offsetTop: number; capsuleTop: number } | null
   },
-  _countdownTimer: 0 as unknown as ReturnType<typeof setInterval>,
+  _countdownTimer: null as ReturnType<typeof setInterval> | null,
   onLoad() {
     const u = globalData.userInfo || {}
     const a = u.avatar || ''
@@ -47,6 +48,7 @@ Page({
   onUnload() {
     if (this._countdownTimer) {
       clearInterval(this._countdownTimer)
+      this._countdownTimer = null
     }
   },
   onChooseAvatar(e: WechatMiniprogram.CustomEvent) {
@@ -97,7 +99,8 @@ Page({
           const next = this.data.codeCountdown - 1
           this.setData({ codeCountdown: next })
           if (next <= 0) {
-            clearInterval(this._countdownTimer)
+            clearInterval(this._countdownTimer as ReturnType<typeof setInterval>)
+            this._countdownTimer = null
           }
         }, 1000)
       })

@@ -58,7 +58,7 @@
                 </view>
               </view>
               <view class="bill-right">
-                <text class="bill-amount {{ bill.type === 'INCOME' ? 'income' : 'expense' }}">{{ bill.amountPrefix }}¥{{ bill.amountStr }}</text>
+                <text class="bill-amount {{ bill.type === BillType.INCOME ? 'income' : 'expense' }}">{{ bill.amountPrefix }}¥{{ bill.amountStr }}</text>
               </view>
             </view>
           </block>

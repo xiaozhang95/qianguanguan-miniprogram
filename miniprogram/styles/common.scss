@@ -627,3 +627,33 @@
 .filter-tab.active.income {
   background: linear-gradient(135deg, var(--color-income), #4ade80);
 }
+
+/* ===== 确认页面（扫码登录/绑定） ===== */
+.confirm-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: calc(var(--padding-lg) * 2) 0;
+}
+
+.confirm-logo {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: var(--border-radius);
+  padding: 0;
+  box-sizing: border-box;
+  margin-bottom: var(--margin);
+}
+
+.confirm-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color);
+  margin-bottom: var(--padding);
+}
+
+.confirm-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-light);
+  margin-bottom: calc(var(--margin) * 2);
+}

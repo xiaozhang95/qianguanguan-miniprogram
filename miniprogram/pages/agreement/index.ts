@@ -4,7 +4,7 @@ const { globalData } = getApp()
 
 Page({
   data: {
-    app: globalData,
+    app: globalData as { offsetTop: number; capsuleTop: number },
     activeTab: 0
   },
   onLoad(options: { tab?: string }) {

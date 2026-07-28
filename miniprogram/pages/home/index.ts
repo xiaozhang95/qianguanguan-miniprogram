@@ -1,7 +1,7 @@
 import { billList, billStats } from '../../api/bill'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
-import { wxGetSystemInfoSync } from '../../utils/wx'
+import { wxGetStorageSync, wxGetSystemInfoSync, wxReLaunch, wxSetStorageSync } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -29,7 +29,6 @@ interface PieItem {
 }
 
 Page({
-  _lastScene: '' as string,
   data: {
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
@@ -55,9 +54,7 @@ Page({
   },
 
   onLoad(options: Record<string, string>) {
-    const qrScene = options.scene || ''
-    if (qrScene) this._lastScene = qrScene
-    if (this.handleQrScene(qrScene)) return
+    if (this.handleQrScene(options.scene || '')) return
     watch((gd: typeof globalData) => {
       this.setData({ app: gd })
       this.loadData()
@@ -68,10 +65,7 @@ Page({
     const qrScene = globalData._qrScene || ''
     if (qrScene) {
       globalData._qrScene = ''
-      if (qrScene !== this._lastScene) {
-        this._lastScene = qrScene
-        if (this.handleQrScene(qrScene)) return
-      }
+      if (this.handleQrScene(qrScene)) return
     }
     this.setData({ app: globalData, isScrolled: false })
     this.loadData()
@@ -79,12 +73,21 @@ Page({
 
   handleQrScene(raw: string) {
     const scene = decodeURIComponent(raw)
+    if (!scene.startsWith('login:') && !scene.startsWith('bind:')) return false
+
+    const cache: string[] = wxGetStorageSync('qr_scenes') || []
+    if (cache.includes(scene)) return false
+
+    cache.push(scene)
+    if (cache.length > 20) cache.splice(0, cache.length - 20)
+    wxSetStorageSync('qr_scenes', cache)
+
     if (scene.startsWith('login:')) {
-      wx.reLaunch({ url: '/pages/qr-login/index?scene=' + scene.substring(6) })
+      wxReLaunch('/pages/qr-login/index?scene=' + scene.substring(6))
       return true
     }
     if (scene.startsWith('bind:')) {
-      wx.reLaunch({ url: '/pages/qr-bind/index?scene=' + scene.substring(5) })
+      wxReLaunch('/pages/qr-bind/index?scene=' + scene.substring(5))
       return true
     }
     return false

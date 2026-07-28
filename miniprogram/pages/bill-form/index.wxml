@@ -17,8 +17,8 @@
 
   <view class="form-card">
     <view class="form-type">
-      <view class="type-tab {{ formType === 'EXPENSE' ? 'active expense' : '' }}" bindtap="onFormTypeChange" data-type="EXPENSE">支出</view>
-      <view class="type-tab {{ formType === 'INCOME' ? 'active income' : '' }}" bindtap="onFormTypeChange" data-type="INCOME">收入</view>
+      <view class="type-tab {{ formType === BillType.EXPENSE ? 'active expense' : '' }}" bindtap="onFormTypeChange" data-type="{{ BillType.EXPENSE }}">支出</view>
+      <view class="type-tab {{ formType === BillType.INCOME ? 'active income' : '' }}" bindtap="onFormTypeChange" data-type="{{ BillType.INCOME }}">收入</view>
     </view>
 
     <view class="form-field" bindtap="onFormCategoryOpen">

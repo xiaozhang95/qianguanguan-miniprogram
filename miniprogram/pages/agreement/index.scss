@@ -10,7 +10,7 @@
 .content {
   padding: var(--padding-lg);
   font-size: var(--font-size-sm);
-  color: #333;
+  color: var(--color);
   line-height: 1.8;
 }
 
@@ -46,6 +46,6 @@
 
 .content .date {
   text-align: right;
-  color: #999;
+  color: var(--color-light);
   margin-top: var(--margin);
 }

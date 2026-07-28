@@ -19,7 +19,7 @@
         </view>
         <view class="header-info">
           <text class="header-name">您好，{{ app.userInfo.name || app.userInfo.username }}</text>
-          <text class="header-role">{{ app.userInfo.role === 'SUPER_ADMIN' ? '管理员' : app.userInfo.role === 'ADMIN' ? '管理员' : '普通用户' }}</text>
+          <text class="header-role">{{ app.userInfo.role === Role.SUPER_ADMIN || app.userInfo.role === Role.ADMIN ? RoleLabel[Role.SUPER_ADMIN] : RoleLabel[Role.USER] }}</text>
         </view>
       </view>
     </view>

@@ -17,7 +17,7 @@
 }
 
 .month-text {
-  font-size: 36rpx;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-white);
   min-width: 240rpx;
@@ -39,7 +39,7 @@
 .bar-income { background: linear-gradient(180deg, var(--color-income), #16a34a); }
 .bar-expense { background: linear-gradient(180deg, var(--color-expense), #dc2626); }
 
-.chart-label { font-size: 20rpx; color: var(--color); white-space: nowrap; }
+.chart-label { font-size: var(--font-size-xs); color: var(--color); white-space: nowrap; }
 .chart-legend { display: flex; justify-content: center; gap: 32rpx; padding-top: 20rpx; border-top: 1rpx solid var(--color-border); margin-top: 16rpx; }
 .legend-item { display: flex; align-items: center; gap: 8rpx; font-size: var(--font-size-xs); color: var(--color-secondary); }
 .legend-dot { width: 16rpx; height: 16rpx; border-radius: 4rpx; }

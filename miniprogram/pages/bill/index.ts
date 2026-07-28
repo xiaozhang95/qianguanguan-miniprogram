@@ -24,6 +24,7 @@ interface BillGroup {
 
 Page({
   data: {
+    BillType,
     filterDate: todayStr(),
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,

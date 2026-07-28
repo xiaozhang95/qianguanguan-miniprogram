@@ -6,7 +6,8 @@ const { globalData } = getApp()
 Page({
   data: {
     sceneId: '',
-    loading: false
+    loading: false,
+    app: null as { offsetTop: number; capsuleTop: number } | null
   },
   onLoad(options: Record<string, string>) {
     this.setData({ app: globalData })

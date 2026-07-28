@@ -14,6 +14,7 @@ function todayStr() {
 
 Page({
   data: {
+    BillType,
     editing: false,
     billId: '',
     categories: [] as Category[],

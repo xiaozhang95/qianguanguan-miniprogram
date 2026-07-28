@@ -61,6 +61,10 @@ export function wxSwitchTab(name: string) {
   return wx.switchTab({ url: '/pages/' + name + '/index' })
 }
 
+export function wxReLaunch(url: string) {
+  return wx.reLaunch({ url })
+}
+
 export function wxReadFile(filePath: string) {
   return new Promise<{ data: string }>((resolve, reject) => {
     wx.getFileSystemManager().readFile({

@@ -1,4 +1,5 @@
 import config from '../../config/index'
+import { Role, RoleLabel } from '../../constants/index'
 import { debounceNavigateTo, wxLogin, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, watch } = getApp()
@@ -13,7 +14,10 @@ function avatarUrl(u: { avatar?: string } | null) {
 
 Page({
   data: {
-    avatar: ''
+    Role,
+    RoleLabel,
+    avatar: '',
+    app: null as { offsetTop: number; capsuleTop: number; userInfo: UserInfo | null } | null
   },
   onLoad() {
     wxShowShareMenu()
