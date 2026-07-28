@@ -42,7 +42,7 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: '钱罐罐账本 - 好好记账，天天向上',
+      title: '钱罐罐记账 - 好好记账，天天向上',
       path: '/pages/home/index'
     }
   }

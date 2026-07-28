@@ -1,6 +1,6 @@
 import { categoryList } from '../../api/category'
-import { BillType } from '../../constants/index'
 import config from '../../config/index'
+import { BillType } from '../../constants/index'
 import { debounceNavigateTo, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
@@ -143,7 +143,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '钱罐罐账本 - 好好记账，天天向上',
+      title: '钱罐罐记账 - 好好记账，天天向上',
       path: '/pages/category/index'
     }
   }

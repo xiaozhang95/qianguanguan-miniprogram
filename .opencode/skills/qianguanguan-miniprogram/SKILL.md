@@ -3,7 +3,7 @@ name: qianguanguan-miniprogram
 description: Use when writing or modifying code in qianguanguan-miniprogram/. Covers WeChat Mini Program, TypeScript, SCSS, Vant Weapp, Skyline/glass-easel, and project conventions.
 ---
 
-# 钱罐罐账本 小程序开发规范
+# 钱罐罐记账 小程序开发规范
 
 ## 技术栈
 
