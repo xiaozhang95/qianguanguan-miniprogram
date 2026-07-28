@@ -9,7 +9,8 @@ App({
     token: '',
     userInfo: null as UserInfo | null,
     offsetTop: 0,
-    capsuleTop: 0
+    capsuleTop: 0,
+    _qrScene: ''
   },
   watch(fn: AppCallback) {
     this.globalData.updateFn.push(fn)
@@ -71,5 +72,11 @@ App({
           })
       })
       .catch(() => {})
+  },
+  onShow(options: WechatMiniprogram.App.LaunchShowOption) {
+    const scene = options.query && (options.query.scene as string)
+    if (scene) {
+      this.globalData._qrScene = scene
+    }
   }
 })

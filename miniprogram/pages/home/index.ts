@@ -29,6 +29,7 @@ interface PieItem {
 }
 
 Page({
+  _lastScene: '' as string,
   data: {
     filterYear: new Date().getFullYear(),
     filterMonth: new Date().getMonth() + 1,
@@ -54,15 +55,9 @@ Page({
   },
 
   onLoad(options: Record<string, string>) {
-    const scene = options.scene || ''
-    if (scene.startsWith('login:')) {
-      wx.reLaunch({ url: '/pages/qr-login/index?scene=' + scene.substring(6) })
-      return
-    }
-    if (scene.startsWith('bind:')) {
-      wx.reLaunch({ url: '/pages/qr-bind/index?scene=' + scene.substring(5) })
-      return
-    }
+    const qrScene = options.scene || ''
+    if (qrScene) this._lastScene = qrScene
+    if (this.handleQrScene(qrScene)) return
     watch((gd: typeof globalData) => {
       this.setData({ app: gd })
       this.loadData()
@@ -70,8 +65,29 @@ Page({
   },
 
   onShow() {
+    const qrScene = globalData._qrScene || ''
+    if (qrScene) {
+      globalData._qrScene = ''
+      if (qrScene !== this._lastScene) {
+        this._lastScene = qrScene
+        if (this.handleQrScene(qrScene)) return
+      }
+    }
     this.setData({ app: globalData, isScrolled: false })
     this.loadData()
+  },
+
+  handleQrScene(raw: string) {
+    const scene = decodeURIComponent(raw)
+    if (scene.startsWith('login:')) {
+      wx.reLaunch({ url: '/pages/qr-login/index?scene=' + scene.substring(6) })
+      return true
+    }
+    if (scene.startsWith('bind:')) {
+      wx.reLaunch({ url: '/pages/qr-bind/index?scene=' + scene.substring(5) })
+      return true
+    }
+    return false
   },
 
   onHide() {
