@@ -49,13 +49,13 @@
     </view>
   </view>
 
-  <view class="agreement-check">
-    <van-checkbox value="{{ agreed }}" bind:change="onAgreeChange" icon-size="32rpx" checked-color="#1677ff" />
+  <view class="agreement-check" bindtap="toggleAgree">
+    <van-checkbox value="{{ agreed }}" icon-size="32rpx" checked-color="#1677ff" />
     <view class="agreement-text">
       <text>已阅读并同意</text>
-      <text class="agreement-link" bindtap="handleToService">《用户服务协议》</text>
+      <text class="agreement-link" catchtap="handleToService">《用户服务协议》</text>
       <text>和</text>
-      <text class="agreement-link" bindtap="handleToPrivacy">《隐私政策》</text>
+      <text class="agreement-link" catchtap="handleToPrivacy">《隐私政策》</text>
     </view>
   </view>
 

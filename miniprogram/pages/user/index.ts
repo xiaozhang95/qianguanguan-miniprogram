@@ -73,8 +73,8 @@ Page({
   handleBack() {
     wxNavigateBack()
   },
-  onAgreeChange(e: WechatMiniprogram.CustomEvent) {
-    this.setData({ agreed: e.detail as unknown as boolean })
+  toggleAgree() {
+    this.setData({ agreed: !this.data.agreed })
   },
   handleToService() {
     debounceNavigateTo('agreement', 'tab=service')

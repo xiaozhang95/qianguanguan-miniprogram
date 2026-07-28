@@ -70,14 +70,21 @@
   display: flex;
   align-items: center;
   gap: 12rpx;
-  padding: 0 20rpx;
-  margin-top: 32rpx;
+  padding: 0 var(--padding-lg);
+  margin-top: var(--margin-lg);
+  border-radius: var(--border-radius);
+
+  &:active {
+    background: rgba(0, 0, 0, 0.04);
+  }
 }
 
 .agreement-text {
+  display: flex;
+  align-items: center;
   font-size: var(--font-size-sm);
   color: var(--color-secondary);
-  line-height: 1.6;
+  line-height: 1;
 }
 
 .agreement-link {

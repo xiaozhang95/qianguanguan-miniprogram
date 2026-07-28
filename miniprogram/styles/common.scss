@@ -229,7 +229,7 @@
 
 /* ===== 表单卡片 ===== */
 .form-card {
-  margin: -40rpx 20rpx 0;
+  margin: -40rpx var(--padding-lg) 0;
   padding: var(--padding-lg) var(--padding-lg) 28rpx;
   background: var(--card-bg);
   border-radius: var(--border-radius);
@@ -243,7 +243,7 @@
 
 /* ===== 表单按钮区 ===== */
 .btn-wrap {
-  padding: 0 20rpx;
+  padding: 0 var(--padding-lg);
   margin-top: 32rpx;
   display: flex;
   flex-direction: column;

@@ -47,7 +47,15 @@ Page({
     isLogin(false).then(() => {
       this.loadCategories()
     }).catch(() => {
-      this.setData({ categories: [], filteredCategories: [] })
+      this.setData({
+        categories: [],
+        filteredCategories: [],
+        systemCategories: [],
+        customCategories: [],
+        expenseCount: 0,
+        incomeCount: 0,
+        totalCount: 0
+      })
     })
   },
 

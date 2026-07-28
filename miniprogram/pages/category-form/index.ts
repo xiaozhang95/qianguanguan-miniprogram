@@ -132,6 +132,9 @@ Page({
           const data = JSON.parse(res.data)
           if (data.code === ResponseCode.SUCCESS) {
             doSave(data.data.url)
+          } else {
+            wxShowToast({ title: data.msg || '图片上传失败，请重试' })
+            this.setData({ saving: false })
           }
         }).catch(() => {
           this.setData({ saving: false })
