@@ -1,5 +1,16 @@
 {
-  "pages": ["pages/home/index", "pages/bill/index", "pages/bill-form/index", "pages/setting/index", "pages/agreement/index", "pages/user/index", "pages/category/index", "pages/category-form/index", "pages/qr-login/index", "pages/qr-bind/index"],
+  "pages": [
+    "pages/home/index",
+    "pages/bill/index",
+    "pages/bill-form/index",
+    "pages/setting/index",
+    "pages/agreement/index",
+    "pages/user/index",
+    "pages/category/index",
+    "pages/category-form/index",
+    "pages/qr-login/index",
+    "pages/qr-bind/index"
+  ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
@@ -12,7 +23,7 @@
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "首页",
+        "text": "统计",
         "iconPath": "assets/icons/home.png",
         "selectedIconPath": "assets/icons/home-active.png"
       },

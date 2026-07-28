@@ -8,7 +8,7 @@
     </view>
     <view class="header-content">
       <view class="nav-bar" style="height:{{ app.offsetTop }}px">
-        <text class="nav-title">钱罐罐记账</text>
+        <text class="nav-title">统计</text>
       </view>
       <view class="month-bar" bindtap="onPickerOpen">
         <view class="month-arrow" catchtap="onMonthPrev">
