@@ -1,5 +1,5 @@
 <view class="page" catchtouchmove="{{ showPicker ? 'onPrevent' : '' }}">
-  <fixed-nav-bar id="fixed-nav" title="钱罐罐记账" app="{{ app }}" />
+  <fixed-nav-bar id="fixed-nav" title="统计" app="{{ app }}" />
 
   <view class="header">
     <view class="header-bg">
