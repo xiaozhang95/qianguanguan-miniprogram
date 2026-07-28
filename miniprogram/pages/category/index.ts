@@ -44,19 +44,21 @@ Page({
   },
 
   init() {
-    isLogin(false).then(() => {
-      this.loadCategories()
-    }).catch(() => {
-      this.setData({
-        categories: [],
-        filteredCategories: [],
-        systemCategories: [],
-        customCategories: [],
-        expenseCount: 0,
-        incomeCount: 0,
-        totalCount: 0
+    isLogin(false)
+      .then(() => {
+        this.loadCategories()
       })
-    })
+      .catch(() => {
+        this.setData({
+          categories: [],
+          filteredCategories: [],
+          systemCategories: [],
+          customCategories: [],
+          expenseCount: 0,
+          incomeCount: 0,
+          totalCount: 0
+        })
+      })
   },
 
   loadCategories() {
@@ -106,20 +108,24 @@ Page({
   },
 
   onAdd() {
-    isLogin(true).then(() => {
-      debounceNavigateTo('category-form')
-    }).catch(() => {
-      wxSwitchTab('setting')
-    })
+    isLogin(true)
+      .then(() => {
+        debounceNavigateTo('category-form')
+      })
+      .catch(() => {
+        wxSwitchTab('setting')
+      })
   },
 
   onEdit(e: WechatMiniprogram.CustomEvent) {
     const cat = e.currentTarget.dataset.cat as Category
-    isLogin(true).then(() => {
-      debounceNavigateTo('category-form', 'id=' + cat.id)
-    }).catch(() => {
-      wxSwitchTab('setting')
-    })
+    isLogin(true)
+      .then(() => {
+        debounceNavigateTo('category-form', 'id=' + cat.id)
+      })
+      .catch(() => {
+        wxSwitchTab('setting')
+      })
   },
 
   onSystemTap() {
@@ -137,7 +143,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '钱罐罐 - 好好记账，天天向上',
+      title: '钱罐罐账本 - 好好记账，天天向上',
       path: '/pages/category/index'
     }
   }

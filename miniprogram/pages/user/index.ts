@@ -151,19 +151,21 @@ Page({
     }
 
     if (avatarFilePath && avatarFilePath !== oldAvatar) {
-      uploadAvatar(avatarFilePath).then(res => {
-        const json = JSON.parse(res.data) as CtmResponse<{ url: string }>
-        saveWithAvatar(json.data.url)
-      }).catch(() => {
-        saveWithAvatar(oldAvatar)
-      })
+      uploadAvatar(avatarFilePath)
+        .then((res) => {
+          const json = JSON.parse(res.data) as CtmResponse<{ url: string }>
+          saveWithAvatar(json.data.url)
+        })
+        .catch(() => {
+          saveWithAvatar(oldAvatar)
+        })
     } else {
       saveWithAvatar(oldAvatar)
     }
   },
   onShareAppMessage() {
     return {
-      title: '钱罐罐 - 好好记账，天天向上',
+      title: '钱罐罐账本 - 好好记账，天天向上',
       path: '/pages/home/index'
     }
   }

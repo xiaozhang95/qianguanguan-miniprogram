@@ -1,5 +1,5 @@
 <view class="page" catchtouchmove="{{ showPicker ? 'onPrevent' : '' }}">
-  <fixed-nav-bar id="fixed-nav" title="钱罐罐" app="{{ app }}" />
+  <fixed-nav-bar id="fixed-nav" title="钱罐罐账本" app="{{ app }}" />
 
   <view class="header">
     <view class="header-bg">
@@ -8,7 +8,7 @@
     </view>
     <view class="header-content">
       <view class="nav-bar" style="height:{{ app.offsetTop }}px">
-        <text class="nav-title">钱罐罐</text>
+        <text class="nav-title">钱罐罐账本</text>
       </view>
       <view class="month-bar" bindtap="onPickerOpen">
         <view class="month-arrow" catchtap="onMonthPrev">
@@ -47,14 +47,8 @@
           <block wx:for="{{ chartData }}" wx:key="date">
             <view class="chart-column">
               <view class="chart-bars">
-                <view
-                  class="bar bar-income"
-                  style="height: {{ item.incomeBar }}rpx;"
-                ></view>
-                <view
-                  class="bar bar-expense"
-                  style="height: {{ item.expenseBar }}rpx;"
-                ></view>
+                <view class="bar bar-income" style="height: {{ item.incomeBar }}rpx;"></view>
+                <view class="bar bar-expense" style="height: {{ item.expenseBar }}rpx;"></view>
               </view>
               <text class="chart-label">{{ item.date }}</text>
             </view>

@@ -199,20 +199,24 @@ Page({
   },
 
   onAddBill() {
-    isLogin(true).then(() => {
-      debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
-    }).catch(() => {
-      wxSwitchTab('setting')
-    })
+    isLogin(true)
+      .then(() => {
+        debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
+      })
+      .catch(() => {
+        wxSwitchTab('setting')
+      })
   },
 
   onEditBill(e: WechatMiniprogram.CustomEvent) {
     const bill = e.currentTarget.dataset.bill as BillVO
-    isLogin(true).then(() => {
-      debounceNavigateTo('bill-form', 'id=' + bill.id)
-    }).catch(() => {
-      wxSwitchTab('setting')
-    })
+    isLogin(true)
+      .then(() => {
+        debounceNavigateTo('bill-form', 'id=' + bill.id)
+      })
+      .catch(() => {
+        wxSwitchTab('setting')
+      })
   },
 
   onPageScroll(e: { scrollTop: number }) {
@@ -226,7 +230,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '钱罐罐 - 好好记账，天天向上',
+      title: '钱罐罐账本 - 好好记账，天天向上',
       path: '/pages/bill/index'
     }
   }

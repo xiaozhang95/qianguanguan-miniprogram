@@ -48,13 +48,12 @@ Page({
       this.setData({ editing: true, billId: options.id })
     }
 
-    isLogin(false)
-      .then(() => {
-        this.loadCategories()
-        if (options.id) {
-          this.loadBill()
-        }
-      })
+    isLogin(false).then(() => {
+      this.loadCategories()
+      if (options.id) {
+        this.loadBill()
+      }
+    })
   },
 
   loadCategories() {
@@ -207,7 +206,7 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: '钱罐罐 - 好好记账，天天向上',
+      title: '钱罐罐账本 - 好好记账，天天向上',
       path: '/pages/home/index'
     }
   }

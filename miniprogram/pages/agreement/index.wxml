@@ -20,12 +20,12 @@
   <van-tabs active="{{ activeTab }}" bind:change="onTabChange" custom-class="agreement-tabs">
     <van-tab title="用户服务协议">
       <view class="content">
-        <view class="title">钱罐罐用户服务协议</view>
+        <view class="title">钱罐罐账本用户服务协议</view>
         <view class="date">更新日期：2026年7月27日</view>
         <view class="date">生效日期：2026年7月27日</view>
 
         <view class="sub-title">一、总则</view>
-        <view class="text">欢迎使用钱罐罐（以下简称"本小程序"）。本协议是您（以下简称"用户"）与钱罐罐开发团队（以下简称"我们"）之间关于使用本小程序服务所订立的协议。</view>
+        <view class="text">欢迎使用钱罐罐账本（以下简称"本小程序"）。本协议是您（以下简称"用户"）与钱罐罐账本开发团队（以下简称"我们"）之间关于使用本小程序服务所订立的协议。</view>
         <view class="text">请您在使用本小程序前仔细阅读本协议。您点击"同意"或实际使用本小程序服务，即表示您已阅读、理解并同意接受本协议的全部内容。</view>
 
         <view class="sub-title">二、服务内容</view>
@@ -68,12 +68,14 @@
     </van-tab>
     <van-tab title="隐私政策">
       <view class="content">
-        <view class="title">钱罐罐隐私政策</view>
+        <view class="title">钱罐罐账本隐私政策</view>
         <view class="date">更新日期：2026年7月27日</view>
         <view class="date">生效日期：2026年7月27日</view>
 
         <view class="sub-title">引言</view>
-        <view class="text">钱罐罐（以下简称"我们"）深知个人信息对您的重要性，我们将按照法律法规的规定，全力保护您的个人信息安全。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。</view>
+        <view class="text"
+          >钱罐罐账本（以下简称"我们"）深知个人信息对您的重要性，我们将按照法律法规的规定，全力保护您的个人信息安全。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息。</view
+        >
 
         <view class="sub-title">一、我们收集的信息</view>
         <view class="text">在您使用本小程序的过程中，我们可能会收集以下信息：</view>
