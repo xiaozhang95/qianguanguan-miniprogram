@@ -2,7 +2,7 @@ import { billList, billStats } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
-import { debounceNavigateTo, wxSwitchTab } from '../../utils/wx'
+import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync, wxSwitchTab } from '../../utils/wx'
 
 const { globalData, isLogin, watch } = getApp()
 
@@ -55,7 +55,8 @@ Page({
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
 
-  onLoad() {
+  onLoad(options: Record<string, string>) {
+    if (this.handleQrScene(options.scene || '')) return
     watch((gd: typeof globalData) => {
       this.setData({ app: gd })
       this.init()
@@ -63,8 +64,34 @@ Page({
   },
 
   onShow() {
+    const qrScene = globalData._qrScene || ''
+    if (qrScene) {
+      globalData._qrScene = ''
+      if (this.handleQrScene(qrScene)) return
+    }
     this.setData({ app: globalData, isScrolled: false })
     this.init()
+  },
+  handleQrScene(raw: string) {
+    const scene = decodeURIComponent(raw)
+    if (!scene.startsWith('login:') && !scene.startsWith('bind:')) return false
+
+    const cache: string[] = wxGetStorageSync('qr_scenes') || []
+    if (cache.includes(scene)) return false
+
+    cache.push(scene)
+    if (cache.length > 20) cache.splice(0, cache.length - 20)
+    wxSetStorageSync('qr_scenes', cache)
+
+    if (scene.startsWith('login:')) {
+      wxReLaunch('/pages/qr-login/index?scene=' + scene.substring(6))
+      return true
+    }
+    if (scene.startsWith('bind:')) {
+      wxReLaunch('/pages/qr-bind/index?scene=' + scene.substring(5))
+      return true
+    }
+    return false
   },
 
   onHide() {
