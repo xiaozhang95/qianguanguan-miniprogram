@@ -31,11 +31,7 @@ export default async function request<T>(d: RequestInfo) {
             }
 
             if (json.code === ResponseCode.UNAUTHORIZED) {
-              exitLogin(() => {
-                if (options.errorMsg) {
-                  wxShowToast({ title: '登录已过期，请重新登录' })
-                }
-              })
+              exitLogin()
             }
             reject(json)
           } else {

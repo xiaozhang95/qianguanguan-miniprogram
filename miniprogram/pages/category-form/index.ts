@@ -1,6 +1,6 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
-import { BillType, ResponseCode } from '../../constants/index'
 import config from '../../config/index'
+import { BillType, ResponseCode } from '../../constants/index'
 import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
 
 const { globalData, isLogin } = getApp()
@@ -78,11 +78,18 @@ Page({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera']
-    }).then((res) => {
-      this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
-    }).catch(() => {
-      this.setData({ saving: false })
     })
+      .then((res) => {
+        const file = res.tempFiles[0]
+        if (file && file.size > 2 * 1024 * 1024) {
+          wxShowToast({ title: '图片不能超过2M' })
+          return
+        }
+        this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
+      })
+      .catch(() => {
+        this.setData({ saving: false })
+      })
   },
 
   onRemoveIcon() {
@@ -128,17 +135,19 @@ Page({
           filePath: formIconFile,
           name: 'file',
           header: { Authorization: globalData.token }
-        }).then((res) => {
-          const data = JSON.parse(res.data)
-          if (data.code === ResponseCode.SUCCESS) {
-            doSave(data.data.url)
-          } else {
-            wxShowToast({ title: data.msg || '图片上传失败，请重试' })
-            this.setData({ saving: false })
-          }
-        }).catch(() => {
-          this.setData({ saving: false })
         })
+          .then((res) => {
+            const data = JSON.parse(res.data)
+            if (data.code === ResponseCode.SUCCESS) {
+              doSave(data.data.url)
+            } else {
+              wxShowToast({ title: data.msg || '图片上传失败，请重试' })
+              this.setData({ saving: false })
+            }
+          })
+          .catch(() => {
+            this.setData({ saving: false })
+          })
       } else {
         doSave(originalIcon)
       }
