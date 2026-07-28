@@ -52,7 +52,12 @@ Page({
     loading: false,
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
-
+  onShareAppMessage() {
+    return {
+      title: '钱罐罐 - 好好记账，天天向上',
+      path: '/pages/home/index'
+    }
+  },
   onLoad(options: Record<string, string>) {
     if (this.handleQrScene(options.scene || '')) return
     watch((gd: typeof globalData) => {
@@ -110,10 +115,7 @@ Page({
 
         this.setData({ loading: true })
 
-        Promise.all([
-          billStats(yearStr, monthStr),
-          billList({ startDate, endDate, pageNum: 1, pageSize: daysInMonth * 2 })
-        ])
+        Promise.all([billStats(yearStr, monthStr), billList({ startDate, endDate, pageNum: 1, pageSize: daysInMonth * 2 })])
           .then(([statsRes, listRes]) => {
             const stats = statsRes.data
             const records = listRes.data.records || []
@@ -187,11 +189,9 @@ Page({
               .sort((a, b) => b.percent - a.percent)
 
             const now = new Date()
-            const isCurrentMonth = now.getFullYear() === year && (now.getMonth() + 1) === month
+            const isCurrentMonth = now.getFullYear() === year && now.getMonth() + 1 === month
             const rpxRate = wxGetSystemInfoSync().windowWidth / 750
-            const chartScrollLeft = isCurrentMonth
-              ? Math.max(0, (now.getDate() - 1) * 68 * rpxRate)
-              : 0
+            const chartScrollLeft = isCurrentMonth ? Math.max(0, (now.getDate() - 1) * 68 * rpxRate) : 0
 
             this.setData({
               chartData,
@@ -214,8 +214,8 @@ Page({
         this.setData({
           expenseStr: '0.00',
           incomeStr: '0.00',
-    balanceStr: '0.00',
-    balanceClass: 'balance-zero',
+          balanceStr: '0.00',
+          balanceClass: 'balance-zero',
           chartData: [],
           incomePie: [],
           expensePie: [],
@@ -287,12 +287,5 @@ Page({
     }
     const nav = this.selectComponent('#fixed-nav')
     if (nav) nav.onPageScroll(e)
-  },
-
-  onShareAppMessage() {
-    return {
-      title: '钱罐罐 - 好好记账，天天向上',
-      path: '/pages/home/index'
-    }
   }
 })

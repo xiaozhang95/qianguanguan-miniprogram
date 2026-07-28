@@ -178,5 +178,11 @@ Page({
           })
       }
     })
+  },
+  onShareAppMessage() {
+    return {
+      title: '钱罐罐 - 好好记账，天天向上',
+      path: '/pages/home/index'
+    }
   }
 })

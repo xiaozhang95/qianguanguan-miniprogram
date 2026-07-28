@@ -26,9 +26,9 @@
   </view>
 
   <van-cell-group inset custom-class="menu-group menu-group--first">
-    <van-cell wx:if="{{ app.userInfo }}" title="分享给好友" is-link>
+    <van-cell wx:if="{{ app.userInfo }}" title="分享给好友" is-link custom-class="share-cell">
       <van-icon slot="icon" name="share-o" size="36rpx" custom-class="menu-icon menu-icon-share" />
-      <button class="share-btn" slot="right-icon" open-type="share" hover-class="none"></button>
+      <button class="share-btn" open-type="share" hover-class="none"></button>
     </van-cell>
     <van-cell wx:if="{{ app.userInfo }}" title="个人资料" is-link bind:click="handleToUser">
       <van-icon slot="icon" name="user-o" size="36rpx" custom-class="menu-icon menu-icon-profile" />

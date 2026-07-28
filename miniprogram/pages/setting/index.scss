@@ -38,11 +38,30 @@
   flex-shrink: 0;
 }
 
-.header-info { flex: 1; display: flex; flex-direction: column; gap: 4rpx; }
-.header-appname { font-size: var(--font-size-lg); font-weight: 700; color: var(--color-white); }
-.header-tagline { font-size: var(--font-size-xs); color: rgba(255, 255, 255, 0.65); }
-.header-name { font-size: var(--font-size); font-weight: 600; color: var(--color-white); }
-.header-role { font-size: var(--font-size-xs); color: rgba(255, 255, 255, 0.65); }
+.header-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.header-appname {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-white);
+}
+.header-tagline {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.65);
+}
+.header-name {
+  font-size: var(--font-size);
+  font-weight: 600;
+  color: var(--color-white);
+}
+.header-role {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.65);
+}
 
 .login-action {
   margin: 60rpx var(--padding-lg) var(--margin);
@@ -59,7 +78,10 @@
   font-weight: 600;
   letter-spacing: 4rpx;
 }
-.login-action:active { opacity: 0.85; transform: scale(0.98); }
+.login-action:active {
+  opacity: 0.85;
+  transform: scale(0.98);
+}
 
 .menu-group {
   margin: var(--margin) var(--padding-lg) 0 !important;
@@ -68,20 +90,50 @@
   --cell-font-size: var(--font-size);
   --cell-right-icon-size: 28rpx;
 }
-.menu-group--first { margin-top: -20rpx !important; }
-.menu-icon { margin-right: var(--gap); vertical-align: middle; }
-.menu-icon-share { color: var(--color-income) !important; }
-.menu-icon-profile { color: #8b5cf6 !important; }
-.menu-icon-exit { color: var(--color-expense) !important; }
-.menu-icon-agreement { color: var(--theme) !important; }
-.menu-icon-privacy { color: #52c41a !important; }
+.menu-group--first {
+  margin-top: -20rpx !important;
+}
+.menu-icon {
+  margin-right: var(--gap);
+  vertical-align: middle;
+}
+.menu-icon-share {
+  color: var(--color-income) !important;
+}
+.menu-icon-profile {
+  color: #8b5cf6 !important;
+}
+.menu-icon-exit {
+  color: var(--color-expense) !important;
+}
+.menu-icon-agreement {
+  color: var(--theme) !important;
+}
+.menu-icon-privacy {
+  color: #52c41a !important;
+}
+.share-cell {
+  position: relative !important;
+  overflow: visible !important;
+}
 .share-btn {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100% !important;
+  height: 100%;
   opacity: 0;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
 }
-.footer { text-align: center; padding: 48rpx var(--padding); }
-.footer text { font-size: var(--font-size-xs); color: var(--color-light); }
+.footer {
+  text-align: center;
+  padding: 48rpx var(--padding);
+}
+.footer text {
+  font-size: var(--font-size-xs);
+  color: var(--color-light);
+}

@@ -21,5 +21,11 @@ Page({
   onPageScroll(e: { scrollTop: number }) {
     const nav = this.selectComponent('#fixed-nav')
     if (nav) nav.onPageScroll(e)
+  },
+  onShareAppMessage() {
+    return {
+      title: '钱罐罐 - 好好记账，天天向上',
+      path: '/pages/home/index'
+    }
   }
 })

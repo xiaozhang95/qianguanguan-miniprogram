@@ -26,7 +26,7 @@ export default async function request<T>(d: RequestInfo) {
           const json = response.data as CtmResponse<T>
 
           if (json.code !== ResponseCode.SUCCESS) {
-            if (options.errorMsg) {
+            if (options.errorMsg && json.code !== ResponseCode.UNAUTHORIZED) {
               wxShowToast({ title: json.msg || '请求失败' })
             }
 
