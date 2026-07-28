@@ -152,9 +152,8 @@ Page({
 
     if (avatarFilePath && avatarFilePath !== oldAvatar) {
       uploadAvatar(avatarFilePath)
-        .then((res) => {
-          const json = JSON.parse(res.data) as CtmResponse<{ url: string }>
-          saveWithAvatar(json.data.url)
+        .then(({ data }) => {
+          saveWithAvatar(data.url)
         })
         .catch(() => {
           saveWithAvatar(oldAvatar)

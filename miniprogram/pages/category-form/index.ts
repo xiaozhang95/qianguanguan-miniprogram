@@ -1,6 +1,6 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
 import config from '../../config/index'
-import { BillType, ResponseCode } from '../../constants/index'
+import { BillType } from '../../constants/index'
 import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
 
 const { globalData, isLogin } = getApp()
@@ -80,11 +80,6 @@ Page({
       sourceType: ['album', 'camera']
     })
       .then((res) => {
-        const file = res.tempFiles[0]
-        if (file && file.size > 2 * 1024 * 1024) {
-          wxShowToast({ title: '图片不能超过2M' })
-          return
-        }
         this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
       })
       .catch(() => {
@@ -133,17 +128,10 @@ Page({
         wxUploadFile({
           url: config.url + config.baseUrl + '/upload',
           filePath: formIconFile,
-          name: 'file',
-          header: { Authorization: globalData.token }
+          name: 'file'
         })
-          .then((res) => {
-            const data = JSON.parse(res.data)
-            if (data.code === ResponseCode.SUCCESS) {
-              doSave(data.data.url)
-            } else {
-              wxShowToast({ title: data.msg || '图片上传失败，请重试' })
-              this.setData({ saving: false })
-            }
+          .then(({ data }) => {
+            doSave(data.url)
           })
           .catch(() => {
             this.setData({ saving: false })

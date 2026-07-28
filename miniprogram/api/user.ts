@@ -42,14 +42,10 @@ export function qrBindConfirm(data: { sceneId: string; code: string }) {
 }
 
 export function uploadAvatar(filePath: string) {
-  const { globalData } = getApp<{ globalData: { token: string } }>()
   return wxUploadFile({
     url: config.url + '/api/business/upload',
     filePath,
-    name: 'file',
-    header: {
-      Authorization: globalData.token
-    }
+    name: 'file'
   })
 }
 

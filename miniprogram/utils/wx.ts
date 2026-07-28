@@ -1,3 +1,5 @@
+import { ResponseCode } from '../constants/index'
+
 export async function wxLogin() {
   return new Promise<WechatMiniprogram.LoginSuccessCallbackResult>((resolve, reject) => {
     wx.login({
@@ -101,12 +103,33 @@ export function wxChooseImage(options: { count: number; sizeType: ('original' | 
   })
 }
 
-export function wxUploadFile(options: { url: string; filePath: string; name: string; header: Record<string, string> }) {
-  return new Promise<WechatMiniprogram.UploadFileSuccessCallbackResult>((resolve, reject) => {
+export function wxUploadFile(options: { url: string; filePath: string; name: string }) {
+  const { globalData } = getApp()
+  const { token } = globalData
+  return new Promise<CtmResponse<{ url: string }>>((resolve, reject) => {
     const task = wx.uploadFile({
       ...options,
-      success: resolve,
-      fail: reject
+      header: {
+        Authorization: token
+      },
+      success: (res) => {
+        if (res.statusCode === ResponseCode.SUCCESS) {
+          const json = JSON.parse(res.data) as CtmResponse<{ url: string }>
+          if (json.code === ResponseCode.SUCCESS) {
+            resolve(json)
+          } else {
+            wxShowToast({ title: json.msg || '上传失败!!!' })
+            reject(json)
+          }
+        } else {
+          wxShowToast({ title: '上传失败!!!' })
+          reject({ code: res.statusCode, msg: '上传失败!!!', data: null as never })
+        }
+      },
+      fail: (err) => {
+        wxShowToast({ title: '上传失败!!!' })
+        reject({ code: ResponseCode.NETWORK_ERROR, msg: err.errMsg, data: null as never })
+      }
     })
     return task
   })
