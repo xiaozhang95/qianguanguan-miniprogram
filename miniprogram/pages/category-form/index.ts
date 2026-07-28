@@ -170,7 +170,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/home/index'
+      path: '/pages/bill/index'
     }
   }
 })

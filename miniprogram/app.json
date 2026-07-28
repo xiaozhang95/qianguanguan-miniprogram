@@ -1,8 +1,8 @@
 {
   "pages": [
-    "pages/home/index",
     "pages/bill/index",
     "pages/bill-form/index",
+    "pages/statistics/index",
     "pages/setting/index",
     "pages/agreement/index",
     "pages/user/index",
@@ -22,16 +22,16 @@
     "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/home/index",
-        "text": "统计",
-        "iconPath": "assets/icons/home.png",
-        "selectedIconPath": "assets/icons/home-active.png"
-      },
-      {
         "pagePath": "pages/bill/index",
         "text": "账单",
         "iconPath": "assets/icons/bill.png",
         "selectedIconPath": "assets/icons/bill-active.png"
+      },
+      {
+        "pagePath": "pages/statistics/index",
+        "text": "统计",
+        "iconPath": "assets/icons/statistics.png",
+        "selectedIconPath": "assets/icons/statistics-active.png"
       },
       {
         "pagePath": "pages/category/index",

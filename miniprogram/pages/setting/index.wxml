@@ -33,6 +33,9 @@
       <van-icon slot="icon" name="share-o" size="36rpx" custom-class="menu-icon menu-icon-share" />
       <button class="share-btn" open-type="share" hover-class="none"></button>
     </van-cell>
+    <van-cell title="网页版" is-link bind:click="handleToWeb">
+      <van-icon slot="icon" name="link-o" size="36rpx" custom-class="menu-icon menu-icon-web" />
+    </van-cell>
     <van-cell title="用户服务协议" is-link bind:click="handleToAgreement">
       <van-icon slot="icon" name="description-o" size="36rpx" custom-class="menu-icon menu-icon-agreement" />
     </van-cell>

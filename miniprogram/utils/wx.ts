@@ -135,6 +135,12 @@ export function wxUploadFile(options: { url: string; filePath: string; name: str
   })
 }
 
+export function wxSetClipboardData({ data = '' }) {
+  return new Promise<void>((resolve, reject) => {
+    wx.setClipboardData({ data, success: () => resolve(), fail: (err) => reject(err) })
+  })
+}
+
 export function wxGetMenuButtonBoundingClientRect() {
   return wx.getMenuButtonBoundingClientRect()
 }

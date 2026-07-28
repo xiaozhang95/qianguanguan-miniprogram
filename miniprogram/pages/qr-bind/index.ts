@@ -19,7 +19,7 @@ Page({
     this.setData({ app: globalData })
   },
   handleBack() {
-    wxSwitchTab('home')
+    wxSwitchTab('bill')
   },
   handleConfirm() {
     const sceneId = this.data.sceneId
@@ -33,7 +33,7 @@ Page({
       .then(() => {
         wxShowToast({ title: '绑定成功' })
         setTimeout(() => {
-          wxSwitchTab('home')
+          wxSwitchTab('bill')
         }, 1000)
       })
       .catch(() => {
@@ -43,7 +43,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/home/index'
+      path: '/pages/bill/index'
     }
   }
 })

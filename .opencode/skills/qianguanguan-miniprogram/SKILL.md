@@ -174,8 +174,8 @@ const bill: BillItem = {
 
 ```
 pages/
-├── home/index              # 统计：月度统计仪表盘（收支图、饼图）
 ├── bill/index              # 账单列表（FAB → bill-form）
+├── statistics/index        # 统计：月度统计仪表盘（收支图、饼图）
 ├── bill-form/index         # 记一笔/编辑账单
 ├── category/index          # 分类列表（FAB → category-form）
 ├── category-form/index     # 新增/编辑分类

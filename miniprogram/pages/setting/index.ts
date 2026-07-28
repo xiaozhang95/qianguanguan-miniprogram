@@ -1,6 +1,6 @@
 import config from '../../config/index'
 import { Role, RoleLabel } from '../../constants/index'
-import { debounceNavigateTo, wxLogin, wxShowShareMenu, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxLogin, wxSetClipboardData, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 const { globalData, login, exitLogin, watch } = getApp()
 
@@ -52,6 +52,12 @@ Page({
       })
     })
   },
+  handleToWeb() {
+    wxSetClipboardData({ data: config.url })
+      .then(() => {
+        wxShowToast({ title: '链接已复制，请用浏览器打开' })
+      })
+  },
   handleToAgreement() {
     debounceNavigateTo('agreement', 'tab=service')
   },
@@ -61,7 +67,7 @@ Page({
   onShareAppMessage() {
     return {
       title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/home/index'
+      path: '/pages/bill/index'
     }
   }
 })
