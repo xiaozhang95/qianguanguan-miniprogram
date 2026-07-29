@@ -69,7 +69,7 @@ export default function refreshRequest<T>(requestInfo: RequestInfo): Promise<Ctm
         if (err?.code !== ResponseCode.UNAUTHORIZED) return reject(err)
         setRequestQueue([...globalData.requestQueue, { resolve, reject, requestInfo }])
 
-        if (!globalData.token || globalData.refreshing) return reject(err)
+        if (globalData.refreshing || !globalData.token) return
         setRefreshing(true)
         tokenRefresh()
           .then(({ data }) => {

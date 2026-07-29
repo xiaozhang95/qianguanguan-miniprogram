@@ -1,7 +1,8 @@
 import { loginByWid, type UserInfo } from './api/user'
+import { ResponseCode } from './constants/index'
 import type { IAppOption, RequestQueue } from './pages/typings'
 import { create } from './utils/request'
-import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowModal, wxShowToast } from './utils/wx'
+import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowModal } from './utils/wx'
 
 App<IAppOption>({
   globalData: {
@@ -23,7 +24,6 @@ App<IAppOption>({
     this.globalData.refreshing = refreshing
   },
   setRequestQueue(requestQueue: RequestQueue[]) {
-    console.log(requestQueue)
     this.globalData.requestQueue = requestQueue
   },
   getMenuButtonBoundingClientRect() {
@@ -32,24 +32,27 @@ App<IAppOption>({
     this.globalData.capsuleTop = top
   },
   login() {
+    this.setRefreshing(true)
     wxLogin()
-      .then(({ code }) => {
-        loginByWid(code).then(({ data }) => {
-          setTimeout(() => {
-            const { token, userInfo } = data
-            this.globalData.userInfo = userInfo as UserInfo | null
-            this.globalData.token = token as string
+      .then(({ code }) => loginByWid(code))
+      .then(({ data }) => {
+        const { token, userInfo } = data
+        this.setUserInfo(userInfo)
+        this.setToken(token)
 
-            this.globalData.requestQueue.forEach(({ resolve, reject, requestInfo }) => {
-              create(requestInfo).then(resolve).catch(reject)
-            })
-
-            this.setRequestQueue([])
-          }, 1000)
+        this.globalData.requestQueue.forEach(({ resolve, reject, requestInfo }) => {
+          create(requestInfo).then(resolve).catch(reject)
         })
+        this.setRequestQueue([])
       })
       .catch(() => {
-        wxShowToast({ title: '登录失败' })
+        this.globalData.requestQueue.forEach(({ reject }) => {
+          reject({ code: ResponseCode.UNAUTHORIZED, msg: '', data: null })
+        })
+        this.setRequestQueue([])
+      })
+      .finally(() => {
+        this.setRefreshing(false)
       })
   },
 
@@ -67,7 +70,7 @@ App<IAppOption>({
   onLaunch() {
     this.updateManager()
     this.getMenuButtonBoundingClientRect()
-    this.login()
+    // this.login()
   },
   onShow(options: WechatMiniprogram.App.LaunchShowOption) {
     const scene = options.query && (options.query.scene as string)
