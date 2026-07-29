@@ -90,6 +90,14 @@ Page({
   },
 
   onFormSubmit() {
+    if (this.data.saving) return
+
+    const { globalData } = getApp<IAppOption>()
+    if (!globalData.token) {
+      wxShowToast({ title: '请先登录' })
+      return
+    }
+
     const { formName, formIcon, formIconFile, originalIcon, iconChanged, formType, formSort, editing, categoryId } = this.data
 
     if (!formName.trim()) {
@@ -116,7 +124,8 @@ Page({
           wxShowToast({ title: msg || '保存成功' })
           wxNavigateBack()
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err)
           this.setData({ saving: false })
         })
     }
@@ -131,7 +140,8 @@ Page({
           .then(({ data }) => {
             doSave(data.url)
           })
-          .catch(() => {
+          .catch((err) => {
+            console.log(err)
             this.setData({ saving: false })
           })
       } else {
@@ -147,6 +157,14 @@ Page({
   },
 
   onDelete() {
+    if (this.data.deleting) return
+
+    const { globalData } = getApp<IAppOption>()
+    if (!globalData.token) {
+      wxShowToast({ title: '请先登录' })
+      return
+    }
+
     const { categoryId } = this.data
     wxShowModal({
       title: '确认删除',

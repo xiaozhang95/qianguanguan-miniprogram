@@ -146,6 +146,14 @@ Page({
   },
 
   onFormSubmit() {
+    if (this.data.saving) return
+
+    const { globalData } = getApp<IAppOption>()
+    if (!globalData.token) {
+      wxShowToast({ title: '请先登录' })
+      return
+    }
+
     const { formType, formCategoryId, formAmount, formDate, formRemark, editing, billId } = this.data
 
     if (!formCategoryId) {
@@ -184,6 +192,14 @@ Page({
   },
 
   onFormDelete() {
+    if (this.data.saving) return
+
+    const { globalData } = getApp<IAppOption>()
+    if (!globalData.token) {
+      wxShowToast({ title: '请先登录' })
+      return
+    }
+
     const { editing, billId } = this.data
     if (!editing || !billId) return
     wxShowModal({

@@ -23,6 +23,8 @@ Page({
     wxSwitchTab('bill')
   },
   handleConfirm() {
+    if (this.data.loading) return
+
     const sceneId = this.data.sceneId
     if (!sceneId) return
 

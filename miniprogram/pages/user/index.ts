@@ -86,6 +86,8 @@ Page({
     debounceNavigateTo('agreement', 'tab=privacy')
   },
   handleSendCode() {
+    if (this.data.sendCodeLoading || this.data.codeCountdown > 0) return
+
     const email = this.data.email
     if (!email) {
       wxShowToast({ title: '请先输入邮箱' })
@@ -111,7 +113,14 @@ Page({
       })
   },
   handleSave() {
-    const { setUserInfo } = getApp<IAppOption>()
+    if (this.data.saving) return
+
+    const { globalData, setUserInfo } = getApp<IAppOption>()
+    if (!globalData.token) {
+      wxShowToast({ title: '请先登录' })
+      return
+    }
+
     if (!this.data.agreed) {
       wxShowToast({ title: '请先阅读并同意用户协议和隐私政策' })
       return

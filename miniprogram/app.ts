@@ -7,6 +7,7 @@ import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowModal } from './utils
 App<IAppOption>({
   globalData: {
     refreshing: false,
+    loginFailed: true,
     requestQueue: [],
     token: '',
     userInfo: null,
@@ -23,6 +24,9 @@ App<IAppOption>({
   setRefreshing(refreshing: boolean) {
     this.globalData.refreshing = refreshing
   },
+  setLoginFailed(loginFailed: boolean) {
+    this.globalData.loginFailed = loginFailed
+  },
   setRequestQueue(requestQueue: RequestQueue[]) {
     this.globalData.requestQueue = requestQueue
   },
@@ -33,6 +37,7 @@ App<IAppOption>({
   },
   login() {
     this.setRefreshing(true)
+    this.setLoginFailed(false)
     wxLogin()
       .then(({ code }) => loginByWid(code))
       .then(({ data }) => {
@@ -46,6 +51,7 @@ App<IAppOption>({
         this.setRequestQueue([])
       })
       .catch(() => {
+        this.setLoginFailed(true)
         this.globalData.requestQueue.forEach(({ reject }) => {
           reject({ code: ResponseCode.UNAUTHORIZED, msg: '', data: null })
         })
@@ -70,7 +76,7 @@ App<IAppOption>({
   onLaunch() {
     this.updateManager()
     this.getMenuButtonBoundingClientRect()
-    // this.login()
+    this.login()
   },
   onShow(options: WechatMiniprogram.App.LaunchShowOption) {
     const scene = options.query && (options.query.scene as string)

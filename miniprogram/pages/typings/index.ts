@@ -3,6 +3,7 @@ import type { UserInfo } from '../../api/user'
 export interface IAppOption {
   globalData: {
     refreshing: boolean
+    loginFailed: boolean
     requestQueue: RequestQueue[]
     token: string
     userInfo: UserInfo | null
@@ -13,6 +14,7 @@ export interface IAppOption {
   setUserInfo: (userInfo: UserInfo) => void
   setToken: (token: string) => void
   setRefreshing: (refreshing: boolean) => void
+  setLoginFailed: (loginFailed: boolean) => void
   setRequestQueue: (requestQueue: RequestQueue[]) => void
   updateManager: () => void
   getMenuButtonBoundingClientRect: () => void
