@@ -5,7 +5,7 @@ import { BillType } from '../../constants/index'
 import { pad } from '../../utils/format'
 import { wxNavigateBack, wxShowModal, wxShowToast } from '../../utils/wx'
 
-const { globalData, isLogin } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 function todayStr() {
   const d = new Date()
@@ -48,12 +48,10 @@ Page({
       this.setData({ editing: true, billId: options.id })
     }
 
-    isLogin(false).then(() => {
-      this.loadCategories()
-      if (options.id) {
-        this.loadBill()
-      }
-    })
+    this.loadCategories()
+    if (options.id) {
+      this.loadBill()
+    }
   },
 
   loadCategories() {

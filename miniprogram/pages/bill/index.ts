@@ -2,9 +2,9 @@ import { billList, billStats } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { fmt, pad } from '../../utils/format'
-import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync, wxSwitchTab } from '../../utils/wx'
+import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync } from '../../utils/wx'
 
-const { globalData, isLogin, watch } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 function todayStr() {
   const d = new Date()
@@ -57,10 +57,6 @@ Page({
 
   onLoad(options: Record<string, string>) {
     if (this.handleQrScene(options.scene || '')) return
-    watch((gd: typeof globalData) => {
-      this.setData({ app: gd })
-      this.init()
-    })
   },
 
   onShow() {
@@ -70,7 +66,7 @@ Page({
       if (this.handleQrScene(qrScene)) return
     }
     this.setData({ app: globalData, isScrolled: false })
-    this.init()
+    this.loadData()
   },
   handleQrScene(raw: string) {
     const scene = decodeURIComponent(raw)
@@ -96,25 +92,6 @@ Page({
 
   onHide() {
     this.setData({ showDatePicker: false, isScrolled: false })
-  },
-
-  init() {
-    isLogin(false)
-      .then(() => {
-        this.loadData()
-      })
-      .catch(() => {
-        this.setData({
-          stats: { totalIncome: 0, totalExpense: 0, balance: 0 },
-          bills: [],
-          billGroups: [],
-          hasData: false,
-          expenseStr: '0.00',
-          incomeStr: '0.00',
-          balanceStr: '0.00',
-          balanceClass: 'balance-zero'
-        })
-      })
   },
 
   loadData() {
@@ -226,24 +203,12 @@ Page({
   },
 
   onAddBill() {
-    isLogin(true)
-      .then(() => {
-        debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
-      })
-      .catch(() => {
-        wxSwitchTab('setting')
-      })
+    debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
   },
 
   onEditBill(e: WechatMiniprogram.CustomEvent) {
     const bill = e.currentTarget.dataset.bill as BillVO
-    isLogin(true)
-      .then(() => {
-        debounceNavigateTo('bill-form', 'id=' + bill.id)
-      })
-      .catch(() => {
-        wxSwitchTab('setting')
-      })
+    debounceNavigateTo('bill-form', 'id=' + bill.id)
   },
 
   onPageScroll(e: { scrollTop: number }) {

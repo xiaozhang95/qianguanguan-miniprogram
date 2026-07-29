@@ -1,7 +1,7 @@
 import { qrLoginConfirm } from '../../api/user'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
-const { globalData, update } = getApp()
+const { globalData, setToken, setUserInfo } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -30,9 +30,9 @@ Page({
       .then((res) => {
         return qrLoginConfirm({ sceneId, code: res.code })
       })
-      .then((res: CtmResponse<LoginResult>) => {
-        update('token', res.data.token)
-        update('userInfo', res.data.userInfo)
+      .then(({ data }: CtmResponse<LoginResult>) => {
+        setToken(data.token)
+        setUserInfo(data.userInfo)
         wxShowToast({ title: '登录成功' })
         setTimeout(() => {
           wxSwitchTab('bill')

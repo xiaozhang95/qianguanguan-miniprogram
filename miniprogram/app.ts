@@ -1,57 +1,24 @@
-import { loginByWid, userInfo } from './api/user'
-import { wxGetMenuButtonBoundingClientRect, wxGetStorageSync, wxHideLoading, wxSetStorageSync, wxShowLoading, wxShowToast } from './utils/wx'
+import { loginByWid } from './api/user'
+import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowToast } from './utils/wx'
 
-type AppCallback = (data: { token: string; userInfo: UserInfo | null }) => void
-
-App({
+App<IAppOption>({
   globalData: {
-    updateFn: [] as AppCallback[],
+    requestQueue: [],
     token: '',
-    userInfo: null as UserInfo | null,
+    userInfo: null,
     offsetTop: 0,
     capsuleTop: 0,
     _qrScene: ''
   },
-  watch(fn: AppCallback) {
-    this.globalData.updateFn.push(fn)
+  setUserInfo(userInfo: UserInfo) {
+    this.globalData.userInfo = userInfo
   },
-  update(key: string, value: unknown) {
-    if (key === 'userInfo') {
-      this.globalData.userInfo = value as UserInfo | null
-    }
-    if (key === 'token') {
-      this.globalData.token = value as string
-      wxSetStorageSync('token', value)
-    }
-    this.globalData.updateFn.forEach((fn) => {
-      fn(this.globalData)
-    })
+  setToken(token: string) {
+    this.globalData.token = token
   },
-  isLogin(toast: boolean = true) {
-    return new Promise<void>((resolve, reject) => {
-      if (!this.globalData.token) {
-        if (toast) wxShowToast({ title: '请先登录' })
-        reject('未登录')
-      } else {
-        resolve()
-      }
-    })
-  },
-  login(code: string) {
-    wxShowLoading({ title: '登录中...' })
-    loginByWid(code).then(({ data }) => {
-      setTimeout(() => {
-        wxHideLoading()
-        const { token, userInfo } = data
-        this.update('token', token)
-        this.update('userInfo', userInfo)
-      }, 1000)
-    })
-  },
-  exitLogin(fn?: () => void) {
-    this.update('token', '')
-    this.update('userInfo', null)
-    if (fn) fn()
+  setRequestQueue(requestQueue: RequestQueue[]) {
+    console.log(requestQueue)
+    this.globalData.requestQueue = requestQueue
   },
   onLaunch() {
     const updateManager = wx.getUpdateManager()
@@ -77,24 +44,23 @@ App({
       // 新版本下载失败
     })
 
-    const token = wxGetStorageSync('token') || ''
-    this.update('token', token)
-
     const { top, height } = wxGetMenuButtonBoundingClientRect()
     this.globalData.offsetTop = top + height
     this.globalData.capsuleTop = top
 
-    this.isLogin(false)
-      .then(() => {
-        userInfo()
-          .then((res: CtmResponse<UserInfo>) => {
-            this.update('userInfo', res.data)
-          })
-          .catch(() => {
-            this.exitLogin()
-          })
+    wxLogin()
+      .then(({ code }) => {
+        loginByWid(code).then(({ data }) => {
+          setTimeout(() => {
+            const { token, userInfo } = data
+            this.globalData.userInfo = userInfo as UserInfo | null
+            this.globalData.token = token as string
+          }, 1000)
+        })
       })
-      .catch(() => {})
+      .catch(() => {
+        wxShowToast({ title: '登录失败' })
+      })
   },
   onShow(options: WechatMiniprogram.App.LaunchShowOption) {
     const scene = options.query && (options.query.scene as string)

@@ -1,6 +1,6 @@
 import { wxNavigateBack } from '../../utils/wx'
 
-const { globalData } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {

@@ -104,14 +104,9 @@ export function wxChooseImage(options: { count: number; sizeType: ('original' | 
 }
 
 export function wxUploadFile(options: { url: string; filePath: string; name: string }) {
-  const { globalData } = getApp()
-  const { token } = globalData
   return new Promise<CtmResponse<{ url: string }>>((resolve, reject) => {
     const task = wx.uploadFile({
       ...options,
-      header: {
-        Authorization: token
-      },
       success: (res) => {
         if (res.statusCode === ResponseCode.SUCCESS) {
           const json = JSON.parse(res.data) as CtmResponse<{ url: string }>

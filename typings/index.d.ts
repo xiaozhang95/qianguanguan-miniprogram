@@ -2,12 +2,16 @@
 
 interface IAppOption {
   globalData: {
+    requestQueue: RequestQueue[]
     token: string
     userInfo: UserInfo | null
-    updateFn: Function[]
     offsetTop: number
     capsuleTop: number
+    _qrScene: string
   }
+  setUserInfo: (userInfo: UserInfo) => void
+  setToken: (token: string) => void
+  setRequestQueue: (requestQueue: RequestQueue[]) => void
 }
 
 interface Config {
@@ -30,8 +34,8 @@ interface UserInfo {
 }
 
 interface LoginResult {
-  token?: string
-  userInfo?: UserInfo
+  token: string
+  userInfo: UserInfo
 }
 
 interface Category {
@@ -110,4 +114,12 @@ interface RequestInfo {
   timeout?: number
   data?: Record<string, unknown>
   errorMsg?: boolean
+}
+
+interface RequestQueue {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolve: (value: any) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reject: (reason?: any) => void
+  requestInfo: RequestInfo
 }

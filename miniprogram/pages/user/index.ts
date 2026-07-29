@@ -2,7 +2,7 @@ import { sendEmailCode, uploadAvatar, userProfile } from '../../api/user'
 import config from '../../config/index'
 import { debounceNavigateTo, wxNavigateBack, wxShowToast } from '../../utils/wx'
 
-const { globalData, update } = getApp()
+const { globalData, setUserInfo } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -138,9 +138,9 @@ Page({
         payload.emailCode = this.data.emailCode
       }
       userProfile(payload)
-        .then((res: CtmResponse<UserInfo>) => {
+        .then(({ data }: CtmResponse<UserInfo>) => {
           wxShowToast({ title: '保存成功' })
-          update('userInfo', res.data)
+          setUserInfo(data)
           setTimeout(function () {
             wxNavigateBack()
           }, 1000)

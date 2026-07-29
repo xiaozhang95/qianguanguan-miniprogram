@@ -63,25 +63,6 @@
   color: rgba(255, 255, 255, 0.65);
 }
 
-.login-action {
-  margin: 40rpx var(--padding-lg) var(--margin);
-  padding: 32rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12rpx;
-  background: var(--theme-gradient);
-  border-radius: var(--border-radius);
-  box-shadow: 0 8rpx 24rpx rgba(22, 119, 255, 0.35);
-  color: var(--color-white);
-  font-size: 32rpx;
-  font-weight: 600;
-  letter-spacing: 4rpx;
-}
-.login-action:active {
-  opacity: 0.85;
-  transform: scale(0.98);
-}
 
 .menu-group {
   margin: var(--margin) var(--padding-lg) 0 !important;

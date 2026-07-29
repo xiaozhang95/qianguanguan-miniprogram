@@ -44,17 +44,6 @@
     </van-cell>
   </van-cell-group>
 
-  <view wx:if="{{ !app.userInfo }}" class="login-action" bindtap="handleToLogin">
-    <van-icon name="wechat" size="40rpx" color="#fff" />
-    <text>一键登录</text>
-  </view>
-
-  <van-cell-group wx:if="{{ app.userInfo }}" inset custom-class="menu-group">
-    <van-cell title="退出登录" is-link bind:click="handleToExitLogin">
-      <van-icon slot="icon" name="revoke" size="36rpx" custom-class="menu-icon menu-icon-exit" />
-    </van-cell>
-  </van-cell-group>
-
   <view class="footer">
     <text>—— 钱罐罐记账 ——</text>
   </view>

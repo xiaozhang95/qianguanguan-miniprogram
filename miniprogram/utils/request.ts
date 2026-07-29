@@ -2,13 +2,12 @@ import config from '../config/index'
 import { ResponseCode } from '../constants/index'
 import { wxShowToast } from './wx'
 
-export default async function request<T>(d: RequestInfo) {
-  const { globalData, exitLogin } = getApp()
-  const { token } = globalData
+async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
+  const { globalData } = getApp<IAppOption>()
 
   const defaultOptions = {
     header: {
-      Authorization: token
+      Authorization: globalData.token
     },
     timeout: 10000,
     errorMsg: true
@@ -27,12 +26,9 @@ export default async function request<T>(d: RequestInfo) {
 
           if (json.code !== ResponseCode.SUCCESS) {
             if (options.errorMsg && json.code !== ResponseCode.UNAUTHORIZED) {
-              wxShowToast({ title: json.msg || '请求失败' })
+              wxShowToast({ title: json.msg })
             }
 
-            if (json.code === ResponseCode.UNAUTHORIZED) {
-              exitLogin()
-            }
             reject(json)
           } else {
             resolve(json)
@@ -48,8 +44,54 @@ export default async function request<T>(d: RequestInfo) {
         if (options.errorMsg) {
           wxShowToast({ title: '网络请求失败' })
         }
-        reject({ code: ResponseCode.NETWORK_ERROR, msg: error.errMsg, data: null as T })
+        reject({ code: 0, msg: error.errMsg, data: null as T })
       }
     })
+  })
+}
+
+function tokenRefresh() {
+  return create<LoginResult>({
+    url: '/token/refresh',
+    method: 'POST'
+  })
+}
+
+let isRefreshing = false
+
+export default function refreshRequest<T>(requestInfo: RequestInfo): Promise<CtmResponse<T>> {
+  const { globalData, setRequestQueue, setToken } = getApp<IAppOption>()
+
+  return new Promise((resolve, reject) => {
+    create<T>(requestInfo)
+      .then(resolve)
+      .catch((err) => {
+        if (err?.code !== ResponseCode.UNAUTHORIZED) {
+          return reject(err)
+        }
+
+        setRequestQueue([...globalData.requestQueue, { resolve, reject, requestInfo }])
+
+        if (!isRefreshing) {
+          isRefreshing = true
+
+          tokenRefresh()
+            .then(({ data }) => {
+              setToken(data.token)
+              globalData.requestQueue.forEach(({ resolve, reject, requestInfo }) => {
+                create(requestInfo).then(resolve).catch(reject)
+              })
+
+              setRequestQueue([])
+            })
+            .catch((error) => {
+              globalData.requestQueue.forEach(({ reject }) => reject(error))
+              setRequestQueue([])
+            })
+            .finally(() => {
+              isRefreshing = false
+            })
+        }
+      })
   })
 }

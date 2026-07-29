@@ -1,9 +1,9 @@
 import { categoryList } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
-import { debounceNavigateTo, wxShowToast, wxSwitchTab } from '../../utils/wx'
+import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
 
-const { globalData, isLogin, watch } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -27,38 +27,13 @@ Page({
     app: null as { offsetTop: number; capsuleTop: number } | null
   },
 
-  onLoad() {
-    watch((gd: typeof globalData) => {
-      this.setData({ app: gd })
-      this.init()
-    })
-  },
-
   onShow() {
     this.setData({ app: globalData, isScrolled: false })
-    this.init()
+    this.loadCategories()
   },
 
   onHide() {
     this.setData({ isScrolled: false })
-  },
-
-  init() {
-    isLogin(false)
-      .then(() => {
-        this.loadCategories()
-      })
-      .catch(() => {
-        this.setData({
-          categories: [],
-          filteredCategories: [],
-          systemCategories: [],
-          customCategories: [],
-          expenseCount: 0,
-          incomeCount: 0,
-          totalCount: 0
-        })
-      })
   },
 
   loadCategories() {
@@ -108,24 +83,12 @@ Page({
   },
 
   onAdd() {
-    isLogin(true)
-      .then(() => {
-        debounceNavigateTo('category-form')
-      })
-      .catch(() => {
-        wxSwitchTab('setting')
-      })
+    debounceNavigateTo('category-form')
   },
 
   onEdit(e: WechatMiniprogram.CustomEvent) {
     const cat = e.currentTarget.dataset.cat as Category
-    isLogin(true)
-      .then(() => {
-        debounceNavigateTo('category-form', 'id=' + cat.id)
-      })
-      .catch(() => {
-        wxSwitchTab('setting')
-      })
+    debounceNavigateTo('category-form', 'id=' + cat.id)
   },
 
   onSystemTap() {

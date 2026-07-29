@@ -3,7 +3,7 @@ import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
 
-const { globalData, isLogin } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -31,11 +31,9 @@ Page({
       this.setData({ editing: true, categoryId: options.id })
     }
 
-    isLogin(false).then(() => {
-      if (options.id) {
-        this.loadCategory(options.id)
-      }
-    })
+    if (options.id) {
+      this.loadCategory(options.id)
+    }
   },
 
   loadCategory(id: string) {

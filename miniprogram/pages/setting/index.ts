@@ -1,8 +1,8 @@
 import config from '../../config/index'
 import { Role, RoleLabel } from '../../constants/index'
-import { debounceNavigateTo, wxLogin, wxSetClipboardData, wxShowShareMenu, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxSetClipboardData, wxShowToast } from '../../utils/wx'
 
-const { globalData, login, exitLogin, watch } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 function avatarUrl(u: { avatar?: string } | null) {
   const a = (u && u.avatar) || ''
@@ -19,24 +19,9 @@ Page({
     avatar: '',
     app: null as { offsetTop: number; capsuleTop: number; userInfo: UserInfo | null } | null
   },
-  onLoad() {
-    wxShowShareMenu()
-    watch((gd: typeof globalData) => {
-      this.setData({ app: gd, avatar: avatarUrl(gd.userInfo) })
-    })
-  },
+
   onShow() {
     this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
-  },
-  handleToLogin() {
-    wxShowToast({ title: '请求中...', mask: true })
-    wxLogin()
-      .then((res) => {
-        login(res.code)
-      })
-      .catch(() => {
-        wxShowToast({ title: '登录失败' })
-      })
   },
   handleToUser() {
     debounceNavigateTo('user')
@@ -44,19 +29,10 @@ Page({
   handleToQrLogin() {
     debounceNavigateTo('qr-login')
   },
-  handleToExitLogin() {
-    exitLogin(() => {
-      wxShowToast({ title: '已退出登录' })
-      this.setData({
-        app: globalData
-      })
-    })
-  },
   handleToWeb() {
-    wxSetClipboardData({ data: config.url })
-      .then(() => {
-        wxShowToast({ title: '链接已复制，请用浏览器打开' })
-      })
+    wxSetClipboardData({ data: config.url }).then(() => {
+      wxShowToast({ title: '链接已复制，请用浏览器打开' })
+    })
   },
   handleToAgreement() {
     debounceNavigateTo('agreement', 'tab=service')

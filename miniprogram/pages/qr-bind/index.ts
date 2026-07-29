@@ -1,7 +1,7 @@
 import { qrBindConfirm } from '../../api/user'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
-const { globalData } = getApp()
+const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
