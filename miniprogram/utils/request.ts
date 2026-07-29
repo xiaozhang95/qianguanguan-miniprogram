@@ -36,14 +36,14 @@ export async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
           }
         } else {
           if (options.errorMsg) {
-            wxShowToast({ title: '服务器异常' })
+            wxShowToast({ title: response.errMsg })
           }
-          reject({ code: response.statusCode, msg: '服务器异常', data: null })
+          reject({ code: response.statusCode, msg: response.errMsg, data: null })
         }
       },
       fail: (error) => {
         if (options.errorMsg) {
-          wxShowToast({ title: '网络请求失败' })
+          wxShowToast({ title: error.errMsg })
         }
         reject({ code: 0, msg: error.errMsg, data: null })
       }
