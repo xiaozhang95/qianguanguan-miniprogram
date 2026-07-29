@@ -1,5 +1,50 @@
 import request from '../utils/request'
 
+export interface BillSaveParams {
+  [key: string]: unknown
+  categoryId: string
+  type: string
+  amount: number
+  billDate: string
+  remark?: string
+}
+
+export interface BillStatsData {
+  totalIncome: number
+  totalExpense: number
+  balance: number
+}
+
+export interface BillVO {
+  id: string
+  userId: string
+  categoryId: string
+  categoryName: string
+  categoryIcon: string
+  type: string
+  amount: number
+  billDate: string
+  remark: string
+  createtime: string
+}
+
+export interface BillPage {
+  records: BillVO[]
+  total: number
+  size: number
+  current: number
+}
+
+export interface BillListParams {
+  [key: string]: unknown
+  type?: string
+  categoryId?: string
+  startDate?: string
+  endDate?: string
+  pageNum?: number
+  pageSize?: number
+}
+
 export function billStats(year: string, month: string, day?: string, type?: string, categoryId?: string) {
   return request<BillStatsData>({
     url: '/bill/stats',

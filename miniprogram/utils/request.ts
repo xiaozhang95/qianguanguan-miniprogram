@@ -1,8 +1,10 @@
+import type { LoginResult } from '../api/user'
 import config from '../config/index'
 import { ResponseCode } from '../constants/index'
+import type { CtmResponse, IAppOption, RequestInfo } from '../type'
 import { wxShowToast } from './wx'
 
-async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
+export async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
   const { globalData } = getApp<IAppOption>()
 
   const defaultOptions = {
@@ -28,7 +30,6 @@ async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
             if (options.errorMsg && json.code !== ResponseCode.UNAUTHORIZED) {
               wxShowToast({ title: json.msg })
             }
-
             reject(json)
           } else {
             resolve(json)
@@ -37,14 +38,14 @@ async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
           if (options.errorMsg) {
             wxShowToast({ title: '服务器异常' })
           }
-          reject({ code: response.statusCode, msg: '服务器异常', data: null as T })
+          reject({ code: response.statusCode, msg: '服务器异常', data: null })
         }
       },
       fail: (error) => {
         if (options.errorMsg) {
           wxShowToast({ title: '网络请求失败' })
         }
-        reject({ code: 0, msg: error.errMsg, data: null as T })
+        reject({ code: 0, msg: error.errMsg, data: null })
       }
     })
   })
@@ -53,45 +54,39 @@ async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
 function tokenRefresh() {
   return create<LoginResult>({
     url: '/token/refresh',
-    method: 'POST'
+    method: 'POST',
+    errorMsg: false
   })
 }
 
-let isRefreshing = false
-
 export default function refreshRequest<T>(requestInfo: RequestInfo): Promise<CtmResponse<T>> {
-  const { globalData, setRequestQueue, setToken } = getApp<IAppOption>()
+  const { globalData, setRequestQueue, setToken, setRefreshing } = getApp<IAppOption>()
 
   return new Promise((resolve, reject) => {
     create<T>(requestInfo)
       .then(resolve)
       .catch((err) => {
-        if (err?.code !== ResponseCode.UNAUTHORIZED) {
-          return reject(err)
-        }
-
+        if (err?.code !== ResponseCode.UNAUTHORIZED) return reject(err)
         setRequestQueue([...globalData.requestQueue, { resolve, reject, requestInfo }])
 
-        if (!isRefreshing) {
-          isRefreshing = true
+        if (!globalData.token || globalData.refreshing) return reject(err)
+        setRefreshing(true)
+        tokenRefresh()
+          .then(({ data }) => {
+            setToken(data.token)
+            globalData.requestQueue.forEach(({ resolve, reject, requestInfo }) => {
+              create(requestInfo).then(resolve).catch(reject)
+            })
 
-          tokenRefresh()
-            .then(({ data }) => {
-              setToken(data.token)
-              globalData.requestQueue.forEach(({ resolve, reject, requestInfo }) => {
-                create(requestInfo).then(resolve).catch(reject)
-              })
-
-              setRequestQueue([])
-            })
-            .catch((error) => {
-              globalData.requestQueue.forEach(({ reject }) => reject(error))
-              setRequestQueue([])
-            })
-            .finally(() => {
-              isRefreshing = false
-            })
-        }
+            setRequestQueue([])
+          })
+          .catch((error) => {
+            globalData.requestQueue.forEach(({ reject }) => reject(error))
+            setRequestQueue([])
+          })
+          .finally(() => {
+            setRefreshing(false)
+          })
       })
   })
 }

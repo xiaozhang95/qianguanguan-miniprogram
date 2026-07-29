@@ -1,8 +1,8 @@
+import type { UserInfo } from '../../api/user'
 import config from '../../config/index'
 import { Role, RoleLabel } from '../../constants/index'
+import type { IAppOption } from '../../type'
 import { debounceNavigateTo, wxSetClipboardData, wxShowToast } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 function avatarUrl(u: { avatar?: string } | null) {
   const a = (u && u.avatar) || ''
@@ -21,6 +21,7 @@ Page({
   },
 
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
   },
   handleToUser() {

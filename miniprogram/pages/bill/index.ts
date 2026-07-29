@@ -1,10 +1,9 @@
-import { billList, billStats } from '../../api/bill'
+import { billList, billStats, type BillVO } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../type'
 import { fmt, pad } from '../../utils/format'
 import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 function todayStr() {
   const d = new Date()
@@ -51,8 +50,7 @@ Page({
     hasData: false,
 
     isScrolled: false,
-
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
 
   onLoad(options: Record<string, string>) {
@@ -60,6 +58,7 @@ Page({
   },
 
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     const qrScene = globalData._qrScene || ''
     if (qrScene) {
       globalData._qrScene = ''

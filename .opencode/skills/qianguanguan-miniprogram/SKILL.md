@@ -49,7 +49,7 @@ miniprogram/
 - 如果 PowerShell 执行策略限制 `pnpm`，使用 `cmd /c "pnpm lint"`
 - **禁止**可选链 `?.` 和空值合并 `??`，用 `if (x) x()` 替代
 - **禁止** `Function` 类型，用具体回调类型替代
-- **禁止** `any` 类型，`app` 字段用 `null as { offsetTop: number; capsuleTop: number } | null`
+- **禁止** `any` 类型，`app` 字段用 `{}`
 - **禁止** `var`，使用 `const` 或 `let`
 - 页面 JSON 只能注册真正在 WXML 中使用的组件，禁止冗余注册
 

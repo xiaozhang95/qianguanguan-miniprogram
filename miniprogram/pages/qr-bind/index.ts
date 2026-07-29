@@ -1,21 +1,22 @@
 import { qrBindConfirm } from '../../api/user'
+import type { IAppOption } from '../../type'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
     sceneId: '',
     loading: false,
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
   onLoad(options: Record<string, string>) {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
     if (options.scene) {
       this.setData({ sceneId: options.scene })
     }
   },
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
   },
   handleBack() {

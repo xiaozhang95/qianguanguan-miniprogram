@@ -1,11 +1,10 @@
-import { billDelete, billList, billSave, billUpdate } from '../../api/bill'
-import { categoryList } from '../../api/category'
+import { billDelete, billList, billSave, billUpdate, type BillSaveParams } from '../../api/bill'
+import { categoryList, type Category } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../type'
 import { pad } from '../../utils/format'
 import { wxNavigateBack, wxShowModal, wxShowToast } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 function todayStr() {
   const d = new Date()
@@ -35,10 +34,11 @@ Page({
     maxDate: Date.now(),
     saving: false,
 
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
 
   onLoad(options: Record<string, string>) {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
 
     if (options.date) {

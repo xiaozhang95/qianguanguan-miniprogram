@@ -1,9 +1,8 @@
-import { billList, billStats } from '../../api/bill'
+import { billList, billStats, type BillVO } from '../../api/bill'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../type'
 import { fmt, pad } from '../../utils/format'
 import { wxGetSystemInfoSync } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 const EXP_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#06b6d4']
 const INC_COLORS = ['#22c55e', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899']
@@ -50,7 +49,7 @@ Page({
     chartScrollLeft: 0,
     isScrolled: false,
     loading: false,
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
   onShareAppMessage() {
     return {
@@ -60,6 +59,7 @@ Page({
   },
 
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData, isScrolled: false })
     this.loadData()
   },

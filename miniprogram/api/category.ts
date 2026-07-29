@@ -1,5 +1,23 @@
 import request from '../utils/request'
 
+export interface Category {
+  id: string
+  name: string
+  icon: string
+  type: string
+  userId: string | null
+  sort: number
+  createtime: string
+}
+
+export interface CategorySaveParams {
+  [key: string]: unknown
+  name: string
+  icon: string
+  type: string
+  sort: number
+}
+
 export function categoryList(type?: string) {
   const data: Record<string, string> = {}
   if (type) data.type = type

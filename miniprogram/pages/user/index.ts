@@ -1,8 +1,7 @@
-import { sendEmailCode, uploadAvatar, userProfile } from '../../api/user'
+import { sendEmailCode, uploadAvatar, userProfile, type UserInfo } from '../../api/user'
 import config from '../../config/index'
+import type { CtmResponse, IAppOption } from '../../type'
 import { debounceNavigateTo, wxNavigateBack, wxShowToast } from '../../utils/wx'
-
-const { globalData, setUserInfo } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -19,10 +18,11 @@ Page({
     emailChanged: false,
     agreed: false,
     saving: false,
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
   _countdownTimer: null as ReturnType<typeof setInterval> | null,
   onLoad() {
+    const { globalData } = getApp<IAppOption>()
     const u = globalData.userInfo || {}
     const a = u.avatar || ''
     const isUpload = a.indexOf(config.uploadPath) === 0
@@ -43,6 +43,7 @@ Page({
     })
   },
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
   },
   onUnload() {
@@ -110,6 +111,7 @@ Page({
       })
   },
   handleSave() {
+    const { setUserInfo } = getApp<IAppOption>()
     if (!this.data.agreed) {
       wxShowToast({ title: '请先阅读并同意用户协议和隐私政策' })
       return

@@ -1,16 +1,17 @@
+import type { IAppOption } from '../../type'
 import { wxNavigateBack } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
-    app: globalData as { offsetTop: number; capsuleTop: number },
+    app: {},
     activeTab: 0
   },
   onLoad(options: { tab?: string }) {
-    if (options.tab === 'privacy') {
-      this.setData({ activeTab: 1 })
-    }
+    const { globalData } = getApp<IAppOption>()
+    this.setData({
+      app: globalData,
+      activeTab: options.tab === 'privacy' ? 1 : 0
+    })
   },
   onTabChange(e: WechatMiniprogram.CustomEvent<{ index: number }>) {
     this.setData({ activeTab: e.detail.index })

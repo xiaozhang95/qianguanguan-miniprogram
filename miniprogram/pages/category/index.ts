@@ -1,9 +1,8 @@
-import { categoryList } from '../../api/category'
+import { categoryList, type Category } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../type'
 import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -24,10 +23,11 @@ Page({
 
     isScrolled: false,
 
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
 
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData, isScrolled: false })
     this.loadCategories()
   },

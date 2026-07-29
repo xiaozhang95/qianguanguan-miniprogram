@@ -1,9 +1,8 @@
-import { categoryDelete, categoryList, categorySave, categoryUpdate } from '../../api/category'
+import { categoryDelete, categoryList, categorySave, categoryUpdate, type CategorySaveParams } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../type'
 import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
-
-const { globalData } = getApp<IAppOption>()
 
 Page({
   data: {
@@ -21,10 +20,11 @@ Page({
     saving: false,
     deleting: false,
 
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
 
   onLoad(options: Record<string, string>) {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
 
     if (options.id) {

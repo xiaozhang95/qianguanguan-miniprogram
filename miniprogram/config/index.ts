@@ -1,5 +1,13 @@
 const env = wx.getAccountInfoSync().miniProgram.envVersion
 
+export interface Config {
+  [key: string]: {
+    baseUrl: string
+    url: string
+    uploadPath: string
+  }
+}
+
 const config: Config = {
   develop: {
     baseUrl: '/api/business',

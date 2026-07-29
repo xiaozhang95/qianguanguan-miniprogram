@@ -2,6 +2,22 @@ import config from '../config/index'
 import request from '../utils/request'
 import { wxUploadFile } from '../utils/wx'
 
+export interface UserInfo {
+  id?: string
+  username?: string
+  name?: string
+  role?: string
+  phone?: string
+  email?: string
+  avatar?: string
+  createtime?: string
+}
+
+export interface LoginResult {
+  token: string
+  userInfo: UserInfo
+}
+
 export function userInfo() {
   return request<UserInfo>({
     url: '/user/info',

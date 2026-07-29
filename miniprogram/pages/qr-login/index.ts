@@ -1,27 +1,29 @@
-import { qrLoginConfirm } from '../../api/user'
+import { qrLoginConfirm, type LoginResult } from '../../api/user'
+import type { CtmResponse, IAppOption } from '../../type'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
-
-const { globalData, setToken, setUserInfo } = getApp<IAppOption>()
 
 Page({
   data: {
     sceneId: '',
     loading: false,
-    app: null as { offsetTop: number; capsuleTop: number } | null
+    app: {}
   },
   onLoad(options: Record<string, string>) {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
     if (options.scene) {
       this.setData({ sceneId: options.scene })
     }
   },
   onShow() {
+    const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
   },
   handleBack() {
     wxSwitchTab('bill')
   },
   handleConfirm() {
+    const { setToken, setUserInfo } = getApp<IAppOption>()
     const sceneId = this.data.sceneId
     if (!sceneId) return
 
