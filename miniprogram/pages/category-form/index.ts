@@ -1,8 +1,8 @@
 import { categoryDelete, categoryList, categorySave, categoryUpdate, type CategorySaveParams } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
-import type { IAppOption } from '../../type'
 import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
+import type { IAppOption } from '../typings'
 
 Page({
   data: {

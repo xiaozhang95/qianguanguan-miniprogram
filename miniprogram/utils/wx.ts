@@ -1,5 +1,5 @@
 import { ResponseCode } from '../constants/index'
-import type { CtmResponse } from '../type'
+import type { CtmResponse } from '../pages/typings'
 
 export async function wxLogin() {
   return new Promise<WechatMiniprogram.LoginSuccessCallbackResult>((resolve, reject) => {

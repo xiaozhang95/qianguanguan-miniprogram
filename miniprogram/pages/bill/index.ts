@@ -1,9 +1,9 @@
 import { billList, billStats, type BillVO } from '../../api/bill'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
-import type { IAppOption } from '../../type'
 import { fmt, pad } from '../../utils/format'
 import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync } from '../../utils/wx'
+import type { IAppOption } from '../typings'
 
 function todayStr() {
   const d = new Date()

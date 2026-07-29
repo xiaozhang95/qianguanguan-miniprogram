@@ -1,5 +1,5 @@
 import { loginByWid, type UserInfo } from './api/user'
-import type { IAppOption, RequestQueue } from './type'
+import type { IAppOption, RequestQueue } from './pages/typings'
 import { create } from './utils/request'
 import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowModal, wxShowToast } from './utils/wx'
 
@@ -67,7 +67,7 @@ App<IAppOption>({
   onLaunch() {
     this.updateManager()
     this.getMenuButtonBoundingClientRect()
-    // this.login()
+    this.login()
   },
   onShow(options: WechatMiniprogram.App.LaunchShowOption) {
     const scene = options.query && (options.query.scene as string)

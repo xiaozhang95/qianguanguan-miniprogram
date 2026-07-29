@@ -1,4 +1,4 @@
-import type { UserInfo } from './api/user'
+import type { UserInfo } from '../../api/user'
 
 export interface IAppOption {
   globalData: {

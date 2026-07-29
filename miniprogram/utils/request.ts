@@ -1,7 +1,7 @@
 import type { LoginResult } from '../api/user'
 import config from '../config/index'
 import { ResponseCode } from '../constants/index'
-import type { CtmResponse, IAppOption, RequestInfo } from '../type'
+import type { CtmResponse, IAppOption, RequestInfo } from '../pages/typings'
 import { wxShowToast } from './wx'
 
 export async function create<T>(d: RequestInfo): Promise<CtmResponse<T>> {
