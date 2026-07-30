@@ -412,7 +412,6 @@ onPageScroll(e: { scrollTop: number }) {
 
 | 字段           | 类型                   | 用途                            |
 | -------------- | ---------------------- | ------------------------------- |
-| `watchers`     | `Array<() => void>`    | watch 回调队列                  |
 | `refreshing`   | `boolean`              | login / tokenRefresh 进行中标志 |
 | `loginFailed`  | `boolean \| null`      | 登录失败状态                    |
 | `requestQueue` | `RequestQueue[]`       | 401 待重试队列                  |
@@ -426,8 +425,6 @@ onPageScroll(e: { scrollTop: number }) {
 
 | 方法                          | 用途                                                        |
 | ----------------------------- | ----------------------------------------------------------- |
-| `watch(fn)`                   | 注册 globalData 变化回调（`update` 触发时调用）             |
-| `update(key, value)`          | 更新 globalData[key] 并通知所有 watcher                     |
 | `setToken(token)`             | 更新 token + 持久化到 storage                               |
 | `setUserInfo(userInfo)`       | 更新 userInfo                                               |
 | `setRefreshing(refreshing)`   | 更新 refreshing                                             |
@@ -435,23 +432,15 @@ onPageScroll(e: { scrollTop: number }) {
 | `setRequestQueue(queue)`      | 更新 requestQueue                                           |
 | `login()`                     | `wxLogin()` → `loginByWid(code)` → 存 token/userInfo → 重放队列 |
 
-### 页面监听 globalData 示例
+### 启动流程
 
-```ts
-Page({
-  onLoad() {
-    const app = getApp<IAppOption>()
-    app.watch(() => {
-      const { globalData } = getApp<IAppOption>()
-      this.setData({ app: globalData })
-    })
-  },
-  onShow() {
-    const { globalData } = getApp<IAppOption>()
-    this.setData({ app: globalData })
-  }
-})
 ```
+onLaunch
+├── Storage 有 token → setToken 恢复 → return
+└── 无 token → login()
+```
+
+setting 页面 `onShow` 从 `globalData` 读取当前状态展示即可，切换 tab 回来自然刷新。
 
 ## 收入/支出展示顺序
 

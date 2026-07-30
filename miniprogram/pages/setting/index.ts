@@ -1,7 +1,8 @@
+import { userInfo } from '../../api/user'
 import config, { appConfig } from '../../config/index'
 import { Role, RoleLabel, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
-import { debounceNavigateTo, wxSetClipboardData, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxHideLoading, wxSetClipboardData, wxShowLoading, wxShowToast } from '../../utils/wx'
 
 function avatarUrl(u: { avatar?: string } | null) {
   const a = (u && u.avatar) || ''
@@ -19,25 +20,41 @@ Page({
     app: {}
   },
 
-  onLoad() {
-    const app = getApp<IAppOption>()
-    app.watch(() => {
-      this.syncGlobalData()
-    })
-  },
-
   onShow() {
-    this.syncGlobalData()
-  },
-
-  syncGlobalData() {
-    const { globalData } = getApp<IAppOption>()
+    const { globalData, setUserInfo } = getApp<IAppOption>()
     this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
+
+    if (!globalData.userInfo) {
+      wxShowLoading({ title: '加载中' })
+      userInfo()
+        .then(({ data }) => {
+          this.setData({
+            app: {
+              ...this.data.app,
+              userInfo: data
+            }
+          })
+
+          setUserInfo(data)
+        })
+        .finally(() => {
+          wxHideLoading()
+        })
+    }
   },
   handleToLogin() {
-    const { setRequestQueue, login } = getApp<IAppOption>()
+    const { setRequestQueue, login, setUserInfo } = getApp<IAppOption>()
     setRequestQueue([])
-    login()
+    login().then((u) => {
+      this.setData({
+        app: {
+          ...this.data.app,
+          userInfo: u
+        }
+      })
+
+      setUserInfo(u)
+    })
   },
   handleToUser() {
     debounceNavigateTo(Route.USER)

@@ -60,7 +60,7 @@ function tokenRefresh() {
 }
 
 export default function refreshRequest<T>(requestInfo: RequestInfo): Promise<CtmResponse<T>> {
-  const { globalData, setRequestQueue, setToken, setRefreshing } = getApp<IAppOption>()
+  const { globalData, setRequestQueue, setToken, setRefreshing, setUserInfo } = getApp<IAppOption>()
 
   return new Promise((resolve, reject) => {
     create<T>(requestInfo)
@@ -84,6 +84,8 @@ export default function refreshRequest<T>(requestInfo: RequestInfo): Promise<Ctm
           .catch((error) => {
             globalData.requestQueue.forEach(({ reject }) => reject(error))
             setRequestQueue([])
+
+            setUserInfo(null)
           })
           .finally(() => {
             setRefreshing(false)

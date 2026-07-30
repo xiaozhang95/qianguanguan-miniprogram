@@ -2,11 +2,10 @@ import { loginByWid, type UserInfo } from './api/user'
 import { ResponseCode } from './constants/index'
 import type { IAppOption, RequestQueue } from './typings'
 import { create } from './utils/request'
-import { wxGetMenuButtonBoundingClientRect, wxHideLoading, wxLogin, wxShowLoading, wxShowModal } from './utils/wx'
+import { wxGetMenuButtonBoundingClientRect, wxGetStorageSync, wxHideLoading, wxLogin, wxSetStorageSync, wxShowLoading, wxShowModal } from './utils/wx'
 
 App<IAppOption>({
   globalData: {
-    watchers: [],
     refreshing: false,
     loginFailed: null,
     requestQueue: [],
@@ -16,39 +15,31 @@ App<IAppOption>({
     capsuleTop: 0,
     qrScene: ''
   },
-  watch(fn: () => void) {
-    this.globalData.watchers.push(fn)
-  },
-  update<K extends keyof IAppOption['globalData']>(key: K, value: IAppOption['globalData'][K]) {
-    ;(this.globalData as Record<string, unknown>)[key] = value
-    this.globalData.watchers.forEach(function (fn) {
-      fn()
-    })
-  },
-  setUserInfo(userInfo: UserInfo) {
-    this.update('userInfo', userInfo)
+  setUserInfo(userInfo: UserInfo | null) {
+    this.globalData.userInfo = userInfo
   },
   setToken(token: string) {
-    this.update('token', token)
+    this.globalData.token = token
+    wxSetStorageSync('token', token)
   },
   setRefreshing(refreshing: boolean) {
-    this.update('refreshing', refreshing)
+    this.globalData.refreshing = refreshing
   },
   setLoginFailed(loginFailed: boolean | null) {
-    this.update('loginFailed', loginFailed)
+    this.globalData.loginFailed = loginFailed
   },
   setRequestQueue(requestQueue: RequestQueue[]) {
-    this.update('requestQueue', requestQueue)
+    this.globalData.requestQueue = requestQueue
   },
   getMenuButtonBoundingClientRect() {
     const { top, height } = wxGetMenuButtonBoundingClientRect()
     this.globalData.offsetTop = top + height
     this.globalData.capsuleTop = top
   },
-  login() {
+  async login() {
     wxShowLoading({ title: '加载中...' })
     this.setRefreshing(true)
-    wxLogin()
+    return wxLogin()
       .then(({ code }) => loginByWid(code))
       .then(({ data }) => {
         this.setLoginFailed(false)
@@ -60,6 +51,8 @@ App<IAppOption>({
           create(requestInfo).then(resolve).catch(reject)
         })
         this.setRequestQueue([])
+
+        return userInfo
       })
       .catch(() => {
         this.setLoginFailed(true)
@@ -67,6 +60,7 @@ App<IAppOption>({
           reject({ code: ResponseCode.UNAUTHORIZED, msg: '', data: null })
         })
         this.setRequestQueue([])
+        return null
       })
       .finally(() => {
         wxHideLoading()
@@ -88,6 +82,11 @@ App<IAppOption>({
   onLaunch() {
     this.updateManager()
     this.getMenuButtonBoundingClientRect()
+    const savedToken = wxGetStorageSync('token')
+    if (savedToken) {
+      this.setToken(savedToken)
+      return
+    }
     this.login()
   },
   onShow(options: WechatMiniprogram.App.LaunchShowOption) {

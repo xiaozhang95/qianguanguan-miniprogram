@@ -2,7 +2,6 @@ import type { UserInfo } from '../api/user'
 
 export interface IAppOption {
   globalData: {
-    watchers: Array<() => void>
     refreshing: boolean
     loginFailed: boolean | null
     requestQueue: RequestQueue[]
@@ -12,16 +11,14 @@ export interface IAppOption {
     capsuleTop: number
     qrScene: string
   }
-  watch: (fn: () => void) => void
-  update: <K extends keyof IAppOption['globalData']>(key: K, value: IAppOption['globalData'][K]) => void
-  setUserInfo: (userInfo: UserInfo) => void
+  setUserInfo: (userInfo: UserInfo | null) => void
   setToken: (token: string) => void
   setRefreshing: (refreshing: boolean) => void
   setLoginFailed: (loginFailed: boolean | null) => void
   setRequestQueue: (requestQueue: RequestQueue[]) => void
   updateManager: () => void
   getMenuButtonBoundingClientRect: () => void
-  login: () => void
+  login: () => Promise<UserInfo | null>
 }
 
 export interface CtmResponse<T> {
