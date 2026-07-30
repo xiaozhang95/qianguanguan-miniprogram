@@ -55,7 +55,8 @@ Page({
   onShareAppMessage() {
     return {
       title: appConfig.shareTitle,
-      path: '/pages/bill/index'
+      path: '/pages/statistics/index',
+      imageUrl: appConfig.shareImage
     }
   },
 

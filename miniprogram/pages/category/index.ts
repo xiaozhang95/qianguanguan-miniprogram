@@ -107,7 +107,8 @@ Page({
   onShareAppMessage() {
     return {
       title: appConfig.shareTitle,
-      path: routePath(Route.CATEGORY)
+      path: routePath(Route.CATEGORY),
+      imageUrl: appConfig.shareImage
     }
   }
 })
