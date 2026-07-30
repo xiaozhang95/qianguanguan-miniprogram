@@ -2,7 +2,7 @@ const env = wx.getAccountInfoSync().miniProgram.envVersion
 
 export const appConfig = {
   shareTitle: '钱罐罐记账 - 好好记账，天天向上',
-  shareImage: '/assets/logo.png'
+  shareImage: '/assets/logo-back.png'
 } as const
 
 export interface Config {
