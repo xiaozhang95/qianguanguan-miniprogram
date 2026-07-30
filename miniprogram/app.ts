@@ -48,7 +48,6 @@ App<IAppOption>({
   login() {
     wxShowLoading({ title: '加载中...' })
     this.setRefreshing(true)
-    this.setLoginFailed(null)
     wxLogin()
       .then(({ code }) => loginByWid(code))
       .then(({ data }) => {

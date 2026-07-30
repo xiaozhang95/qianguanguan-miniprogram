@@ -1,5 +1,5 @@
 import config from '../config/index'
-import request from '../utils/request'
+import request, { create } from '../utils/request'
 import { wxUploadFile } from '../utils/wx'
 
 export interface UserInfo {
@@ -27,9 +27,10 @@ export function userInfo() {
 }
 
 export function loginByWid(code: string) {
-  return request<LoginResult>({
+  return create<LoginResult>({
     url: '/user/LoginByWid?code=' + code,
-    method: 'GET'
+    method: 'GET',
+    errorMsg: false
   })
 }
 

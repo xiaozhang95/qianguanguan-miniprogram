@@ -114,17 +114,17 @@ export function wxUploadFile(options: { url: string; filePath: string; name: str
           if (json.code === ResponseCode.SUCCESS) {
             resolve(json)
           } else {
-            wxShowToast({ title: json.msg || '上传失败!!!' })
+            wxShowToast({ title: json.msg })
             reject(json)
           }
         } else {
-          wxShowToast({ title: '上传失败!!!' })
-          reject({ code: res.statusCode, msg: '上传失败!!!', data: null as never })
+          wxShowToast({ title: res.errMsg })
+          reject({ code: res.statusCode, msg: res.errMsg, data: null })
         }
       },
       fail: (err) => {
-        wxShowToast({ title: '上传失败!!!' })
-        reject({ code: ResponseCode.NETWORK_ERROR, msg: err.errMsg, data: null as never })
+        wxShowToast({ title: err.errMsg })
+        reject({ code: ResponseCode.NETWORK_ERROR, msg: err.errMsg, data: null })
       }
     })
     return task
