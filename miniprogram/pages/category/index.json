@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "van-icon": "@vant/weapp/icon/index",
     "van-empty": "@vant/weapp/empty/index",
     "fixed-nav-bar": "/components/fixed-nav-bar/fixed-nav-bar",
     "filter-tabs": "/components/filter-tabs/filter-tabs",

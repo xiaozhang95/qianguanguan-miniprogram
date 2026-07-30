@@ -76,15 +76,13 @@ miniprogram/
 | `debounceNavigateTo(name, query?, threshold?)`    | 防抖跳转（默认 500ms）        |
 | `wxNavigateBack()`                                | 返回上一页                    |
 | `wxSwitchTab(name)`                               | 切换 tabBar 页面              |
-| `wxShowShareMenu()`                               | 显示分享按钮                  |
-| `wxReadFile(filePath)`                            | `readFile` base64 → Promise   |
+| `wxReLaunch(url)`                                 | 重启跳转完整 URL              |
 | `wxGetSystemInfoSync()`                           | `getSystemInfoSync()`         |
 | `wxShowModal({ title, content })`                 | `showModal()` → Promise       |
 | `wxChooseImage(options)`                          | `chooseImage()` → Promise     |
 | `wxUploadFile(options)`                           | `uploadFile()` → Promise      |
 | `wxGetMenuButtonBoundingClientRect()`             | 获取胶囊按钮位置              |
-
-**注意**: `wx.reLaunch` 等未封装的方法如需使用，先添加到 `utils/wx.ts` 封装。
+| `wxSetClipboardData({ data })`                    | 设置剪贴板 → Promise          |
 
 ## 工具函数（`utils/format.ts`）
 
@@ -115,23 +113,44 @@ miniprogram/
 | `ResponseCode.SUCCESS`       | `200`                                                          | 响应成功   |
 | `ResponseCode.UNAUTHORIZED`  | `401`                                                          | 登录过期   |
 | `ResponseCode.NETWORK_ERROR` | `0`                                                            | 网络失败   |
+| `Route`                      | `{ BILL, BILL_FORM, STATISTICS, ... }`                         | 页面路由   |
 
 - **强制使用** 枚举常量，禁止代码中硬编码 `'INCOME'`、`'EXPENSE'`、`200`、`401` 等
 - 可变的 `formType`/`filterType` 用 `BillType.EXPENSE as string` 加宽类型
 - WXML 中用 `BillType` 需在 data 中传入：`data: { BillType, ... }`
 - WXML 中用 `RoleLabel` 同理需传入 data；角色判断用 `Role.xxx` 常量而非硬编码字符串
+- 页面路由必须使用 `Route.XXX` 常量，禁止硬编码 `'bill-form'`、`'bill'` 等字符串
+
+### 路由辅助函数
+
+```ts
+import { Route, routePath } from '../../constants/index'
+
+// navigateTo / switchTab：用 Route 常量
+debounceNavigateTo(Route.BILL_FORM, 'date=' + date)
+wxSwitchTab(Route.BILL)
+
+// wxReLaunch / 分享：用 routePath 拼接完整路径
+wxReLaunch(routePath(Route.QR_LOGIN) + '?scene=' + scene)
+path: routePath(Route.BILL)
+```
 
 ## 配置常量（`config/index.ts`）
 
 ```ts
 const config: Config = {
-  develop: { url: 'https://www.qianguanguan.top', baseUrl: '/api/business', uploadPath: '/upload/' },
+  develop: { url: 'http://localhost:8888', baseUrl: '/api/business', uploadPath: '/upload/' },
   trial: { url: 'https://www.qianguanguan.top', baseUrl: '/api/business', uploadPath: '/upload/' },
   release: { url: 'https://www.qianguanguan.top', baseUrl: '/api/business', uploadPath: '/upload/' }
 }
+export const appConfig = {
+  shareTitle: '钱罐罐记账 - 好好记账，天天向上',
+  shareImage: '/assets/logo.png'
+} as const
 ```
 
 - `uploadPath` 用来判断图标是否为上传文件，**禁止硬编码 `'/upload/'`**
+- 分享标题、封面等统一从 `appConfig` 取，**禁止硬编码**
 - 图标 URL 判断示例：
 
 ```ts
@@ -156,6 +175,9 @@ const bill: BillItem = {
 <image wx:if="{{ bill.iconIsImage }}" class="bill-icon-img" src="{{ bill.categoryIcon }}" mode="aspectFill"></image>
 <text wx:else class="bill-icon">{{ bill.categoryIcon }}</text>
 ```
+
+- 分类列表加载时对 `Category` 对象附加 `iconIsImage` 和修正后的 `icon` 字段，`Category` 接口已包含 `iconIsImage?: boolean`
+- 表单中选择分类后，需同步图标信息（`formCategoryIcon` + `formCategoryIconIsImage`），WXML 中按同样模式回显
 
 ## 弹窗规范
 
@@ -241,22 +263,31 @@ pages/
 
 ## 导航跳转
 
-所有 `navigateTo` 必须使用 `debounceNavigateTo`：
+所有 `navigateTo` 必须使用 `debounceNavigateTo`，所有路由必须使用 `Route` 常量：
 
 ```ts
+import { Route } from '../../constants/index'
 import { debounceNavigateTo, wxNavigateBack, wxSwitchTab } from '../../utils/wx'
 
 // 跳转（500ms 防抖）
-debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
+debounceNavigateTo(Route.BILL_FORM, 'date=' + this.data.filterDate)
 
-// 需要登录检查
-isLogin(true)
-  .then(() => {
-    debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
-  })
-  .catch(() => {
-    wxSwitchTab('setting')
-  })
+// 切换 tabBar
+wxSwitchTab(Route.BILL)
+```
+
+## 分享
+
+**只有底部 4 个 tabBar 页面允许分享**（bill、statistics、category、setting），其他页面不设 `onShareAppMessage`：
+
+```ts
+onShareAppMessage() {
+  return {
+    title: appConfig.shareTitle,
+    path: routePath(Route.BILL),
+    imageUrl: appConfig.shareImage
+  }
+}
 ```
 
 ## 样式约定
@@ -354,6 +385,8 @@ onPageScroll(e: { scrollTop: number }) {
 | `refreshRequest<T>(d)`（默认导出） | 封装 `create`，收到 401 自动 refreshToken 后重试，失败则加入队列等待 |
 
 **所有页面/API 层调用必须使用 `refreshRequest`（默认导出）**，只有 `tokenRefresh()` 内部和 `app.login()` 重放队列时使用 `create` 以避免无限递归。
+
+**特例**: `loginByWid` 用 `create` 而非 `refreshRequest`，因为登录接口本身返回 token，不需要鉴权，且避免登录中 `refreshing=true` 导致的死锁。
 
 ### 鉴权流程
 

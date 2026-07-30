@@ -49,13 +49,6 @@ export function debounceNavigateTo(name: string, query?: string, threshold?: num
   return wxNavigateTo(name, query)
 }
 
-export function wxShowShareMenu() {
-  return wx.showShareMenu({
-    withShareTicket: true,
-    menus: ['shareAppMessage', 'shareTimeline']
-  })
-}
-
 export function wxNavigateBack() {
   return wx.navigateBack()
 }
@@ -66,17 +59,6 @@ export function wxSwitchTab(name: string) {
 
 export function wxReLaunch(url: string) {
   return wx.reLaunch({ url })
-}
-
-export function wxReadFile(filePath: string) {
-  return new Promise<{ data: string }>((resolve, reject) => {
-    wx.getFileSystemManager().readFile({
-      filePath,
-      encoding: 'base64',
-      success: (res) => resolve({ data: res.data as string }),
-      fail: reject
-    })
-  })
 }
 
 export function wxGetSystemInfoSync() {
