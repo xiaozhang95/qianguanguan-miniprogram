@@ -4,19 +4,11 @@ import { Role, RoleLabel, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { debounceNavigateTo, wxHideLoading, wxSetClipboardData, wxShowLoading, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
-function avatarUrl(u: { avatar?: string } | null) {
-  const a = (u && u.avatar) || ''
-  if (a.indexOf(config.uploadPath) === 0 || a.indexOf('http') === 0) {
-    return a.indexOf(config.uploadPath) === 0 ? config.url + a : a
-  }
-  return a
-}
-
 Page({
   data: {
+    config,
     Role,
     RoleLabel,
-    avatar: '',
     app: {}
   },
 
@@ -26,7 +18,8 @@ Page({
 
   onShow() {
     const { globalData, setUserInfo } = getApp<IAppOption>()
-    this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
+
+    this.setData({ app: globalData })
 
     if (!globalData.userInfo) {
       wxShowLoading({ title: '加载中' })

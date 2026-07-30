@@ -13,7 +13,7 @@
         </view>
       </view>
       <view class="header-row" wx:else>
-        <image class="header-avatar" wx:if="{{ avatar }}" src="{{ avatar }}" mode="aspectFill"></image>
+        <image class="header-avatar" wx:if="{{ app.userInfo.avatar }}" src="{{ config.url + app.userInfo.avatar }}" mode="aspectFill"></image>
         <view wx:else class="avatar-empty">
           <van-icon name="photograph" size="40rpx" color="#ccc" />
         </view>
