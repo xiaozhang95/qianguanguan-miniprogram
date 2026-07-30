@@ -35,7 +35,7 @@ Page({
     showPicker: false,
     currentDate: Date.now(),
     minDate: new Date(2020, 0).getTime(),
-    maxDate: Date.now(),
+    maxDate: new Date(2099, 11, 31).getTime(),
     expenseStr: '0.00',
     incomeStr: '0.00',
     balanceStr: '0.00',

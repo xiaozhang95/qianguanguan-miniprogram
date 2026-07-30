@@ -85,7 +85,7 @@
       type="date"
       value="{{ currentDate }}"
       min-date="{{ minDate }}"
-      max-date="{{ maxDate }}"
+
       bind:confirm="onDateConfirm"
       bind:cancel="onDatePickerClose"
       title="选择日期"

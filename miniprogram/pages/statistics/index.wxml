@@ -27,7 +27,7 @@
       type="year-month"
       value="{{ currentDate }}"
       min-date="{{ minDate }}"
-      max-date="{{ maxDate }}"
+
       bind:confirm="onMonthConfirm"
       bind:cancel="onPickerClose"
       title="选择月份"

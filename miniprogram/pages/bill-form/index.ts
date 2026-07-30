@@ -33,7 +33,7 @@ Page({
     showDatePicker: false,
     currentDate: Date.now(),
     minDate: new Date(2020, 0).getTime(),
-    maxDate: Date.now(),
+    maxDate: new Date(2099, 11, 31).getTime(),
     saving: false,
 
     app: {}
