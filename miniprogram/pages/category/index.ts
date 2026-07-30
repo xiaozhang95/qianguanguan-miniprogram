@@ -1,8 +1,8 @@
 import { categoryList, type Category } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../typings'
 import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
-import type { IAppOption } from '../typings'
 
 Page({
   data: {

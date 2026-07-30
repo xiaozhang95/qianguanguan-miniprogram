@@ -2,9 +2,9 @@ import { billDelete, billList, billSave, billUpdate, type BillSaveParams } from 
 import { categoryList, type Category } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
+import type { IAppOption } from '../../typings'
 import { pad } from '../../utils/format'
 import { wxNavigateBack, wxShowModal, wxShowToast } from '../../utils/wx'
-import type { IAppOption } from '../typings'
 
 function todayStr() {
   const d = new Date()

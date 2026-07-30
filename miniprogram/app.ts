@@ -1,6 +1,6 @@
 import { loginByWid, type UserInfo } from './api/user'
 import { ResponseCode } from './constants/index'
-import type { IAppOption, RequestQueue } from './pages/typings'
+import type { IAppOption, RequestQueue } from './typings'
 import { create } from './utils/request'
 import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowModal } from './utils/wx'
 

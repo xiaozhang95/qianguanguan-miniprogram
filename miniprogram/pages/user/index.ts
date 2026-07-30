@@ -1,7 +1,7 @@
 import { sendEmailCode, uploadAvatar, userProfile, type UserInfo } from '../../api/user'
 import config from '../../config/index'
+import type { CtmResponse, IAppOption } from '../../typings'
 import { debounceNavigateTo, wxNavigateBack, wxShowToast } from '../../utils/wx'
-import type { CtmResponse, IAppOption } from '../typings'
 
 Page({
   data: {

@@ -1,5 +1,5 @@
+import type { IAppOption } from '../../typings'
 import { wxNavigateBack } from '../../utils/wx'
-import type { IAppOption } from '../typings'
 
 Page({
   data: {

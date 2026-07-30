@@ -1,6 +1,6 @@
 import { qrBindConfirm } from '../../api/user'
+import type { IAppOption } from '../../typings'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
-import type { IAppOption } from '../typings'
 
 Page({
   data: {

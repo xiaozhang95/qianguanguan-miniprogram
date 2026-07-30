@@ -1,6 +1,6 @@
 import { qrLoginConfirm, type LoginResult } from '../../api/user'
+import type { CtmResponse, IAppOption } from '../../typings'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
-import type { CtmResponse, IAppOption } from '../typings'
 
 Page({
   data: {
