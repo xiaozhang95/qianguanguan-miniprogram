@@ -124,8 +124,7 @@ Page({
           wxShowToast({ title: msg || '保存成功' })
           wxNavigateBack()
         })
-        .catch((err) => {
-          console.log(err)
+        .catch(() => {
           this.setData({ saving: false })
         })
     }
@@ -140,8 +139,7 @@ Page({
           .then(({ data }) => {
             doSave(data.url)
           })
-          .catch((err) => {
-            console.log(err)
+          .catch(() => {
             this.setData({ saving: false })
           })
       } else {
