@@ -51,6 +51,7 @@ miniprogram/
 - **禁止** `Function` 类型，用具体回调类型替代
 - **禁止** `any` 类型，`app` 字段用 `{}`
 - **禁止** `var`，使用 `const` 或 `let`
+- **禁止** 变量名/方法名下划线前缀（如 `_xxx`）
 - 页面 JSON 只能注册真正在 WXML 中使用的组件，禁止冗余注册
 
 ## 微信小程序特有约束
@@ -345,15 +346,79 @@ onPageScroll(e: { scrollTop: number }) {
 - 函数命名 = URL 路径转驼峰：`/user/info` → `userInfo()`, `/bill/stats` → `billStats()`
 - 外部上传（如分类图标）用 `wxUploadFile` 直接上传到 `config.url + config.baseUrl + '/upload'`
 
+### 请求入口
+
+| 函数                            | 用途                                                                 |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `create<T>(d)`                  | 原始请求，带 JWT `Authorization` header，不做 401 处理               |
+| `refreshRequest<T>(d)`（默认导出） | 封装 `create`，收到 401 自动 refreshToken 后重试，失败则加入队列等待 |
+
+**所有页面/API 层调用必须使用 `refreshRequest`（默认导出）**，只有 `tokenRefresh()` 内部和 `app.login()` 重放队列时使用 `create` 以避免无限递归。
+
+### 鉴权流程
+
+```
+请求 → 401
+  → 请求入队 requestQueue
+  → refreshing=true 时直接 return（等待中的 refresh/login 会处理队列）
+  → refreshing=false 时触发 tokenRefresh() → 更新 token → 重放队列
+  → refresh 失败 → 队列全部 reject（需重新登录）
+```
+
+`app.login()` 也用同一个 `refreshing` 标志位 + `requestQueue`，两者不冲突：
+- login 期间请求 401 → 入队等待 login 完成后批量重试
+- refresh 期间触发 login → refresh 自然结束，login 接管队列
+
+### Token 持久化
+
+`setToken()` 同步写入 `wx.setStorageSync('token', token)`。`onLaunch` 先从 storage 恢复，保证重启后立即可用。
+
 ## 全局状态（`app.ts`）
 
-| 方法                 | 用途                                 |
-| -------------------- | ------------------------------------ |
-| `watch(fn)`          | 注册全局状态回调                     |
-| `update(key, value)` | 更新状态并通知 watcher               |
-| `isLogin(toast?)`    | Promise，未登录 reject，可选 toast   |
-| `login(code)`        | `wx.login` → `LoginByWid` → 存 token |
-| `exitLogin(fn?)`     | 清空 token/userInfo                  |
+### globalData 字段
+
+| 字段           | 类型                   | 用途                            |
+| -------------- | ---------------------- | ------------------------------- |
+| `watchers`     | `Array<() => void>`    | watch 回调队列                  |
+| `refreshing`   | `boolean`              | login / tokenRefresh 进行中标志 |
+| `loginFailed`  | `boolean \| null`      | 登录失败状态                    |
+| `requestQueue` | `RequestQueue[]`       | 401 待重试队列                  |
+| `token`        | `string`               | JWT，持久化到 storage           |
+| `userInfo`     | `UserInfo \| null`      | 当前用户信息                    |
+| `offsetTop`    | `number`               | 导航栏高度偏移                  |
+| `capsuleTop`   | `number`               | 胶囊按钮 top                    |
+| `qrScene`      | `string`               | 扫码场景值（onShow 接收）       |
+
+### 方法
+
+| 方法                          | 用途                                                        |
+| ----------------------------- | ----------------------------------------------------------- |
+| `watch(fn)`                   | 注册 globalData 变化回调（`update` 触发时调用）             |
+| `update(key, value)`          | 更新 globalData[key] 并通知所有 watcher                     |
+| `setToken(token)`             | 更新 token + 持久化到 storage                               |
+| `setUserInfo(userInfo)`       | 更新 userInfo                                               |
+| `setRefreshing(refreshing)`   | 更新 refreshing                                             |
+| `setLoginFailed(loginFailed)` | 更新 loginFailed                                            |
+| `setRequestQueue(queue)`      | 更新 requestQueue                                           |
+| `login()`                     | `wxLogin()` → `loginByWid(code)` → 存 token/userInfo → 重放队列 |
+
+### 页面监听 globalData 示例
+
+```ts
+Page({
+  onLoad() {
+    const app = getApp<IAppOption>()
+    app.watch(() => {
+      const { globalData } = getApp<IAppOption>()
+      this.setData({ app: globalData })
+    })
+  },
+  onShow() {
+    const { globalData } = getApp<IAppOption>()
+    this.setData({ app: globalData })
+  }
+})
+```
 
 ## 收入/支出展示顺序
 
