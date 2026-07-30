@@ -53,6 +53,13 @@ export function wxNavigateBack() {
   return wx.navigateBack()
 }
 
+export function wxShowShareMenu() {
+  wx.showShareMenu({
+    withShareTicket: true,
+    menus: ['shareAppMessage', 'shareTimeline']
+  })
+}
+
 export function wxSwitchTab(name: string) {
   return wx.switchTab({ url: '/pages/' + name + '/index' })
 }

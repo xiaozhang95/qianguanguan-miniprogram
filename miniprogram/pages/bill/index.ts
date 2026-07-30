@@ -3,7 +3,7 @@ import config, { appConfig } from '../../config/index'
 import { BillType, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { fmt, pad } from '../../utils/format'
-import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync } from '../../utils/wx'
+import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync, wxShowShareMenu } from '../../utils/wx'
 
 function todayStr() {
   const d = new Date()
@@ -54,6 +54,7 @@ Page({
   },
 
   onLoad(options: Record<string, string>) {
+    wxShowShareMenu()
     if (this.handleQrScene(options.scene || '')) return
   },
 

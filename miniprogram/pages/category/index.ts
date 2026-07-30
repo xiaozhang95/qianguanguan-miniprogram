@@ -2,7 +2,7 @@ import { categoryList, type Category } from '../../api/category'
 import config, { appConfig } from '../../config/index'
 import { BillType, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
-import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 Page({
   data: {
@@ -24,6 +24,10 @@ Page({
     isScrolled: false,
 
     app: {}
+  },
+
+  onLoad() {
+    wxShowShareMenu()
   },
 
   onShow() {

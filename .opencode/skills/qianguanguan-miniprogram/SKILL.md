@@ -75,6 +75,7 @@ miniprogram/
 | `wxNavigateTo(name, query?)`                      | 跳转页面 `pages/{name}/index` |
 | `debounceNavigateTo(name, query?, threshold?)`    | 防抖跳转（默认 500ms）        |
 | `wxNavigateBack()`                                | 返回上一页                    |
+| `wxShowShareMenu()`                               | 启用分享（好友+朋友圈）       |
 | `wxSwitchTab(name)`                               | 切换 tabBar 页面              |
 | `wxReLaunch(url)`                                 | 重启跳转完整 URL              |
 | `wxGetSystemInfoSync()`                           | `getSystemInfoSync()`         |

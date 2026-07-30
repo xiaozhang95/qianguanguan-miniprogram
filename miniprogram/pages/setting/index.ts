@@ -2,7 +2,7 @@ import { userInfo } from '../../api/user'
 import config, { appConfig } from '../../config/index'
 import { Role, RoleLabel, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
-import { debounceNavigateTo, wxHideLoading, wxSetClipboardData, wxShowLoading, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxHideLoading, wxSetClipboardData, wxShowLoading, wxShowShareMenu, wxShowToast } from '../../utils/wx'
 
 function avatarUrl(u: { avatar?: string } | null) {
   const a = (u && u.avatar) || ''
@@ -18,6 +18,10 @@ Page({
     RoleLabel,
     avatar: '',
     app: {}
+  },
+
+  onLoad() {
+    wxShowShareMenu()
   },
 
   onShow() {
