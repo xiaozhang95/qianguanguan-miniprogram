@@ -2,12 +2,12 @@ import { loginByWid, type UserInfo } from './api/user'
 import { ResponseCode } from './constants/index'
 import type { IAppOption, RequestQueue } from './typings'
 import { create } from './utils/request'
-import { wxGetMenuButtonBoundingClientRect, wxLogin, wxShowModal } from './utils/wx'
+import { wxGetMenuButtonBoundingClientRect, wxHideLoading, wxLogin, wxShowLoading, wxShowModal } from './utils/wx'
 
 App<IAppOption>({
   globalData: {
     refreshing: false,
-    loginFailed: true,
+    loginFailed: null,
     requestQueue: [],
     token: '',
     userInfo: null,
@@ -24,7 +24,7 @@ App<IAppOption>({
   setRefreshing(refreshing: boolean) {
     this.globalData.refreshing = refreshing
   },
-  setLoginFailed(loginFailed: boolean) {
+  setLoginFailed(loginFailed: boolean | null) {
     this.globalData.loginFailed = loginFailed
   },
   setRequestQueue(requestQueue: RequestQueue[]) {
@@ -36,11 +36,12 @@ App<IAppOption>({
     this.globalData.capsuleTop = top
   },
   login() {
+    wxShowLoading({ title: '加载中...' })
     this.setRefreshing(true)
-    this.setLoginFailed(false)
     wxLogin()
       .then(({ code }) => loginByWid(code))
       .then(({ data }) => {
+        this.setLoginFailed(false)
         const { token, userInfo } = data
         this.setUserInfo(userInfo)
         this.setToken(token)
@@ -58,6 +59,7 @@ App<IAppOption>({
         this.setRequestQueue([])
       })
       .finally(() => {
+        wxHideLoading()
         this.setRefreshing(false)
       })
   },

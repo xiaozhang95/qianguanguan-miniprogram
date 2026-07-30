@@ -1,4 +1,3 @@
-import type { UserInfo } from '../../api/user'
 import config from '../../config/index'
 import { Role, RoleLabel } from '../../constants/index'
 import type { IAppOption } from '../../typings'
@@ -17,12 +16,18 @@ Page({
     Role,
     RoleLabel,
     avatar: '',
-    app: null as { offsetTop: number; capsuleTop: number; userInfo: UserInfo | null } | null
+    app: {}
   },
 
   onShow() {
     const { globalData } = getApp<IAppOption>()
+    console.log(globalData)
     this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
+  },
+  handleToLogin() {
+    const { setRequestQueue, login } = getApp<IAppOption>()
+    setRequestQueue([])
+    login()
   },
   handleToUser() {
     debounceNavigateTo('user')
