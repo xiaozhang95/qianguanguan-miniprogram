@@ -1,6 +1,6 @@
 import { billList, billStats, type BillVO } from '../../api/bill'
-import config from '../../config/index'
-import { BillType } from '../../constants/index'
+import config, { appConfig } from '../../config/index'
+import { BillType, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { fmt, pad } from '../../utils/format'
 import { debounceNavigateTo, wxGetStorageSync, wxReLaunch, wxSetStorageSync } from '../../utils/wx'
@@ -79,11 +79,11 @@ Page({
     wxSetStorageSync('qr_scenes', cache)
 
     if (scene.startsWith('login:')) {
-      wxReLaunch('/pages/qr-login/index?scene=' + scene.substring(6))
+      wxReLaunch(routePath(Route.QR_LOGIN) + '?scene=' + scene.substring(6))
       return true
     }
     if (scene.startsWith('bind:')) {
-      wxReLaunch('/pages/qr-bind/index?scene=' + scene.substring(5))
+      wxReLaunch(routePath(Route.QR_BIND) + '?scene=' + scene.substring(5))
       return true
     }
     return false
@@ -202,12 +202,12 @@ Page({
   },
 
   onAddBill() {
-    debounceNavigateTo('bill-form', 'date=' + this.data.filterDate)
+    debounceNavigateTo(Route.BILL_FORM, 'date=' + this.data.filterDate)
   },
 
   onEditBill(e: WechatMiniprogram.CustomEvent) {
     const bill = e.currentTarget.dataset.bill as BillVO
-    debounceNavigateTo('bill-form', 'id=' + bill.id)
+    debounceNavigateTo(Route.BILL_FORM, 'id=' + bill.id)
   },
 
   onPageScroll(e: { scrollTop: number }) {
@@ -221,8 +221,8 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/bill/index'
+      title: appConfig.shareTitle,
+      path: routePath(Route.BILL)
     }
   }
 })

@@ -1,4 +1,5 @@
 import { qrBindConfirm } from '../../api/user'
+import { Route } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
@@ -20,7 +21,7 @@ Page({
     this.setData({ app: globalData })
   },
   handleBack() {
-    wxSwitchTab('bill')
+    wxSwitchTab(Route.BILL)
   },
   handleConfirm() {
     if (this.data.loading) return
@@ -36,17 +37,11 @@ Page({
       .then(() => {
         wxShowToast({ title: '绑定成功' })
         setTimeout(() => {
-          wxSwitchTab('bill')
+          wxSwitchTab(Route.BILL)
         }, 1000)
       })
       .catch(() => {
         this.setData({ loading: false })
       })
-  },
-  onShareAppMessage() {
-    return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/bill/index'
-    }
   }
 })

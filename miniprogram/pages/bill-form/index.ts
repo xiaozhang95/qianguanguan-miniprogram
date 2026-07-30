@@ -24,6 +24,8 @@ Page({
     formType: BillType.EXPENSE as string,
     formCategoryId: '',
     formCategoryName: '',
+    formCategoryIcon: '',
+    formCategoryIconIsImage: false,
     formAmount: '',
     formDate: todayStr(),
     formRemark: '',
@@ -83,10 +85,13 @@ Page({
       const bill = records.find((b) => b.id === this.data.billId)
       if (!bill) return
       const cats = bill.type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
+      const selectedCat = cats.find((c) => c.id === bill.categoryId)
       this.setData({
         formType: bill.type,
         formCategoryId: bill.categoryId,
         formCategoryName: bill.categoryName,
+        formCategoryIcon: selectedCat ? (selectedCat.icon || '') : '',
+        formCategoryIconIsImage: selectedCat ? (selectedCat.iconIsImage || false) : false,
         formAmount: String(bill.amount),
         formDate: bill.billDate,
         formRemark: bill.remark || '',
@@ -103,7 +108,7 @@ Page({
   onFormTypeChange(e: WechatMiniprogram.CustomEvent) {
     const type = e.currentTarget.dataset.type as string
     const cats = type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
-    this.setData({ formType: type, formCategoryId: '', formCategoryName: '', filteredCategories: cats })
+    this.setData({ formType: type, formCategoryId: '', formCategoryName: '', formCategoryIcon: '', formCategoryIconIsImage: false, filteredCategories: cats })
   },
 
   onFormCategoryOpen() {
@@ -119,6 +124,8 @@ Page({
     this.setData({
       formCategoryId: cat.id,
       formCategoryName: cat.name,
+      formCategoryIcon: cat.icon || '',
+      formCategoryIconIsImage: cat.iconIsImage || false,
       showCategoryPicker: false
     })
   },
@@ -217,11 +224,5 @@ Page({
 
   handleBack() {
     wxNavigateBack()
-  },
-  onShareAppMessage() {
-    return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/bill/index'
-    }
   }
 })

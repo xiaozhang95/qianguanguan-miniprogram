@@ -1,5 +1,5 @@
-import config from '../../config/index'
-import { Role, RoleLabel } from '../../constants/index'
+import config, { appConfig } from '../../config/index'
+import { Role, RoleLabel, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { debounceNavigateTo, wxSetClipboardData, wxShowToast } from '../../utils/wx'
 
@@ -40,10 +40,10 @@ Page({
     login()
   },
   handleToUser() {
-    debounceNavigateTo('user')
+    debounceNavigateTo(Route.USER)
   },
   handleToQrLogin() {
-    debounceNavigateTo('qr-login')
+    debounceNavigateTo(Route.QR_LOGIN)
   },
   handleToWeb() {
     wxSetClipboardData({ data: config.url }).then(() => {
@@ -51,15 +51,15 @@ Page({
     })
   },
   handleToAgreement() {
-    debounceNavigateTo('agreement', 'tab=service')
+    debounceNavigateTo(Route.AGREEMENT, 'tab=service')
   },
   handleToPrivacy() {
-    debounceNavigateTo('agreement', 'tab=privacy')
+    debounceNavigateTo(Route.AGREEMENT, 'tab=privacy')
   },
   onShareAppMessage() {
     return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/bill/index'
+      title: appConfig.shareTitle,
+      path: routePath(Route.BILL)
     }
   }
 })

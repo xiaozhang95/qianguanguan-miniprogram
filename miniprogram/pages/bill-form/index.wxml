@@ -24,7 +24,11 @@
     <view class="form-field" bindtap="onFormCategoryOpen">
       <text class="field-label">分类</text>
       <view class="field-value">
-        <text wx:if="{{ formCategoryName }}" class="field-text">{{ formCategoryName }}</text>
+        <view wx:if="{{ formCategoryName }}" class="cat-left">
+          <image wx:if="{{ formCategoryIconIsImage }}" class="cat-icon-img" src="{{ formCategoryIcon }}" mode="aspectFill"></image>
+          <text wx:else class="cat-icon">{{ formCategoryIcon }}</text>
+          <text class="field-text">{{ formCategoryName }}</text>
+        </view>
         <text wx:else class="field-placeholder">请选择分类</text>
         <van-icon name="arrow" size="28rpx" color="#ccc" />
       </view>

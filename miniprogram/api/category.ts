@@ -4,6 +4,7 @@ export interface Category {
   id: string
   name: string
   icon: string
+  iconIsImage?: boolean
   type: string
   userId: string | null
   sort: number

@@ -54,3 +54,22 @@ export const ResponseCode = {
   UNAUTHORIZED: 401,
   NETWORK_ERROR: 0
 } as const
+
+export const Route = {
+  BILL: 'bill',
+  BILL_FORM: 'bill-form',
+  STATISTICS: 'statistics',
+  SETTING: 'setting',
+  AGREEMENT: 'agreement',
+  USER: 'user',
+  CATEGORY: 'category',
+  CATEGORY_FORM: 'category-form',
+  QR_LOGIN: 'qr-login',
+  QR_BIND: 'qr-bind'
+} as const
+
+export type Route = (typeof Route)[keyof typeof Route]
+
+export function routePath(name: Route): string {
+  return '/pages/' + name + '/index'
+}

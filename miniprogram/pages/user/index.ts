@@ -1,5 +1,6 @@
 import { sendEmailCode, uploadAvatar, userProfile, type UserInfo } from '../../api/user'
 import config from '../../config/index'
+import { Route } from '../../constants/index'
 import type { CtmResponse, IAppOption } from '../../typings'
 import { debounceNavigateTo, wxNavigateBack, wxShowToast } from '../../utils/wx'
 
@@ -80,10 +81,10 @@ Page({
     this.setData({ agreed: !this.data.agreed })
   },
   handleToService() {
-    debounceNavigateTo('agreement', 'tab=service')
+    debounceNavigateTo(Route.AGREEMENT, 'tab=service')
   },
   handleToPrivacy() {
-    debounceNavigateTo('agreement', 'tab=privacy')
+    debounceNavigateTo(Route.AGREEMENT, 'tab=privacy')
   },
   handleSendCode() {
     if (this.data.sendCodeLoading || this.data.codeCountdown > 0) return
@@ -171,12 +172,6 @@ Page({
         })
     } else {
       saveWithAvatar(oldAvatar)
-    }
-  },
-  onShareAppMessage() {
-    return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/bill/index'
     }
   }
 })

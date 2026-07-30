@@ -1,6 +1,6 @@
 import { categoryList, type Category } from '../../api/category'
-import config from '../../config/index'
-import { BillType } from '../../constants/index'
+import config, { appConfig } from '../../config/index'
+import { BillType, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { debounceNavigateTo, wxShowToast } from '../../utils/wx'
 
@@ -83,12 +83,12 @@ Page({
   },
 
   onAdd() {
-    debounceNavigateTo('category-form')
+    debounceNavigateTo(Route.CATEGORY_FORM)
   },
 
   onEdit(e: WechatMiniprogram.CustomEvent) {
     const cat = e.currentTarget.dataset.cat as Category
-    debounceNavigateTo('category-form', 'id=' + cat.id)
+    debounceNavigateTo(Route.CATEGORY_FORM, 'id=' + cat.id)
   },
 
   onSystemTap() {
@@ -106,8 +106,8 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
-      path: '/pages/category/index'
+      title: appConfig.shareTitle,
+      path: routePath(Route.CATEGORY)
     }
   }
 })

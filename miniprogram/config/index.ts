@@ -1,5 +1,11 @@
 const env = wx.getAccountInfoSync().miniProgram.envVersion
 
+export const appConfig = {
+  name: '钱罐罐记账',
+  slogan: '好好记账，天天向上',
+  shareTitle: '钱罐罐记账 - 好好记账，天天向上'
+} as const
+
 export interface Config {
   [key: string]: {
     baseUrl: string

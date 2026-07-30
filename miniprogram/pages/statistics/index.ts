@@ -1,4 +1,5 @@
 import { billList, billStats, type BillVO } from '../../api/bill'
+import { appConfig } from '../../config/index'
 import { BillType } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { fmt, pad } from '../../utils/format'
@@ -53,7 +54,7 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: '钱罐罐记账 - 好好记账，天天向上',
+      title: appConfig.shareTitle,
       path: '/pages/bill/index'
     }
   },
