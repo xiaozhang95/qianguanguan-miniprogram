@@ -60,6 +60,10 @@ export function wxShowShareMenu() {
   })
 }
 
+export function wxHideShareMenu() {
+  wx.hideShareMenu()
+}
+
 export function wxSwitchTab(name: string) {
   return wx.switchTab({ url: '/pages/' + name + '/index' })
 }

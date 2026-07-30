@@ -2,7 +2,7 @@ import { sendEmailCode, uploadAvatar, userProfile, type UserInfo } from '../../a
 import config from '../../config/index'
 import { Route } from '../../constants/index'
 import type { CtmResponse, IAppOption } from '../../typings'
-import { debounceNavigateTo, wxNavigateBack, wxShowToast } from '../../utils/wx'
+import { debounceNavigateTo, wxHideShareMenu, wxNavigateBack, wxShowToast } from '../../utils/wx'
 
 Page({
   data: {
@@ -23,6 +23,7 @@ Page({
   },
   _countdownTimer: null as ReturnType<typeof setInterval> | null,
   onLoad() {
+    wxHideShareMenu()
     const { globalData } = getApp<IAppOption>()
     const u = globalData.userInfo || {}
     const a = u.avatar || ''

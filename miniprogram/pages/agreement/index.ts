@@ -1,5 +1,5 @@
 import type { IAppOption } from '../../typings'
-import { wxNavigateBack } from '../../utils/wx'
+import { wxHideShareMenu, wxNavigateBack } from '../../utils/wx'
 
 Page({
   data: {
@@ -7,6 +7,7 @@ Page({
     activeTab: 0
   },
   onLoad(options: { tab?: string }) {
+    wxHideShareMenu()
     const { globalData } = getApp<IAppOption>()
     this.setData({
       app: globalData,

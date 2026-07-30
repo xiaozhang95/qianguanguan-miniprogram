@@ -1,7 +1,7 @@
 import { qrLoginConfirm, type LoginResult } from '../../api/user'
 import { Route } from '../../constants/index'
 import type { CtmResponse, IAppOption } from '../../typings'
-import { wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
+import { wxHideShareMenu, wxLogin, wxShowToast, wxSwitchTab } from '../../utils/wx'
 
 Page({
   data: {
@@ -10,6 +10,7 @@ Page({
     app: {}
   },
   onLoad(options: Record<string, string>) {
+    wxHideShareMenu()
     const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
     if (options.scene) {

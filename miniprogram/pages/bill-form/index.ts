@@ -4,7 +4,7 @@ import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { pad } from '../../utils/format'
-import { wxNavigateBack, wxShowModal, wxShowToast } from '../../utils/wx'
+import { wxHideShareMenu, wxNavigateBack, wxShowModal, wxShowToast } from '../../utils/wx'
 
 function todayStr() {
   const d = new Date()
@@ -40,6 +40,7 @@ Page({
   },
 
   onLoad(options: Record<string, string>) {
+    wxHideShareMenu()
     const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
 

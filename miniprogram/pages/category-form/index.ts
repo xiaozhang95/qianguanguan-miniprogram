@@ -2,7 +2,7 @@ import { categoryDelete, categoryList, categorySave, categoryUpdate, type Catego
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
 import type { IAppOption } from '../../typings'
-import { wxChooseImage, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
+import { wxChooseImage, wxHideShareMenu, wxNavigateBack, wxShowModal, wxShowToast, wxUploadFile } from '../../utils/wx'
 
 Page({
   data: {
@@ -24,6 +24,7 @@ Page({
   },
 
   onLoad(options: Record<string, string>) {
+    wxHideShareMenu()
     const { globalData } = getApp<IAppOption>()
     this.setData({ app: globalData })
 
