@@ -66,7 +66,7 @@ export default function refreshRequest<T>(requestInfo: RequestInfo): Promise<Ctm
     create<T>(requestInfo)
       .then(resolve)
       .catch((err) => {
-        if (err?.code !== ResponseCode.UNAUTHORIZED) return reject(err)
+        if (err && err.code !== ResponseCode.UNAUTHORIZED) return reject(err)
         setRequestQueue([...globalData.requestQueue, { resolve, reject, requestInfo }])
 
         if (globalData.loginFailed) return reject(err)

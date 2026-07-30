@@ -59,9 +59,9 @@ Page({
 
   onShow() {
     const { globalData } = getApp<IAppOption>()
-    const qrScene = globalData._qrScene || ''
+    const qrScene = globalData.qrScene || ''
     if (qrScene) {
-      globalData._qrScene = ''
+      globalData.qrScene = ''
       if (this.handleQrScene(qrScene)) return
     }
     this.setData({ app: globalData, isScrolled: false })

@@ -6,6 +6,7 @@ import { wxGetMenuButtonBoundingClientRect, wxHideLoading, wxLogin, wxShowLoadin
 
 App<IAppOption>({
   globalData: {
+    watchers: [],
     refreshing: false,
     loginFailed: null,
     requestQueue: [],
@@ -13,22 +14,31 @@ App<IAppOption>({
     userInfo: null,
     offsetTop: 0,
     capsuleTop: 0,
-    _qrScene: ''
+    qrScene: ''
+  },
+  watch(fn: () => void) {
+    this.globalData.watchers.push(fn)
+  },
+  update<K extends keyof IAppOption['globalData']>(key: K, value: IAppOption['globalData'][K]) {
+    ;(this.globalData as Record<string, unknown>)[key] = value
+    this.globalData.watchers.forEach(function (fn) {
+      fn()
+    })
   },
   setUserInfo(userInfo: UserInfo) {
-    this.globalData.userInfo = userInfo
+    this.update('userInfo', userInfo)
   },
   setToken(token: string) {
-    this.globalData.token = token
+    this.update('token', token)
   },
   setRefreshing(refreshing: boolean) {
-    this.globalData.refreshing = refreshing
+    this.update('refreshing', refreshing)
   },
   setLoginFailed(loginFailed: boolean | null) {
-    this.globalData.loginFailed = loginFailed
+    this.update('loginFailed', loginFailed)
   },
   setRequestQueue(requestQueue: RequestQueue[]) {
-    this.globalData.requestQueue = requestQueue
+    this.update('requestQueue', requestQueue)
   },
   getMenuButtonBoundingClientRect() {
     const { top, height } = wxGetMenuButtonBoundingClientRect()
@@ -38,6 +48,7 @@ App<IAppOption>({
   login() {
     wxShowLoading({ title: '加载中...' })
     this.setRefreshing(true)
+    this.setLoginFailed(null)
     wxLogin()
       .then(({ code }) => loginByWid(code))
       .then(({ data }) => {
@@ -83,7 +94,7 @@ App<IAppOption>({
   onShow(options: WechatMiniprogram.App.LaunchShowOption) {
     const scene = options.query && (options.query.scene as string)
     if (scene) {
-      this.globalData._qrScene = scene
+      this.globalData.qrScene = scene
     }
   }
 })

@@ -19,9 +19,19 @@ Page({
     app: {}
   },
 
+  onLoad() {
+    const app = getApp<IAppOption>()
+    app.watch(() => {
+      this.syncGlobalData()
+    })
+  },
+
   onShow() {
+    this.syncGlobalData()
+  },
+
+  syncGlobalData() {
     const { globalData } = getApp<IAppOption>()
-    console.log(globalData)
     this.setData({ app: globalData, avatar: avatarUrl(globalData.userInfo) })
   },
   handleToLogin() {

@@ -2,6 +2,7 @@ import type { UserInfo } from '../api/user'
 
 export interface IAppOption {
   globalData: {
+    watchers: Array<() => void>
     refreshing: boolean
     loginFailed: boolean | null
     requestQueue: RequestQueue[]
@@ -9,8 +10,10 @@ export interface IAppOption {
     userInfo: UserInfo | null
     offsetTop: number
     capsuleTop: number
-    _qrScene: string
+    qrScene: string
   }
+  watch: (fn: () => void) => void
+  update: <K extends keyof IAppOption['globalData']>(key: K, value: IAppOption['globalData'][K]) => void
   setUserInfo: (userInfo: UserInfo) => void
   setToken: (token: string) => void
   setRefreshing: (refreshing: boolean) => void
