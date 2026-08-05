@@ -51,14 +51,18 @@ Page({
       this.setData({ editing: true, billId: options.id })
     }
 
-    this.loadCategories()
     if (options.id) {
-      this.loadBill()
+      // 编辑账单：先加载分类列表，再加载账单详情，确保选中分类的图标能正确回显
+      this.loadCategories().then(() => {
+        this.loadBill()
+      })
+    } else {
+      this.loadCategories()
     }
   },
 
   loadCategories() {
-    categoryList().then(({ data }) => {
+    return categoryList().then(({ data }) => {
       const cats = (data || []).map((c: Category) => {
         const isImg = !!(c.icon && (c.icon.indexOf(config.uploadPath) === 0 || c.icon.indexOf('http') === 0))
         return {
@@ -84,7 +88,8 @@ Page({
     billDetail(this.data.billId).then(({ data: bill }) => {
       if (!bill) return
       const cats = bill.type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
-      const selectedCat = cats.find((c) => c.id === bill.categoryId)
+      // 分类列表若未就绪，兜底从全量分类中查找，避免图标缺失
+      const selectedCat = cats.find((c) => c.id === bill.categoryId) || this.data.categories.find((c) => c.id === bill.categoryId)
       this.setData({
         formType: bill.type,
         formCategoryId: bill.categoryId,
