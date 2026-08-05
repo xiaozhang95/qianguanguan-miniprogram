@@ -21,7 +21,7 @@ Page({
     saving: false,
     app: {}
   },
-  _countdownTimer: null as ReturnType<typeof setInterval> | null,
+  countdownTimer: null as ReturnType<typeof setInterval> | null,
   onLoad() {
     wxHideShareMenu()
     const { globalData } = getApp<IAppOption>()
@@ -49,9 +49,9 @@ Page({
     this.setData({ app: globalData })
   },
   onUnload() {
-    if (this._countdownTimer) {
-      clearInterval(this._countdownTimer)
-      this._countdownTimer = null
+    if (this.countdownTimer) {
+      clearInterval(this.countdownTimer)
+      this.countdownTimer = null
     }
   },
   onChooseAvatar(e: WechatMiniprogram.CustomEvent) {
@@ -100,12 +100,12 @@ Page({
       .then(() => {
         wxShowToast({ title: '验证码已发送' })
         this.setData({ codeCountdown: 60 })
-        this._countdownTimer = setInterval(() => {
+        this.countdownTimer = setInterval(() => {
           const next = this.data.codeCountdown - 1
           this.setData({ codeCountdown: next })
           if (next <= 0) {
-            clearInterval(this._countdownTimer as ReturnType<typeof setInterval>)
-            this._countdownTimer = null
+            clearInterval(this.countdownTimer as ReturnType<typeof setInterval>)
+            this.countdownTimer = null
           }
         }, 1000)
       })

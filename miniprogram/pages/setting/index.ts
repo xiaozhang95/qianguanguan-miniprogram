@@ -56,9 +56,6 @@ Page({
   handleToUser() {
     debounceNavigateTo(Route.USER)
   },
-  handleToQrLogin() {
-    debounceNavigateTo(Route.QR_LOGIN)
-  },
   handleToWeb() {
     wxSetClipboardData({ data: config.url }).then(() => {
       wxShowToast({ title: '链接已复制，请用浏览器打开' })

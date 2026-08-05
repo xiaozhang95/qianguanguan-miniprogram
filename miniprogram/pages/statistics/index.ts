@@ -1,6 +1,6 @@
 import { billList, billStats, type BillVO } from '../../api/bill'
 import { appConfig } from '../../config/index'
-import { BillType } from '../../constants/index'
+import { BillType, Route, routePath } from '../../constants/index'
 import type { IAppOption } from '../../typings'
 import { fmt, pad } from '../../utils/format'
 import { wxGetSystemInfoSync, wxShowShareMenu } from '../../utils/wx'
@@ -55,7 +55,7 @@ Page({
   onShareAppMessage() {
     return {
       title: appConfig.shareTitle,
-      path: '/pages/statistics/index',
+      path: routePath(Route.STATISTICS),
       imageUrl: appConfig.shareImage
     }
   },

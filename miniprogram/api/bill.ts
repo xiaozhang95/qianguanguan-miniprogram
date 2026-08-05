@@ -61,6 +61,13 @@ export function billList(params: BillListParams) {
   })
 }
 
+export function billDetail(id: string) {
+  return request<BillVO>({
+    url: `/bill/detail/${id}`,
+    method: 'GET'
+  })
+}
+
 export function billSave(data: BillSaveParams) {
   return request<BillVO>({
     url: '/bill/save',

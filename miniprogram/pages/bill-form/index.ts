@@ -1,4 +1,4 @@
-import { billDelete, billList, billSave, billUpdate, type BillSaveParams } from '../../api/bill'
+import { billDelete, billDetail, billSave, billUpdate, type BillSaveParams } from '../../api/bill'
 import { categoryList, type Category } from '../../api/category'
 import config from '../../config/index'
 import { BillType } from '../../constants/index'
@@ -81,9 +81,7 @@ Page({
   },
 
   loadBill() {
-    billList({ type: '', startDate: '', endDate: '', pageNum: 1, pageSize: 200 }).then(({ data: res }) => {
-      const records = res.records || []
-      const bill = records.find((b) => b.id === this.data.billId)
+    billDetail(this.data.billId).then(({ data: bill }) => {
       if (!bill) return
       const cats = bill.type === BillType.INCOME ? this.data.incomeCategories : this.data.expenseCategories
       const selectedCat = cats.find((c) => c.id === bill.categoryId)

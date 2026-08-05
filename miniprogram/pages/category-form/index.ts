@@ -81,9 +81,7 @@ Page({
       .then((res) => {
         this.setData({ formIconFile: res.tempFilePaths[0], iconChanged: true })
       })
-      .catch(() => {
-        this.setData({ saving: false })
-      })
+      .catch(() => {})
   },
 
   onRemoveIcon() {
